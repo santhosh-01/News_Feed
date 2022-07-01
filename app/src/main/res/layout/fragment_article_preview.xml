@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.fragments.ArticlePreviewFragment"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:id="@+id/text_detail_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textSize="26sp"
+                        android:textStyle="bold"
+                        tools:text="Title" />
+
+                    <ImageView
+                        android:id="@+id/img_detail_news"
+                        android:layout_width="match_parent"
+                        android:layout_height="250dp"
+                        android:layout_marginTop="8dp"
+                        android:radius="16dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/img_not_available" />
+
+                    <TextView
+                        android:id="@+id/text_detail_author"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/purple_500"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        tools:text="Santhosh" />
+
+                    <TextView
+                        android:id="@+id/text_detail_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        tools:text="15:14" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/text_detail_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_marginTop="8dp"
+                android:padding="12dp"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                tools:text="Details" />
+
+            <TextView
+                android:id="@+id/text_detail_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_marginTop="8dp"
+                android:padding="12dp"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                tools:text="Mumbai News Live Updates: Maharashtra reported 1,045 new Covid-19 cases today. Of the new cases, Mumbai reported 704 infections. Meanwhile, Chief Minister Uddhav Thackeray today called a Covid-19 task force meeting amid a surge in Covid cases in the state. For the first time since February, Maharashtra had recorded over 1,000 daily Covid-19 cases on Wednesday.
+
+June 3 live updates: Click here for today’s Mumbai news
+In another news, beloved Bollywood playback singer Krishnakumar Kunnath, popularly known as KK, was cremated in the presence of his family and members of the film fraternity on Thursday, at Mumbai’s Versova Hindu Cemetary. His funeral was attended by film industry personalities such as singers Shreya Ghoshal, Alka Yagnik, Harshdeep Kaur, Rahul Vaidya and Papon, directors Kabir Khan and Vishal Bhardwaj, lyricist Javed Akhtar, music directors Shankar Mahadevan and Salim Merchant, and others." />
+
+            <Button
+                android:id="@+id/continue_reading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="24dp"
+                android:backgroundTint="@color/teal_700"
+                android:elevation="10dp"
+                android:radius="24dp"
+                android:stateListAnimator="@null"
+                android:text="Continue Reading..." />
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleX="1.2"
+        android:scaleY="1.2"
+        android:clickable="true"
+        android:layout_margin="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_baseline_bookmark_add_24" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

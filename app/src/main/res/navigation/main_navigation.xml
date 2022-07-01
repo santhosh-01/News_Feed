@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.newsfeed.home.HomeFragment"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_articlePreviewFragment"
+            app:destination="@id/articlePreviewFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_categoryFragment"
+            app:destination="@id/categoryFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
+        <argument
+            android:name="category"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.newsfeed.ui.fragments.SettingsFragment"
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_aboutFragment2"
+            app:destination="@id/aboutFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_settingsFragment_to_helpFragment2"
+            app:destination="@id/helpFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/bookmarksFragment"
+        android:name="com.example.newsfeed.ui.fragments.BookmarksFragment"
+        tools:layout="@layout/fragment_bookmarks" >
+        <action
+            android:id="@+id/action_bookmarksFragment_to_articlePreviewFragment"
+            app:destination="@id/articlePreviewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.example.newsfeed.ui.fragments.AboutFragment"
+        tools:layout="@layout/fragment_about" />
+    <fragment
+        android:id="@+id/helpFragment"
+        android:name="com.example.newsfeed.ui.fragments.HelpFragment"
+        tools:layout="@layout/fragment_help" />
+    <fragment
+        android:id="@+id/articlePreviewFragment"
+        android:name="com.example.newsfeed.ui.fragments.ArticlePreviewFragment"
+        tools:layout="@layout/fragment_article_preview" >
+        <argument
+            android:name="article"
+            app:argType="com.example.newsfeed.entity.Article" />
+        <action
+            android:id="@+id/action_articlePreviewFragment_to_articleFragment"
+            app:destination="@id/articleFragment"
+            app:popUpTo="@id/articlePreviewFragment"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="addBookmarkFlag"
+            app:argType="boolean" />
+        <action
+            android:id="@+id/action_articlePreviewFragment_to_bookmarksFragment"
+            app:destination="@id/bookmarksFragment"
+            app:popUpTo="@id/bookmarksFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/articleFragment"
+        android:name="com.example.newsfeed.ui.fragments.ArticleFragment"
+        tools:layout="@layout/fragment_article" >
+        <argument
+            android:name="article"
+            app:argType="com.example.newsfeed.entity.Article" />
+        <argument
+            android:name="addBookmarkFlag"
+            app:argType="boolean" />
+        <action
+            android:id="@+id/action_articleFragment_to_bookmarksFragment3"
+            app:destination="@id/bookmarksFragment"
+            app:popUpTo="@id/bookmarksFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/categoryFragment"
+        android:name="com.example.newsfeed.ui.fragments.CategoryFragment"
+        tools:layout="@layout/fragment_category">
+        <action
+            android:id="@+id/action_categoryFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left" />
+    </fragment>
+</navigation>

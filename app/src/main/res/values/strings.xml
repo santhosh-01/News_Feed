@@ -1,0 +1,23 @@
+<resources>
+
+    <!--    App Name-->
+    <string name="app_name">News Feed</string>
+
+    <!--    Bottom Nav Bar Titles-->
+    <string name="home">Home</string>
+    <string name="settings">Settings</string>
+    <string name="bookmarks">Bookmarks</string>
+
+    <!--    About News Feed App-->
+    <string name="about_app">\u2022 News Feed App is to get the Breaking News and to get the News in Customizable way
+        \n\n\u2022 User can do search, filter based on the categories, countries, etc..
+        \n\n\u2022 User can bookmark any news article and can see the bookmarked news articles</string>
+
+    <!--    Help Page Content-->
+    <string name="app_help">\u2022 On opening the open, the user will be landing on Home Page will bottom Nav Bar and Overflow menu at top right
+        \n\n\u2022 The Bottom Nav Bar contains Home Tab, Settings Tab, Bookmarks Tab
+        \n\n\u2022 The overflow menu contains the navigation for About App Page and Help Page
+        \n\n\u2022 On Clicking Settings Tab on the bottom Nav Bar, user will land on Settings Page and can customise their app
+        \n\n\u2022 On Clicking Bookmarks Tab, user will land on Bookmarks Page and can see all bookmarked articles</string>
+
+</resources>
