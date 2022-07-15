@@ -1,4 +1,4 @@
-package com.example.newsfeed.home
+package com.example.newsfeed.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.ViewModel

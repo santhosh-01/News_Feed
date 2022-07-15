@@ -16,9 +16,10 @@ import com.example.newsfeed.R
 import com.example.newsfeed.adapter.NewsAdapter
 import com.example.newsfeed.databinding.FragmentBookmarksBinding
 import com.example.newsfeed.entity.Article
-import com.example.newsfeed.home.NewsViewModel
-import com.example.newsfeed.home.OnArticleClickListener
+import com.example.newsfeed.viewmodel.NewsViewModel
+import com.example.newsfeed.util.listener.OnArticleClickListener
 import com.example.newsfeed.ui.MainActivity
+import com.example.newsfeed.util.listener.OnManageItemsInViewModel
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
@@ -117,7 +118,8 @@ class BookmarksFragment : Fragment() {
 
     }
 
-    private val onManageItemsInViewModel: OnManageItemsInViewModel = object : OnManageItemsInViewModel {
+    private val onManageItemsInViewModel: OnManageItemsInViewModel = object :
+        OnManageItemsInViewModel {
         override fun addSelectedItemToList(article: Article) {
             viewModel.selectedNewsListInBookmarks.add(article)
         }
@@ -183,7 +185,7 @@ class BookmarksFragment : Fragment() {
 
                             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                                 super.onDismissed(transientBottomBar, event)
-                                viewModel.clearSelectedItemsInBookmark()
+                                viewModel.unSelectAllArticles()
                             }
                         })
                     snackbar.setAction("Undo") {
@@ -243,7 +245,6 @@ class BookmarksFragment : Fragment() {
                             }
                             snackbar.show()
                             snackbar.view.setOnClickListener { snackbar.dismiss() }
-                            viewModel.clearSelectedItemsInBookmark()
                         }
                     })
                     .setNegativeButton("No", null)
@@ -287,26 +288,13 @@ class BookmarksFragment : Fragment() {
         }
     }*/
 
-    override fun onPause() {
-        super.onPause()
-        viewModel.selectedNewsListInBookmarks.forEach {
-            it.isChecked = false
-        }
-        viewModel.selectedNewsListInBookmarks.clear()
-        viewModel.clearSelectedItemsInBookmark()
-        newsAdapter.notifyDataSetChanged()
-    }
-
     fun isCheckboxEnable(): Boolean {
         return newsAdapter.isCheckboxEnabled
     }
 
     fun clearAdapterCheckboxes() {
         newsAdapter.isCheckboxEnabled = false
-        viewModel.selectedNewsListInBookmarks.forEach {
-            it.isChecked = false
-        }
-        viewModel.clearSelectedItemsInBookmark()
+        viewModel.unSelectBookmarkArticles()
         newsAdapter.notifyDataSetChanged()
     }
 

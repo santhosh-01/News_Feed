@@ -5,6 +5,7 @@ import com.example.newsfeed.api.RetrofitInstance
 import com.example.newsfeed.db.ArticleDatabase
 import com.example.newsfeed.entity.Article
 import com.example.newsfeed.entity.NewsArticle
+import org.intellij.lang.annotations.Language
 import retrofit2.Response
 
 class NewsRepository(
@@ -34,15 +35,17 @@ class NewsRepository(
     suspend fun searchNews(
         pageNumber: Int,
         searchQuery: String,
-        sortBy: String
+        sortBy: String,
+        language: String
     ): Response<NewsArticle> {
         if (sortBy == "") {
-            return RetrofitInstance.api.searchForNews(pageNumber = pageNumber, query = searchQuery)
+            return RetrofitInstance.api.searchForNews(pageNumber = pageNumber, query = searchQuery, language = language)
         } else {
             return RetrofitInstance.api.searchForNews(
                 pageNumber = pageNumber,
                 query = searchQuery,
-                sortBy = sortBy
+                sortBy = sortBy,
+                language = language
             )
         }
     }

@@ -1,7 +1,6 @@
 package com.example.newsfeed.ui.fragments
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.newsfeed.R
 import com.example.newsfeed.databinding.FragmentArticleBinding
 import com.example.newsfeed.entity.Article
-import com.example.newsfeed.home.NewsViewModel
+import com.example.newsfeed.viewmodel.NewsViewModel
 import com.example.newsfeed.ui.MainActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch

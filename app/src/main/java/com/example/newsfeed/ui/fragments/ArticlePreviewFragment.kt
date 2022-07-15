@@ -15,7 +15,7 @@ import androidx.navigation.findNavController
 import com.example.newsfeed.R
 import com.example.newsfeed.databinding.FragmentArticlePreviewBinding
 import com.example.newsfeed.entity.Article
-import com.example.newsfeed.home.NewsViewModel
+import com.example.newsfeed.viewmodel.NewsViewModel
 import com.example.newsfeed.ui.MainActivity
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso

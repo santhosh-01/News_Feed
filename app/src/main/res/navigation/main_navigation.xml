@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.newsfeed.home.HomeFragment"
+        android:name="com.example.newsfeed.ui.fragments.HomeFragment"
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_homeFragment_to_articlePreviewFragment"

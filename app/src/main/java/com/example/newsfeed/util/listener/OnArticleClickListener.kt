@@ -1,4 +1,4 @@
-package com.example.newsfeed.home
+package com.example.newsfeed.util.listener
 
 import com.example.newsfeed.entity.Article
 import com.google.android.material.card.MaterialCardView

@@ -1,9 +1,7 @@
-package com.example.newsfeed.home
+package com.example.newsfeed.util.listener
 
-import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
 
 class InfiniteScrollListener(private val linearLayoutManager: LinearLayoutManager, private val listener: OnLoadMoreListener) : RecyclerView.OnScrollListener() {
 

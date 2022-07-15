@@ -1,10 +1,11 @@
-package com.example.newsfeed.home
+package com.example.newsfeed.viewmodel
 
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -29,6 +30,7 @@ class NewsViewModel(
 
     var selectedCategory: String = ""
     var selectedCountry: String = ""
+    var preferredLanguage: String = "en"
 
     var breakingNewsResponse: NewsArticle? = null
     var searchNewsResponse: NewsArticle? = null
@@ -85,7 +87,7 @@ class NewsViewModel(
 //        val response: Response<NewsArticle> = newsRepository.searchNews(searchQuery)
 //        searchNews.postValue(handleSearchNewsResponse(response))
 
-        safeSearchNewsCall(searchQuery, sortBy)
+        safeSearchNewsCall(searchQuery, sortBy, preferredLanguage)
     }
 
     private fun handleBreakingNewsResponse(response: Response<NewsArticle>) : Resource<NewsArticle> {
@@ -109,6 +111,10 @@ class NewsViewModel(
     private fun handleSearchNewsResponse(response: Response<NewsArticle>) : Resource<NewsArticle> {
         if(response.isSuccessful) {
             response.body()?.let { resultResponse ->
+                Log.i("NewsViewModel", response.body().toString())
+                if (response.body()?.totalResults == 0) {
+                    return Resource.Error("No Result Found!!")
+                }
                 if (searchNewsResponse == null) {
                     searchNewsResponse = resultResponse
                 }
@@ -121,7 +127,7 @@ class NewsViewModel(
                 return Resource.Success(searchNewsResponse ?: resultResponse)
             }
         }
-        return Resource.Error(response.message())
+        return Resource.Error("No Result")
     }
 
     suspend fun insertArticle(article: Article): Long {
@@ -154,7 +160,7 @@ class NewsViewModel(
         selectedItemPositionsInBookmark.value = selectedItemPositionsInBookmark.value!!.minus(position)
     }
 
-    fun clearSelectedItemsInHome() {
+    private fun clearSelectedItemsInHome() {
         selectedItemPositionsInHome.value = listOf()
         selectedNewsListInHome.clear()
     }
@@ -169,6 +175,13 @@ class NewsViewModel(
             article.isChecked = false
         }
         clearSelectedItemsInHome()
+    }
+
+    fun unSelectBookmarkArticles() {
+        selectedNewsListInBookmarks.forEach {
+            it.isChecked = false
+        }
+        clearSelectedItemsInBookmark()
     }
 
     fun pushToSearchQueryStack(value: String) {
@@ -198,13 +211,17 @@ class NewsViewModel(
         searchQueryStack.value = temp
     }
 
-    private suspend fun safeSearchNewsCall(searchQuery: String, sortBy: String) {
+    private suspend fun safeSearchNewsCall(
+        searchQuery: String,
+        sortBy: String,
+        language: String
+    ) {
         newSearchQuery = searchQuery
         searchNews.postValue(Resource.Loading())
         try {
             if(hasInternetConnection()) {
                 searchNewsPage++
-                val response = newsRepository.searchNews(searchNewsPage, searchQuery, sortBy)
+                val response = newsRepository.searchNews(searchNewsPage, searchQuery, sortBy, language)
                 searchNews.postValue(handleSearchNewsResponse(response))
             } else {
                 searchNews.postValue(Resource.Error("No internet connection"))

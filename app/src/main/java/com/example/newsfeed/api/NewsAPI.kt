@@ -2,6 +2,7 @@ package com.example.newsfeed.api
 
 import com.example.newsfeed.entity.NewsArticle
 import com.example.newsfeed.util.Constants
+import org.intellij.lang.annotations.Language
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -16,6 +17,8 @@ interface NewsAPI {
         query: String,
         @Query("sortBy")
         sortBy: String = "relevancy",
+        @Query("language")
+        language: String = "en",
         @Query("page")
         pageNumber: Int = 1,
         @Query("pageSize")

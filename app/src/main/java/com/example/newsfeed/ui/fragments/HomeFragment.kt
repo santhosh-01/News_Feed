@@ -1,4 +1,4 @@
-package com.example.newsfeed.home
+package com.example.newsfeed.ui.fragments
 
 import android.app.Activity
 import android.app.Dialog
@@ -8,18 +8,17 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.widget.SearchView
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.newsfeed.R
@@ -27,14 +26,21 @@ import com.example.newsfeed.adapter.NewsAdapter
 import com.example.newsfeed.databinding.FragmentHomeBinding
 import com.example.newsfeed.entity.Article
 import com.example.newsfeed.ui.MainActivity
-import com.example.newsfeed.ui.fragments.OnManageItemsInViewModel
 import com.example.newsfeed.util.Constants.Companion.QUERY_PAGE_SIZE
 import com.example.newsfeed.util.Constants.Companion.TOTAL_RECORD
 import com.example.newsfeed.util.Resource
+import com.example.newsfeed.util.listener.InfiniteScrollListener
+import com.example.newsfeed.util.listener.OnArticleClickListener
+import com.example.newsfeed.util.listener.OnManageItemsInViewModel
+import com.example.newsfeed.viewmodel.NewsViewModel
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import org.intellij.lang.annotations.Language
 import kotlin.math.ceil
 import kotlin.math.min
 
@@ -48,6 +54,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
     private lateinit var sharedPref: SharedPreferences
     private lateinit var infiniteScrollListener: InfiniteScrollListener
     private var sortBy: String = "relevancy"
+    private var map: HashMap<String, String> = hashMapOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -146,9 +153,10 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
         val popularity = dialog.findViewById<RadioButton>(R.id.popularity)
         val time = dialog.findViewById<RadioButton>(R.id.time)
 
-        relevance.setOnClickListener {
+        /*relevance.setOnClickListener {
             relevance.isChecked = true
             dialog.dismiss()
+            saveSortingParameterForSearchQuery("relevancy")
             requireActivity().findViewById<SearchView>(R.id.search_view)
                 .setQuery(viewModel.popFromSearchQueryStack(), true)
             saveSortingParameterForSearchQuery("relevancy")
@@ -157,6 +165,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
         popularity.setOnClickListener {
             popularity.isChecked = true
             dialog.dismiss()
+            saveSortingParameterForSearchQuery("popularity")
             requireActivity().findViewById<SearchView>(R.id.search_view)
                 .setQuery(viewModel.popFromSearchQueryStack(), true)
             saveSortingParameterForSearchQuery("popularity")
@@ -165,16 +174,42 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
         time.setOnClickListener {
             time.isChecked = true
             dialog.dismiss()
+            saveSortingParameterForSearchQuery("publishedAt")
             requireActivity().findViewById<SearchView>(R.id.search_view)
                 .setQuery(viewModel.popFromSearchQueryStack(), true)
             saveSortingParameterForSearchQuery("publishedAt")
-        }
+        }*/
 
         when (sortBy) {
             "relevancy" -> relevance.isChecked = true
             "popularity" -> popularity.isChecked = true
             "publishedAt" -> time.isChecked = true
         }
+
+        val languages = resources.getStringArray(com.example.newsfeed.R.array.language_code_array)
+
+        for (languageNameWithLanguageAbbr in languages) {
+            val (languageName, languageAbbr) = languageNameWithLanguageAbbr.split(" - ")
+            map[languageAbbr.lowercase()] = languageName
+        }
+
+        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, languages)
+
+        val autoCompleteTextView =
+            dialog.findViewById<AutoCompleteTextView>(R.id.languageAutoCompleteTextView)
+
+        autoCompleteTextView.setAdapter(arrayAdapter)
+
+        dialog.findViewById<AutoCompleteTextView>(R.id.languageAutoCompleteTextView)
+            .addTextChangedListener {
+                dialog.findViewById<AutoCompleteTextView>(R.id.languageAutoCompleteTextView)
+                    .setTextColor(Color.BLACK)
+            }
+
+//        autoCompleteTextView.postDelayed({ autoCompleteTextView.showDropDown() }, 500)
+        autoCompleteTextView.hint = ("${map[viewModel.preferredLanguage]} - ${viewModel.preferredLanguage.uppercase()}")
+        autoCompleteTextView.setHintTextColor(Color.BLACK)
+
         dialog.show()
         dialog.window?.setLayout(
             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -183,6 +218,79 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
         dialog.window?.setGravity(Gravity.BOTTOM)
+
+        dialog.findViewById<Button>(R.id.get_news_button).setOnClickListener {
+            val radiogroup = dialog.findViewById<RadioGroup>(R.id.sort_radio_group)
+            val selectedId: Int = radiogroup.checkedRadioButtonId
+            val selectedRadioButton = dialog.findViewById<RadioButton>(selectedId)
+            when (selectedRadioButton.text) {
+                "Relevance" -> {
+                    relevance.isChecked = true
+                    dialog.dismiss()
+                    saveSortingParameterForSearchQuery("relevancy")
+                    if (autoCompleteTextView.text.toString().isNotEmpty())
+                        savePreferredLanguage(
+                        dialog.findViewById<AutoCompleteTextView>(R.id.languageAutoCompleteTextView).text.split(
+                            " - "
+                        )[1].lowercase()
+                    )
+                    requireActivity().findViewById<SearchView>(R.id.search_view)
+                        .setQuery(viewModel.popFromSearchQueryStack(), true)
+                    saveSortingParameterForSearchQuery("relevancy")
+                    if (autoCompleteTextView.text.toString().isNotEmpty())
+                        savePreferredLanguage(
+                        dialog.findViewById<AutoCompleteTextView>(R.id.languageAutoCompleteTextView).text.split(
+                            " - "
+                        )[1].lowercase()
+                    )
+                }
+                "Popularity" -> {
+                    popularity.isChecked = true
+                    dialog.dismiss()
+                    saveSortingParameterForSearchQuery("popularity")
+                    if (autoCompleteTextView.text.toString().isNotEmpty())
+                        savePreferredLanguage(
+                        dialog.findViewById<AutoCompleteTextView>(R.id.languageAutoCompleteTextView).text.split(
+                            " - "
+                        )[1]
+                    )
+                    requireActivity().findViewById<SearchView>(R.id.search_view)
+                        .setQuery(viewModel.popFromSearchQueryStack(), true)
+                    saveSortingParameterForSearchQuery("popularity")
+                    if (autoCompleteTextView.text.toString().isNotEmpty())
+                        savePreferredLanguage(
+                        dialog.findViewById<AutoCompleteTextView>(R.id.languageAutoCompleteTextView).text.split(
+                            " - "
+                        )[1]
+                    )
+                }
+                "Time" -> {
+                    time.isChecked = true
+                    dialog.dismiss()
+                    saveSortingParameterForSearchQuery("publishedAt")
+//                    Toast.makeText(requireContext(), autoCompleteTextView.text.toString(), Toast.LENGTH_SHORT).show()
+                    if (autoCompleteTextView.text.toString().isNotEmpty())
+                        savePreferredLanguage(
+                        dialog.findViewById<AutoCompleteTextView>(R.id.languageAutoCompleteTextView).text.toString().split(
+                            " - "
+                        )[1]
+                    )
+                    requireActivity().findViewById<SearchView>(R.id.search_view)
+                        .setQuery(viewModel.popFromSearchQueryStack(), true)
+                    saveSortingParameterForSearchQuery("publishedAt")
+                    if (autoCompleteTextView.text.toString().isNotEmpty())
+                        savePreferredLanguage(
+                        dialog.findViewById<AutoCompleteTextView>(R.id.languageAutoCompleteTextView).text.toString().split(
+                            " - "
+                        )[1]
+                    )
+                }
+            }
+        }
+    }
+
+    private fun savePreferredLanguage(language: String) {
+        viewModel.preferredLanguage = language.lowercase()
     }
 
     private fun saveSortingParameterForSearchQuery(sortBy: String) {
@@ -211,11 +319,11 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                     viewModel.searchNewsResponse = null
                     viewModel.searchNews(query, sortBy)
                     sortBy = "relevancy"
+                    viewModel.preferredLanguage = "en"
                 }
                 hideKeyboard()
 //                requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav_bar).visibility = View.VISIBLE
                 searchView.clearFocus()
-                viewModel.clearSelectedItemsInHome()
                 return true
             }
 
@@ -269,9 +377,12 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                                 }
                             }
                             task.await()
-                            if (viewModel.breakingNewsPage == 1)
+                            if (viewModel.breakingNewsPage == 1) {
                                 binding.progressBarMiddle.visibility = View.INVISIBLE
-                            else
+//                                if (articleList.isEmpty()) {
+//
+//                                }
+                            } else
                                 newsAdapter!!.removeNull()
                             newsAdapter!!.addData(articleList)
                             infiniteScrollListener.setLoaded()
@@ -311,7 +422,13 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                         searchNewsAdapter?.addNullData()
                 }
                 is Resource.Success -> {
+                    if (response.data == null) {
+                        Toast.makeText(requireContext(), "No Result Found", Toast.LENGTH_SHORT)
+                    }
                     response.data?.let {
+                        if (response.data.totalResults == 0) {
+                            Toast.makeText(requireContext(), "No Result Found", Toast.LENGTH_SHORT)
+                        }
                         val articleList = response.data.articles
                         lifecycleScope.launch(Dispatchers.Main) {
                             val task = async(Dispatchers.IO) {
@@ -327,7 +444,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                             searchNewsAdapter!!.addData(response.data.articles)
                             infiniteScrollListener.setLoaded()
 
-                            viewModel.clearSelectedItemsInHome()
+                            viewModel.unSelectAllArticles()
 
                             val totalRecords = min(TOTAL_RECORD, response.data.totalResults)
                             val totalPages = ceil(totalRecords.toFloat() / QUERY_PAGE_SIZE).toInt()
@@ -343,10 +460,11 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                     response.message?.let { message ->
                         Toast.makeText(
                             requireContext(),
-                            "Error Occurred!! $message",
+                            message,
                             Toast.LENGTH_LONG
                         ).show()
                     }
+                    binding.progressBarMiddle.visibility = View.GONE
                 }
             }
         })
@@ -477,12 +595,12 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
 
         binding.recyclerMain.layoutManager = linearLayoutManager
         binding.recyclerMain.addOnScrollListener(infiniteScrollListener)
-       /* binding.recyclerMain.addItemDecoration(
-            DividerItemDecoration(
-                requireContext(),
-                DividerItemDecoration.VERTICAL
-            )
-        )*/
+        /* binding.recyclerMain.addItemDecoration(
+             DividerItemDecoration(
+                 requireContext(),
+                 DividerItemDecoration.VERTICAL
+             )
+         )*/
         newsAdapter = NewsAdapter(articleClickListener, onManageItemsInViewModel, list)
         newsAdapter?.stateRestorationPolicy =
             RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
@@ -594,7 +712,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
 
                             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                                 super.onDismissed(transientBottomBar, event)
-                                viewModel.clearSelectedItemsInHome()
+                                viewModel.unSelectAllArticles()
                             }
                         })
                     snackbar.setAction("Undo") {
@@ -687,17 +805,11 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
     fun clearAdapterCheckboxes() {
         if (!viewModel.isSearchQueryStackEmpty()) {
             searchNewsAdapter!!.isCheckboxEnabled = false
-            viewModel.selectedNewsListInHome.forEach {
-                it.isChecked = false
-            }
-            viewModel.clearSelectedItemsInHome()
+            viewModel.unSelectAllArticles()
             searchNewsAdapter!!.notifyDataSetChanged()
         } else {
             newsAdapter!!.isCheckboxEnabled = false
-            viewModel.selectedNewsListInHome.forEach {
-                it.isChecked = false
-            }
-            viewModel.clearSelectedItemsInHome()
+            viewModel.unSelectAllArticles()
             newsAdapter!!.notifyDataSetChanged()
         }
     }
@@ -719,8 +831,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
     override fun onLoadMore() {
         if (!viewModel.isSearchQueryStackEmpty()) {
             viewModel.searchNews(viewModel.newSearchQuery!!, sortBy)
-        }
-        else {
+        } else {
             if (sharedPref.getString("country", "") == "global") {
                 viewModel.getBreakingNews(viewModel.selectedCategory)
             } else {

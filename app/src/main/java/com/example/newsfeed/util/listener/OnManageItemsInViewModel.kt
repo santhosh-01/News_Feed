@@ -1,4 +1,4 @@
-package com.example.newsfeed.ui.fragments
+package com.example.newsfeed.util.listener
 
 import com.example.newsfeed.entity.Article
 

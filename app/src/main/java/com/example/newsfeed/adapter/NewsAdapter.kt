@@ -7,8 +7,8 @@ import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.example.newsfeed.R
 import com.example.newsfeed.entity.Article
-import com.example.newsfeed.home.OnArticleClickListener
-import com.example.newsfeed.ui.fragments.OnManageItemsInViewModel
+import com.example.newsfeed.util.listener.OnArticleClickListener
+import com.example.newsfeed.util.listener.OnManageItemsInViewModel
 import com.google.android.material.card.MaterialCardView
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
@@ -169,14 +169,16 @@ class NewsAdapter(
             if (date == "-1" || time == "-1") return "Not Found"
 
             // Find Today's Date
-            val current = LocalDateTime.now()
-            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-            val formatted = current.format(formatter)
+//            val current = LocalDateTime.now()
+//            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+//            val formatted = current.format(formatter)
+//
+//            val result = if (formatted == date)
+//                "Today, "
+//            else
+//                "$date, "
 
-            val result = if (formatted == date)
-                "Today, "
-            else
-                "$date, "
+            val result = "$date, "
 
             val timeResult = time.dropLast(4)
 //                .split(":").map { it.toInt() }

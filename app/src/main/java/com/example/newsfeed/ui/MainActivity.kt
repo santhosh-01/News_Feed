@@ -19,9 +19,9 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.example.newsfeed.databinding.ActivityMainBinding
 import com.example.newsfeed.db.ArticleDatabase
-import com.example.newsfeed.home.HomeFragment
-import com.example.newsfeed.home.NewsViewModel
-import com.example.newsfeed.home.NewsViewModelFactory
+import com.example.newsfeed.ui.fragments.HomeFragment
+import com.example.newsfeed.viewmodel.NewsViewModel
+import com.example.newsfeed.viewmodel.NewsViewModelFactory
 import com.example.newsfeed.repository.NewsRepository
 import com.example.newsfeed.ui.fragments.ArticleFragment
 import com.example.newsfeed.ui.fragments.ArticlePreviewFragment
@@ -84,28 +84,19 @@ class MainActivity : AppCompatActivity() {
                     hideSearchView()
                     showBottomNavBar()
                     binding.customAppBar.navigationIcon.visibility = View.GONE
-                    viewModel.selectedNewsListInHome.forEach {
-                        it.isChecked = false
-                    }
-                    viewModel.clearSelectedItemsInHome()
+                    viewModel.unSelectAllArticles()
                 }
                 com.example.newsfeed.R.id.bookmarksFragment -> {
                     showSearchView()
                     showBottomNavBar()
                     binding.customAppBar.navigationIcon.visibility = View.GONE
-                    viewModel.selectedNewsListInHome.forEach {
-                        it.isChecked = false
-                    }
-                    viewModel.clearSelectedItemsInHome()
+                    viewModel.unSelectAllArticles()
                 }
                 com.example.newsfeed.R.id.categoryFragment -> {
                     hideSearchView()
                     hideBottomNavBar()
                     binding.customAppBar.navigationIcon.visibility = View.GONE
-                    viewModel.selectedNewsListInHome.forEach {
-                        it.isChecked = false
-                    }
-                    viewModel.clearSelectedItemsInHome()
+                    viewModel.unSelectAllArticles()
                 }
                 com.example.newsfeed.R.id.aboutFragment -> binding.customAppBar.navigationIcon.visibility = View.GONE
                 com.example.newsfeed.R.id.helpFragment -> binding.customAppBar.navigationIcon.visibility = View.GONE

@@ -79,4 +79,21 @@
         <item>South Africa - ZA</item>
     </string-array>
 
+    <!--    String Array of Languages-->
+    <string-array name="language_code_array">
+        <item>Arabic - AR</item>
+        <item>German - DE</item>
+        <item>English - EN</item>
+        <item>Estonian - ET</item>
+        <item>French - FR</item>
+        <item>Hebrew - HE</item>
+        <item>Italian - IT</item>
+        <item>Dutch,Flemish - NL</item>
+        <item>Norwegian - NO</item>
+        <item>Portuguese - PT</item>
+        <item>Russian - RU</item>
+        <item>Swedish - SV</item>
+        <item>Chinese - ZH</item>
+    </string-array>
+
 </resources>
