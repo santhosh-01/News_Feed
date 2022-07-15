@@ -15,8 +15,8 @@ import androidx.navigation.findNavController
 import com.example.newsfeed.R
 import com.example.newsfeed.databinding.FragmentArticlePreviewBinding
 import com.example.newsfeed.entity.Article
-import com.example.newsfeed.viewmodel.NewsViewModel
 import com.example.newsfeed.ui.MainActivity
+import com.example.newsfeed.viewmodel.NewsViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
@@ -142,6 +142,17 @@ class ArticlePreviewFragment : Fragment() {
         })
     }
 
+    private fun parseTime(publishedTime: String?): String {
+        val (date, time) = publishedTime?.split("T") ?: listOf("-1", "-1")
+        if (date == "-1" || time == "-1") return "Not Found"
+
+        val result = "$date, "
+
+        val timeResult = time.dropLast(4)
+
+        return "$result $timeResult UTC"
+    }
+
     private fun bookmarkArticle(article: Article) {
         lifecycleScope.launch {
             article.id = viewModel.insertArticle(article).toInt()
@@ -260,7 +271,7 @@ class ArticlePreviewFragment : Fragment() {
             if (article.publishedAt.isNullOrBlank()) {
                 textDetailTime.visibility = View.GONE
             }
-            else textDetailTime.text = article.publishedAt
+            else textDetailTime.text = parseTime(article.publishedAt)
             textDetailContent.text = article.content
             textDetailDetail.text = article.description
             if (article.urlToImage.isNullOrBlank()) {

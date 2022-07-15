@@ -12,8 +12,6 @@ import com.example.newsfeed.util.listener.OnManageItemsInViewModel
 import com.google.android.material.card.MaterialCardView
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class NewsAdapter(
     private val onArticleClickListener: OnArticleClickListener,
@@ -126,18 +124,6 @@ class NewsAdapter(
                 }
                 cardView.setOnLongClickListener(null)
             }
-            /*checkBox.setOnClickListener {
-                if (checkBox.isChecked) {
-                    onManageItemsInViewModel.addSelectedItemPositionToList(position)
-                    onManageItemsInViewModel.addSelectedItemToList(currentArticle)
-                    checkBox.isChecked = true
-                }
-                else {
-                    onManageItemsInViewModel.removeUnselectedPositionFromList(position)
-                    onManageItemsInViewModel.removeUnselectedItemFromList(currentArticle)
-                    checkBox.isChecked = false
-                }
-            }*/
         }
 
         private fun initImageElement(currentArticle: Article) {
@@ -205,128 +191,14 @@ class NewsAdapter(
             currentArticle?.let {
                 initUIElements(currentArticle, position)
             }
-//            cardView.isChecked = currentArticle.isChecked
-//            textTitle.text = currentArticle.title
-//            textSource.text = currentArticle.source?.name ?: "Not Found"
-//            textTime.text = currentArticle.publishedAt ?: ""
-//
-//            if (!currentArticle.urlToImage.isNullOrBlank()) {
-//                Picasso.get().load(currentArticle.urlToImage).into(newsImage,object : Callback {
-//                    override fun onSuccess() {
-//                        progressBar.visibility = View.GONE
-//                    }
-//
-//                    override fun onError(e: Exception?) {
-//                        newsImage.setImageResource(R.drawable.img_not_available)
-//                        progressBar.visibility = View.GONE
-//                    }
-//                })
-//            }
-//            else {
-//                newsImage.setImageResource(R.drawable.img_not_available)
-//                progressBar.visibility = View.GONE
-//            }
-//
-//            bookmarkButton.isChecked = currentArticle.isExistInDB
-//
-//            cardView.setOnClickListener {
-//                onArticleClickListener.onClick(articleList[adapterPosition])
-//            }
-//
-//            bookmarkButton.setOnClickListener {
-//                onArticleClickListener.onBookmarkButtonClick(articleList[adapterPosition])
-//            }
-//
-//            shareButton.setOnClickListener {
-//                onArticleClickListener.onShareButtonClick(articleList[adapterPosition])
-//            }
-//
-//            if (isCheckboxEnabled) {
-//                checkBox.visibility = View.VISIBLE
-//                cardView.setOnLongClickListener(null)
-//            }
-//            else {
-//                checkBox.visibility = View.GONE
-//
-//                cardView.setOnLongClickListener { cardView ->
-//                    val card = cardView as MaterialCardView
-//                    onArticleClickListener.onLongClick(articleList[adapterPosition], card)
-////                if (card.isCheckable) {
-////                    if (!articleList[adapterPosition].isChecked) {
-////                        onManageItemsInViewModel.addSelectedItemToList(articleList[adapterPosition])
-////                        onManageItemsInViewModel.addSelectedItemPositionToList(adapterPosition)
-////                        cardView.isChecked = true
-////                        articleList[adapterPosition].isChecked = true
-////                    }
-////                    else {
-////                        onManageItemsInViewModel.removeUnselectedItemFromList(articleList[adapterPosition])
-////                        onManageItemsInViewModel.removeUnselectedPositionFromList(adapterPosition)
-////                        cardView.isChecked = false
-////                        articleList[adapterPosition].isChecked = false
-////                    }
-////                }
-//                    isCheckboxEnabled = true
-//                    checkBox.isChecked = true
-//                    notifyDataSetChanged()
-//                    true
-//                }
-//            }
-//
-//            checkBox.isEnabled = !articleList[adapterPosition].isExistInDB
-//
-//            checkBox.setOnClickListener {
-//                if (checkBox.isChecked) {
-//                    onManageItemsInViewModel.addSelectedItemToList(articleList[adapterPosition])
-//                    onManageItemsInViewModel.addSelectedItemPositionToList(adapterPosition)
-////                    articleList[adapterPosition].isChecked = true
-//                }
-//                else {
-//                    onManageItemsInViewModel.removeUnselectedItemFromList(articleList[adapterPosition])
-//                    onManageItemsInViewModel.removeUnselectedPositionFromList(adapterPosition)
-////                    articleList[adapterPosition].isChecked = false
-//                }
-//            }
+
         }
 
-        /*override fun onLongClick(v: View?): Boolean {
-            onArticleClickListener.onLongClick(articleList[adapterPosition])
-            val card = v as MaterialCardView
-            if (card.isCheckable) {
-                if (!articleList[adapterPosition].isChecked) {
-                    onManageItemsInViewModel.addSelectedItemToList(articleList[adapterPosition])
-                    onManageItemsInViewModel.addSelectedItemPositionToList(adapterPosition)
-                    cardView.isChecked = true
-                    articleList[adapterPosition].isChecked = true
-                }
-                else {
-                    onManageItemsInViewModel.removeUnselectedItemFromList(articleList[adapterPosition])
-                    onManageItemsInViewModel.removeUnselectedPositionFromList(adapterPosition)
-                    cardView.isChecked = false
-                    articleList[adapterPosition].isChecked = false
-                }
-            }
-            return true
-        }
-
-        override fun onClick(v: View?) {
-            if (v!!.id == R.id.bookmark_toggle) {
-//                bookmarkButton.isChecked = !bookmarkButton.isChecked
-                onArticleClickListener.onBookmarkButtonClick(articleList[adapterPosition])
-//                notifyItemChanged(adapterPosition)
-            }
-            else
-                onArticleClickListener.onClick(articleList[adapterPosition])
-        }*/
-
     }
 
-    inner class ProgressViewHolder(itemView: View) : CustomViewHolder(itemView) {
+    inner class ProgressViewHolder(itemView: View) : CustomViewHolder(itemView)
 
-    }
-
-    open inner class CustomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-    }
+    open inner class CustomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
         return if (viewType == VIEW_TYPE_ITEM) {
@@ -357,13 +229,6 @@ class NewsAdapter(
     override fun getItemCount(): Int {
         return articleList.size
     }
-
-//    override fun onBindViewHolder(
-//        holder: ArticleViewHolder,
-//        position: Int
-//    ) {
-//        holder.bind(position)
-//    }
 
     fun loadList(list: List<Article>) {
         articleList.clear()

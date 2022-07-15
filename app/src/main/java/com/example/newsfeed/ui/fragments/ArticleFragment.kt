@@ -16,8 +16,8 @@ import androidx.navigation.fragment.findNavController
 import com.example.newsfeed.R
 import com.example.newsfeed.databinding.FragmentArticleBinding
 import com.example.newsfeed.entity.Article
-import com.example.newsfeed.viewmodel.NewsViewModel
 import com.example.newsfeed.ui.MainActivity
+import com.example.newsfeed.viewmodel.NewsViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
@@ -177,8 +177,6 @@ class ArticleFragment : Fragment() {
             binding.background.alpha = 0.9F
             binding.background.isClickable = true
             binding.background.isFocusable = true
-//            android:clickable="true"
-//            android:focusable="true"
             binding.bookmarkToggle.visibility = View.VISIBLE
             binding.shareButton.visibility = View.VISIBLE
             binding.bookmarkToggleText.visibility = View.VISIBLE

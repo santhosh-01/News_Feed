@@ -5,7 +5,6 @@ import com.example.newsfeed.api.RetrofitInstance
 import com.example.newsfeed.db.ArticleDatabase
 import com.example.newsfeed.entity.Article
 import com.example.newsfeed.entity.NewsArticle
-import org.intellij.lang.annotations.Language
 import retrofit2.Response
 
 class NewsRepository(

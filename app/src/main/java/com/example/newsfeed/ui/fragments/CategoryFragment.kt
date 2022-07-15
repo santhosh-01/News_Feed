@@ -12,8 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.newsfeed.R
 import com.example.newsfeed.databinding.FragmentCategoryBinding
-import com.example.newsfeed.viewmodel.NewsViewModel
 import com.example.newsfeed.ui.MainActivity
+import com.example.newsfeed.viewmodel.NewsViewModel
 
 class CategoryFragment : Fragment(), View.OnClickListener {
 
@@ -76,8 +76,6 @@ class CategoryFragment : Fragment(), View.OnClickListener {
                 onSelectedItemClick(binding.technology)
             }
         }
-
-//        requireActivity().findViewById<TextView>(R.id.toolbar_title).text = "News Categories"
 
 //        This is the way to check the SDK Version
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

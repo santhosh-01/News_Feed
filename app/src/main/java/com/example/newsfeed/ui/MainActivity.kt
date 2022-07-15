@@ -19,13 +19,13 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.example.newsfeed.databinding.ActivityMainBinding
 import com.example.newsfeed.db.ArticleDatabase
-import com.example.newsfeed.ui.fragments.HomeFragment
-import com.example.newsfeed.viewmodel.NewsViewModel
-import com.example.newsfeed.viewmodel.NewsViewModelFactory
 import com.example.newsfeed.repository.NewsRepository
 import com.example.newsfeed.ui.fragments.ArticleFragment
 import com.example.newsfeed.ui.fragments.ArticlePreviewFragment
 import com.example.newsfeed.ui.fragments.BookmarksFragment
+import com.example.newsfeed.ui.fragments.HomeFragment
+import com.example.newsfeed.viewmodel.NewsViewModel
+import com.example.newsfeed.viewmodel.NewsViewModelFactory
 
 
 class MainActivity : AppCompatActivity() {
@@ -151,7 +151,6 @@ class MainActivity : AppCompatActivity() {
         viewModel.clearSearchQueryStack()
         if (binding.customAppBar.searchView.query.isNotEmpty()) {
             val homeFragment = navHostFragment.childFragmentManager.fragments[0] as HomeFragment
-//            homeFragment.hideSortAndFilterTab()
             homeFragment.setUpRecyclerView(mutableListOf())
             binding.customAppBar.searchView.setQuery("",false)
             viewModel.clearSearchQueryStack()
@@ -226,10 +225,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /*private fun callSuperOnBackPressed() {
-        super.onBackPressed()
-    }*/
-
     fun Activity.hideKeyboard() {
         hideKeyboard(currentFocus ?: View(this))
     }
@@ -258,23 +253,5 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         Log.i("MainActivity", "onResume")
     }
-
-    /*private fun instantiateFragments(inState: Bundle?) {
-        val manager: FragmentManager = supportFragmentManager
-        val transaction: FragmentTransaction = manager.beginTransaction()
-        if (inState != null) {
-            mMyFragment = manager.getFragment(inState, ArticlePreviewFragment.TAG) as ArticlePreviewFragment
-        } else {
-            mMyFragment = ArticlePreviewFragment()
-            transaction.add(com.example.newsfeed.R.id.fragment, mMyFragment, MyFragment.TAG)
-            transaction.commit()
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
-        super.onSaveInstanceState(outState, outPersistentState)
-        val articlePreviewFragment = navHostFragment.childFragmentManager.fragments[0] as ArticlePreviewFragment
-        supportFragmentManager.putFragment(outState, ArticlePreviewFragment.TAG, articlePreviewFragment)
-    }*/
 
 }

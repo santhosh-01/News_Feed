@@ -16,10 +16,10 @@ import com.example.newsfeed.R
 import com.example.newsfeed.adapter.NewsAdapter
 import com.example.newsfeed.databinding.FragmentBookmarksBinding
 import com.example.newsfeed.entity.Article
-import com.example.newsfeed.viewmodel.NewsViewModel
-import com.example.newsfeed.util.listener.OnArticleClickListener
 import com.example.newsfeed.ui.MainActivity
+import com.example.newsfeed.util.listener.OnArticleClickListener
 import com.example.newsfeed.util.listener.OnManageItemsInViewModel
+import com.example.newsfeed.viewmodel.NewsViewModel
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
@@ -199,27 +199,6 @@ class BookmarksFragment : Fragment() {
                     snackbar.show()
                     snackbar.view.setOnClickListener { snackbar.dismiss() }
                 }
-
-//                for(article in viewModel.selectedNewsListInBookmarks) {
-//                    viewModel.deleteArticle(article)
-//                    article.isChecked = false
-//                }
-//                overflowMenu.findItem(R.id.unselect1).isVisible = false
-//                val snackbar = Snackbar.make(requireView(), "Selected Article(s) removed from bookmarks successfully", Snackbar.LENGTH_SHORT)
-//                viewModel.selectedNewsListInBookmarks.clear()
-//                viewModel.clearSelectedItemsInBookmark()
-//                viewModel.articleList.clear()
-//                snackbar.setAction("Undo") {
-//                    for (article in temp) {
-//                        lifecycleScope.launch {
-//                            viewModel.insertArticle(article)
-//                        }
-//                    }
-//                    overflowMenu.findItem(R.id.unselect1).isVisible = false
-//                    snackbar.dismiss()
-//                }
-//                snackbar.show()
-//                snackbar.view.setOnClickListener { snackbar.dismiss() }
             }
             else {
                 val builder: AlertDialog.Builder = AlertDialog.Builder(requireActivity())
@@ -255,38 +234,6 @@ class BookmarksFragment : Fragment() {
         }
         return super.onOptionsItemSelected(item)
     }
-
-    /*var isLoading: Boolean = false
-    var isLastPage: Boolean = false
-    var isScrolling: Boolean = false
-
-    val scrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                isScrolling = true
-            }
-        }
-
-        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            super.onScrolled(recyclerView, dx, dy)
-
-            val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-            val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
-            val visibleItemCount = layoutManager.childCount
-            val totalItemCount = layoutManager.itemCount
-
-            val isNotLoadingAndNotLastPage = !isLoading && !isLastPage
-            val isAtLastItem = firstVisibleItemPosition + visibleItemCount >= totalItemCount
-            val isNotAtBeginning = firstVisibleItemPosition >= 0
-            val isTotalMoreThanVisible = totalItemCount >= Constants.QUERY_PAGE_SIZE
-            val shouldPaginate = isNotLoadingAndNotLastPage && isAtLastItem && isNotAtBeginning &&
-                    isTotalMoreThanVisible && isScrolling
-            if(shouldPaginate) {
-                viewModel.getBreakingNews()
-                isScrolling = false
-            }
-        }
-    }*/
 
     fun isCheckboxEnable(): Boolean {
         return newsAdapter.isCheckboxEnabled
