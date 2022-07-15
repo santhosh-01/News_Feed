@@ -397,11 +397,13 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
     private fun bookmarkArticle(article: Article) {
         lifecycleScope.launch(Dispatchers.IO) {
             article.id = viewModel.insertArticle(article).toInt()
+            article.isExistInDB = true
         }
     }
 
     private fun unbookmarkArticle(article: Article) {
         lifecycleScope.launch(Dispatchers.IO) {
+            viewModel.getArticleByTitle(article.title).isExistInDB = false
             viewModel.deleteArticle(viewModel.getArticleByTitle(article.title))
         }
     }

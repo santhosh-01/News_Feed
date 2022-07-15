@@ -106,6 +106,7 @@ class ArticlePreviewFragment : Fragment() {
             }
             else {
                 if (!arguments.isHomePageNews) {
+                    article.isExistInDB = false
                     viewModel.deleteArticle(article)
                     requireActivity().onBackPressed()
                     requireActivity().onBackPressed()
@@ -156,6 +157,7 @@ class ArticlePreviewFragment : Fragment() {
     private fun bookmarkArticle(article: Article) {
         lifecycleScope.launch {
             article.id = viewModel.insertArticle(article).toInt()
+            article.isExistInDB = true
         }
         binding.bookmarkToggle.setImageResource(R.drawable.ic_baseline_bookmark_remove_24)
         val snackbar = Snackbar.make(requireView(),"Article saved Successfully", Snackbar.LENGTH_SHORT)
@@ -164,6 +166,7 @@ class ArticlePreviewFragment : Fragment() {
     }
 
     private fun unbookmarkArticle(article: Article) {
+        article.isExistInDB = false
         viewModel.deleteArticle(article)
         binding.bookmarkToggle.setImageResource(R.drawable.ic_baseline_bookmark_add_24)
         val snackbar = Snackbar.make(requireView(),"Article was removed from bookmark Successfully", Snackbar.LENGTH_SHORT)

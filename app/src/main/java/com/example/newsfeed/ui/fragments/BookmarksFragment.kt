@@ -80,6 +80,7 @@ class BookmarksFragment : Fragment() {
 
     private fun unbookmarkArticle(article: Article) {
         lifecycleScope.launch(Dispatchers.IO) {
+            viewModel.getArticleByTitle(article.title).isExistInDB = false
             viewModel.deleteArticle(viewModel.getArticleByTitle(article.title))
         }
         article.isExistInDB = false
@@ -97,6 +98,7 @@ class BookmarksFragment : Fragment() {
             snackbar.setAction("Undo") {
                 lifecycleScope.launch {
                     article.id = viewModel.insertArticle(article).toInt()
+                    article.isExistInDB = true
                 }
                 snackbar.dismiss()
             }
@@ -165,6 +167,7 @@ class BookmarksFragment : Fragment() {
                 lifecycleScope.launch(Dispatchers.Main) {
                     val task = async(Dispatchers.IO) {
                         for (article in viewModel.selectedNewsListInBookmarks) {
+                            article.isExistInDB = false
                             viewModel.deleteArticle(article)
                             article.isChecked = false
                         }
@@ -192,6 +195,7 @@ class BookmarksFragment : Fragment() {
                         for (article in temp) {
                             lifecycleScope.launch {
                                 article.id = viewModel.insertArticle(article).toInt()
+                                article.isExistInDB = true
                             }
                         }
                         snackbar.dismiss()
@@ -218,6 +222,7 @@ class BookmarksFragment : Fragment() {
                                 for (article in temp) {
                                     lifecycleScope.launch {
                                         article.id = viewModel.insertArticle(article).toInt()
+                                        article.isExistInDB = true
                                     }
                                 }
                                 snackbar.dismiss()
