@@ -20,6 +20,7 @@ data class Article(
     val title: String,
     val url: String? = null,
     val urlToImage: String? = null,
+
     var isChecked: Boolean = false,
     var isExistInDB: Boolean = false
 ): Serializable

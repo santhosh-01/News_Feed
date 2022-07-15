@@ -8,10 +8,4 @@
         app:showAsAction="always"
         android:title="Delete Bookmark" />
 
-    <item
-        android:id="@+id/unselect1"
-        android:icon="@drawable/ic_baseline_close_24"
-        android:title="Unselect"
-        app:showAsAction="ifRoom" />
-
 </menu>

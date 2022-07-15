@@ -5,8 +5,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import android.widget.AbsListView
-import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -20,10 +19,11 @@ import com.example.newsfeed.entity.Article
 import com.example.newsfeed.home.NewsViewModel
 import com.example.newsfeed.home.OnArticleClickListener
 import com.example.newsfeed.ui.MainActivity
-import com.example.newsfeed.util.Constants
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class BookmarksFragment : Fragment() {
@@ -37,6 +37,8 @@ class BookmarksFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        requireActivity().findViewById<SearchView>(R.id.search_view).visibility = View.GONE
 
         requireActivity().title = "Bookmarks"
 
@@ -93,7 +95,7 @@ class BookmarksFragment : Fragment() {
             val snackbar = Snackbar.make(requireView(), "Article removed from bookmarks successfully", Snackbar.LENGTH_SHORT)
             snackbar.setAction("Undo") {
                 lifecycleScope.launch {
-                    viewModel.insertArticle(article)
+                    article.id = viewModel.insertArticle(article).toInt()
                 }
                 snackbar.dismiss()
             }
@@ -110,7 +112,7 @@ class BookmarksFragment : Fragment() {
         }
 
         override fun onLongClick(article: Article, cardView: MaterialCardView) {
-
+            cardView.isCheckable = true
         }
 
     }
@@ -133,8 +135,10 @@ class BookmarksFragment : Fragment() {
         }
     }
 
-    private fun setUpRecyclerView(list: MutableList<Article>) {
+    private fun setUpRecyclerView(list: MutableList<Article?>) {
         newsAdapter = NewsAdapter(articleClickListener,onManageItemsInViewModel, list)
+        newsAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        newsAdapter.isHomePage = false
         binding.recyclerSaved.adapter = newsAdapter
         binding.recyclerSaved.setHasFixedSize(true)
         binding.recyclerSaved.layoutManager = LinearLayoutManager(requireContext())
@@ -145,22 +149,6 @@ class BookmarksFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.bookmark_delete, menu)
         menu.findItem(R.id.delete_bookmark).isVisible = viewModel.articleList.isNotEmpty()
-        menu.findItem(R.id.unselect1).isVisible = false
-
-        menu.findItem(R.id.unselect1).setOnMenuItemClickListener {
-            viewModel.selectedNewsListInBookmarks.forEach { article ->
-                article.isChecked = false
-            }
-            viewModel.selectedNewsListInBookmarks.clear()
-            viewModel.clearSelectedItemPositionListInBookmark()
-            newsAdapter.notifyDataSetChanged()
-            it.isVisible = false
-            true
-        }
-
-        viewModel.selectedItemPositionsInBookmark.observe(viewLifecycleOwner) { selectedItemPositions ->
-            menu.findItem(R.id.unselect1).isVisible = selectedItemPositions.isNotEmpty()
-        }
 
         if (viewModel.articleList.isEmpty())
             overflowMenu.findItem(R.id.delete_bookmark).isVisible = false
@@ -172,26 +160,64 @@ class BookmarksFragment : Fragment() {
                 // When deleting the list, it will affect the reference
                 // So, we store the copy instead of saving the same reference.
                 val temp = viewModel.selectedNewsListInBookmarks.map { it }
-                for(article in viewModel.selectedNewsListInBookmarks) {
-                    viewModel.deleteArticle(article)
-                    article.isChecked = false
-                }
-                overflowMenu.findItem(R.id.unselect1).isVisible = false
-                val snackbar = Snackbar.make(requireView(), "Selected Article(s) removed from bookmarks successfully", Snackbar.LENGTH_SHORT)
-                viewModel.selectedNewsListInBookmarks.clear()
-                viewModel.clearSelectedItemPositionListInBookmark()
-                viewModel.articleList.clear()
-                snackbar.setAction("Undo") {
-                    for (article in temp) {
-                        lifecycleScope.launch {
-                            viewModel.insertArticle(article)
+                lifecycleScope.launch(Dispatchers.Main) {
+                    val task = async(Dispatchers.IO) {
+                        for (article in viewModel.selectedNewsListInBookmarks) {
+                            viewModel.deleteArticle(article)
+                            article.isChecked = false
                         }
                     }
-                    overflowMenu.findItem(R.id.unselect1).isVisible = false
-                    snackbar.dismiss()
+                    task.await()
+
+                    newsAdapter.notifyDataSetChanged()
+                    newsAdapter.isCheckboxEnabled = false
+                    val snackbar = Snackbar.make(
+                        requireView(),
+                        "Selected Article(s) removed from bookmarks successfully",
+                        Snackbar.LENGTH_SHORT
+                    )
+                        .addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                            override fun onShown(transientBottomBar: Snackbar?) {
+                                super.onShown(transientBottomBar)
+                            }
+
+                            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                                super.onDismissed(transientBottomBar, event)
+                                viewModel.clearSelectedItemsInBookmark()
+                            }
+                        })
+                    snackbar.setAction("Undo") {
+                        for (article in temp) {
+                            lifecycleScope.launch {
+                                article.id = viewModel.insertArticle(article).toInt()
+                            }
+                        }
+                        snackbar.dismiss()
+                    }
+                    snackbar.show()
+                    snackbar.view.setOnClickListener { snackbar.dismiss() }
                 }
-                snackbar.show()
-                snackbar.view.setOnClickListener { snackbar.dismiss() }
+
+//                for(article in viewModel.selectedNewsListInBookmarks) {
+//                    viewModel.deleteArticle(article)
+//                    article.isChecked = false
+//                }
+//                overflowMenu.findItem(R.id.unselect1).isVisible = false
+//                val snackbar = Snackbar.make(requireView(), "Selected Article(s) removed from bookmarks successfully", Snackbar.LENGTH_SHORT)
+//                viewModel.selectedNewsListInBookmarks.clear()
+//                viewModel.clearSelectedItemsInBookmark()
+//                viewModel.articleList.clear()
+//                snackbar.setAction("Undo") {
+//                    for (article in temp) {
+//                        lifecycleScope.launch {
+//                            viewModel.insertArticle(article)
+//                        }
+//                    }
+//                    overflowMenu.findItem(R.id.unselect1).isVisible = false
+//                    snackbar.dismiss()
+//                }
+//                snackbar.show()
+//                snackbar.view.setOnClickListener { snackbar.dismiss() }
             }
             else {
                 val builder: AlertDialog.Builder = AlertDialog.Builder(requireActivity())
@@ -205,21 +231,19 @@ class BookmarksFragment : Fragment() {
                                 viewModel.deleteArticle(article)
                                 article.isChecked = false
                             }
-                            overflowMenu.findItem(R.id.unselect1).isVisible = false
                             val snackbar = Snackbar.make(requireView(), "All Article(s) removed from bookmarks successfully", Snackbar.LENGTH_SHORT)
                             viewModel.articleList.clear()
                             snackbar.setAction("Undo") {
                                 for (article in temp) {
                                     lifecycleScope.launch {
-                                        viewModel.insertArticle(article)
+                                        article.id = viewModel.insertArticle(article).toInt()
                                     }
                                 }
-                                overflowMenu.findItem(R.id.unselect1).isVisible = false
                                 snackbar.dismiss()
                             }
                             snackbar.show()
                             snackbar.view.setOnClickListener { snackbar.dismiss() }
-                            viewModel.clearSelectedItemPositionListInBookmark()
+                            viewModel.clearSelectedItemsInBookmark()
                         }
                     })
                     .setNegativeButton("No", null)
@@ -269,7 +293,20 @@ class BookmarksFragment : Fragment() {
             it.isChecked = false
         }
         viewModel.selectedNewsListInBookmarks.clear()
-        viewModel.clearSelectedItemPositionListInBookmark()
+        viewModel.clearSelectedItemsInBookmark()
+        newsAdapter.notifyDataSetChanged()
+    }
+
+    fun isCheckboxEnable(): Boolean {
+        return newsAdapter.isCheckboxEnabled
+    }
+
+    fun clearAdapterCheckboxes() {
+        newsAdapter.isCheckboxEnabled = false
+        viewModel.selectedNewsListInBookmarks.forEach {
+            it.isChecked = false
+        }
+        viewModel.clearSelectedItemsInBookmark()
         newsAdapter.notifyDataSetChanged()
     }
 

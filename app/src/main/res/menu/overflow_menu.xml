@@ -2,33 +2,32 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
+    <!--<item
         android:id="@+id/search_view"
         android:title="Search"
         android:icon="@drawable/ic_baseline_search_24"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="always|collapseActionView" />
+        app:showAsAction="always|collapseActionView" />-->
+
+    <item
+        android:id="@+id/sort"
+        android:title="Sort"
+        android:icon="@drawable/ic_advanced_search"
+        app:showAsAction="always"
+        android:visible="false"/>
+
 
     <item
         android:id="@+id/add_bookmark"
         android:title="Add to Bookmarks"
         android:icon="@drawable/ic_baseline_bookmark_add_24"
-        app:showAsAction="always"/>
+        app:showAsAction="always"
+        android:visible="false"/>
 
-    <item
+<!--    <item
         android:id="@+id/unselect"
         android:icon="@drawable/ic_baseline_close_24"
         android:title="Unselect"
-        app:showAsAction="always" />
-
-    <item
-        android:id="@+id/aboutFragment"
-        android:title="About"
-        android:icon="@drawable/ic_baseline_android_24" />
-
-    <item
-        android:id="@+id/helpFragment"
-        android:title="Help"
-        android:icon="@drawable/ic_baseline_help_24" />
+        app:showAsAction="always" />-->
 
 </menu>

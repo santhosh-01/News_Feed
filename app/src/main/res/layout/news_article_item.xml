@@ -6,21 +6,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    android:backgroundTint="@color/white"
     android:checkable="true"
     android:clickable="true"
     android:focusable="true"
     app:cardCornerRadius="8dp"
     app:cardElevation="8dp"
-    app:checkedIconGravity="TOP_START"
-    android:backgroundTint="@color/primaryColor">
+    app:checkedIconGravity="TOP_START">
 
     <LinearLayout
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:orientation="horizontal"
-        android:weightSum="3">
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -44,9 +42,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="3"
+                android:paddingTop="8dp"
                 android:textColor="@color/purple_500"
                 android:textSize="16sp"
-                android:paddingTop="8dp"
                 android:textStyle="bold"
                 tools:text="Title" />
 
@@ -54,8 +52,8 @@
                 android:id="@+id/text_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
                 android:paddingTop="8dp"
+                android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="italic"
                 tools:text="2022-06-23T04:34:00Z" />
@@ -63,6 +61,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/secondPart"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -84,6 +83,7 @@
                 <ProgressBar
                     android:id="@+id/progressBar"
                     style="?android:attr/progressBarStyle"
+                    android:indeterminateTint="@color/purple_200"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center" />
@@ -111,24 +111,53 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:background="@drawable/bookmark_button_bg"
                     android:scaleX="0.7"
                     android:scaleY="0.8"
-                    android:textOn=""
                     android:textOff=""
-                    android:background="@drawable/bookmark_button_bg" />
+                    android:textOn="" />
 
                 <ImageButton
                     android:id="@+id/share_button"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:scaleType="fitCenter"
                     android:background="@android:color/transparent"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_share" />
 
             </LinearLayout>
 
         </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:layout_gravity="center">
+
+            <CheckBox
+                android:id="@+id/article_check_box"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:buttonTint="#5C6BC0"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:clickable="false"
+                android:focusable="false"/>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/blocked_checkbox"
+                android:visibility="gone"
+                android:layout_width="19dp"
+                android:layout_height="19dp"
+                android:backgroundTint="@color/color_desire_front"
+                android:layout_gravity="center"
+                app:cardCornerRadius="4dp"
+                tools:visibility="visible">
+
+            </androidx.cardview.widget.CardView>
+
+        </FrameLayout>
 
     </LinearLayout>
 

@@ -14,8 +14,12 @@ interface NewsAPI {
         apiKey: String = Constants.API_KEY,
         @Query("q")
         query: String,
+        @Query("sortBy")
+        sortBy: String = "relevancy",
         @Query("page")
-        pageNumber: Int = 1
+        pageNumber: Int = 1,
+        @Query("pageSize")
+        pageSize: Int = Constants.QUERY_PAGE_SIZE
     ): Response<NewsArticle>
 
     @GET("/v2/top-headlines")
@@ -24,6 +28,20 @@ interface NewsAPI {
         apiKey: String = Constants.API_KEY,
         @Query("category")
         category: String = "general",
+        @Query("page")
+        pageNumber: Int = 1,
+        @Query("pageSize")
+        pageSize: Int = Constants.QUERY_PAGE_SIZE
+    ): Response<NewsArticle>
+
+    @GET("/v2/top-headlines")
+    suspend fun getTopHeadlinesWithCountry(
+        @Query("apiKey")
+        apiKey: String = Constants.API_KEY,
+        @Query("category")
+        category: String = "general",
+        @Query("country")
+        country: String,
         @Query("page")
         pageNumber: Int = 1,
         @Query("pageSize")

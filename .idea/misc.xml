@@ -12,10 +12,14 @@
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/background_curved.xml" value="0.203" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/background_style.xml" value="0.203" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/bookmark_button_bg.xml" value="0.1015" />
+        <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/bookmark_toggle_bg.xml" value="0.2035" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/bottom_nav_bar_foreground.xml" value="0.213" />
+        <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/bottom_sheet_bg.xml" value="0.2035" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/button_background.xml" value="0.213" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/clickable_background.xml" value="0.203" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/common_background.xml" value="0.213" />
+        <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/ic_arrow_down_short_wide_solid.xml" value="0.2035" />
+        <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/ic_arrow_down_wide_short_solid.xml" value="0.2035" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/ic_baseline_android_24.xml" value="0.203" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/ic_baseline_bookmark_add_24.xml" value="0.101" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/ic_baseline_bookmark_add_24_white.xml" value="0.101" />
@@ -23,11 +27,14 @@
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/ic_baseline_bookmark_remove_24_white.xml" value="0.101" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/ic_baseline_bookmarks_24.xml" value="0.1" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/ic_baseline_close_24.xml" value="0.2145" />
+        <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/ic_baseline_flag_24.xml" value="0.1" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/ic_baseline_help_24.xml" value="0.145" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/ic_baseline_home_24.xml" value="0.198" />
+        <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/ic_baseline_info_24.xml" value="0.209" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.101" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.203" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/ic_baseline_share_24.xml" value="0.101" />
+        <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/ic_baseline_sort_24.xml" value="0.203" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/ic_baseline_turned_in_24.xml" value="0.2145" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/ic_baseline_turned_in_not_24.xml" value="0.2145" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/drawable/ic_bookmark.xml" value="0.2145" />
@@ -44,18 +51,27 @@
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout-v31/fragment_settings.xml" value="0.2630208333333333" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/activity_detailed_news.xml" value="0.2630208333333333" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/activity_main.xml" value="0.2630208333333333" />
+        <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/activity_main1.xml" value="0.2630208333333333" />
+        <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/bottom_sheet_layout.xml" value="0.26197916666666665" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/button_background.xml" value="0.2630208333333333" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/common_background.xml" value="0.2630208333333333" />
+        <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/custom_app_bar.xml" value="0.2630208333333333" />
+        <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/dropdown_item.xml" value="0.2630208333333333" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/fragment_about.xml" value="0.13503649635036497" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/fragment_article.xml" value="0.2630208333333333" />
-        <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/fragment_article_preview.xml" value="0.264" />
+        <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/fragment_article1.xml" value="0.2630208333333333" />
+        <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/fragment_article_preview.xml" value="0.25" />
+        <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/fragment_article_preview1.xml" value="0.2630208333333333" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/fragment_bookmarks.xml" value="0.17701575532900835" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/fragment_category.xml" value="0.264" />
+        <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/fragment_change_country.xml" value="0.2630208333333333" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/fragment_help.xml" value="0.11458333333333333" />
-        <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/fragment_home.xml" value="0.264" />
-        <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/fragment_settings.xml" value="0.264" />
+        <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/fragment_home.xml" value="0.2" />
+        <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/fragment_settings.xml" value="0.2630208333333333" />
+        <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/item_progress.xml" value="0.196484375" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/my_toolbar.xml" value="0.2630208333333333" />
-        <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/news_article_item.xml" value="0.2630208333333333" />
+        <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/news_article_item.xml" value="0.264" />
+        <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/news_article_item1.xml" value="0.2630208333333333" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/save_to_collection.xml" value="0.2630208333333333" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/layout/toolbar.xml" value="0.1" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/menu/bookmark_delete.xml" value="0.16" />

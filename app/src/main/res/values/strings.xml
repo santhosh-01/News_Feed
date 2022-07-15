@@ -20,4 +20,63 @@
         \n\n\u2022 On Clicking Settings Tab on the bottom Nav Bar, user will land on Settings Page and can customise their app
         \n\n\u2022 On Clicking Bookmarks Tab, user will land on Bookmarks Page and can see all bookmarked articles</string>
 
+    <!--    String Array of Country Names-->
+    <string-array name="country_code_array">
+        <item>United Arab Emirates - AE</item>
+        <item>Argentina - AR</item>
+        <item>Austria - AT</item>
+        <item>Australia - AU</item>
+        <item>Belgium - BE</item>
+        <item>Bulgaria - BG</item>
+        <item>Brazil - BR</item>
+        <item>Canada - CA</item>
+        <item>Switzerland - CH</item>
+        <item>China - CN</item>
+        <item>Colombia - CO</item>
+        <item>Cuba - CU</item>
+        <item>Czech Republic - CZ</item>
+        <item>Germany - DE</item>
+        <item>General - global</item>
+        <item>Egypt - EG</item>
+        <item>France - FR</item>
+        <item>United Kingdom - GB</item>
+        <item>Greece - GR</item>
+        <item>Hong Kong - HK</item>
+        <item>Hungary - HU</item>
+        <item>Indonesia - ID</item>
+        <item>Ireland - IE</item>
+        <item>Israel - IL</item>
+        <item>India - IN</item>
+        <item>Italy - IT</item>
+        <item>Japan - JP</item>
+        <item>South Korea - KR</item>
+        <item>Lithuania - LT</item>
+        <item>Latvia - LV</item>
+        <item>Morocco - MA</item>
+        <item>Mexico - MX</item>
+        <item>Malaysia - MY</item>
+        <item>Nigeria - NG</item>
+        <item>Netherlands - NL</item>
+        <item>Norway - NO</item>
+        <item>New Zealand - NZ</item>
+        <item>Philippines - PH</item>
+        <item>Poland - PL</item>
+        <item>Portugal - PT</item>
+        <item>Romania - RO</item>
+        <item>Serbia - RS</item>
+        <item>Russian Federation - RU</item>
+        <item>Saudi Arabia - SA</item>
+        <item>Sweden - SE</item>
+        <item>Singapore - SG</item>
+        <item>Slovenia - SI</item>
+        <item>Slovakia - SK</item>
+        <item>Thailand - TH</item>
+        <item>Turkey - TR</item>
+        <item>Taiwan, Republic of China - TW</item>
+        <item>Ukraine - UA</item>
+        <item>United States of America - US</item>
+        <item>Venezuela (Bolivarian Republic) - VE</item>
+        <item>South Africa - ZA</item>
+    </string-array>
+
 </resources>

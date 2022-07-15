@@ -12,15 +12,39 @@ class NewsRepository(
 //    val onFetchArticleListener: OnFetchArticleListener<NewsArticle>
 ) {
 
-    suspend fun getBreakingNews(pageNumber: Int, category: String): Response<NewsArticle> {
-        val response: Response<NewsArticle> = RetrofitInstance.api.getTopHeadlines(pageNumber = pageNumber, category = category)
-//        if (response.isSuccessful) onFetchArticleListener.onFetchData(response.body()!!.articles)
-//        else onFetchArticleListener.onError("Request is unsuccessful!!")
-        return response
+    suspend fun getBreakingNews(
+        pageNumber: Int,
+        category: String,
+        countryAbbr: String = ""
+    ): Response<NewsArticle> {
+        if (countryAbbr == "") {
+            return RetrofitInstance.api.getTopHeadlines(
+                pageNumber = pageNumber,
+                category = category
+            )
+        } else {
+            return RetrofitInstance.api.getTopHeadlinesWithCountry(
+                pageNumber = pageNumber,
+                category = category,
+                country = countryAbbr
+            )
+        }
     }
 
-    suspend fun searchNews(searchQuery: String): Response<NewsArticle> {
-        return RetrofitInstance.api.searchForNews(query = searchQuery)
+    suspend fun searchNews(
+        pageNumber: Int,
+        searchQuery: String,
+        sortBy: String
+    ): Response<NewsArticle> {
+        if (sortBy == "") {
+            return RetrofitInstance.api.searchForNews(pageNumber = pageNumber, query = searchQuery)
+        } else {
+            return RetrofitInstance.api.searchForNews(
+                pageNumber = pageNumber,
+                query = searchQuery,
+                sortBy = sortBy
+            )
+        }
     }
 
     suspend fun insertArticle(article: Article): Long {

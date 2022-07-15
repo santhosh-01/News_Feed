@@ -1,5 +1,7 @@
 package com.example.newsfeed.ui.fragments
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +14,8 @@ import com.example.newsfeed.databinding.FragmentSettingsBinding
 class SettingsFragment : Fragment() {
 
     private lateinit var binding: FragmentSettingsBinding
+    private lateinit var sharedPref: SharedPreferences
+    private var map: HashMap<String, String> = hashMapOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -22,6 +26,15 @@ class SettingsFragment : Fragment() {
 
         requireActivity().title = "Settings"
 
+        sharedPref = requireActivity().getSharedPreferences("application", Context.MODE_PRIVATE)
+
+        val countries = resources.getStringArray(com.example.newsfeed.R.array.country_code_array)
+        for (countryNameWithCountryAbbr in countries) {
+            val (countryName, countryAbbr) = countryNameWithCountryAbbr.split(" - ")
+            map[countryAbbr] = countryName
+        }
+
+        binding.selectedCountryName.text = map[sharedPref.getString("country", "")]
         // Inflate the layout for this fragment
         return binding.root
     }
@@ -37,20 +50,8 @@ class SettingsFragment : Fragment() {
             findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToHelpFragment2())
         }
 
-        binding.personalisation.setOnClickListener {
-            if (!binding.upDownArrowToggleButton.isChecked) {
-                binding.upDownArrowToggleButton.isChecked = true
-                binding.personalisationPopDown.visibility = View.VISIBLE
-            }
-            else {
-                binding.upDownArrowToggleButton.isChecked = false
-                binding.personalisationPopDown.visibility = View.GONE
-            }
-        }
-
         binding.changeCountry.setOnClickListener {
-
+            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToChangeCountryFragment())
         }
     }
-
 }

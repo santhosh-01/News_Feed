@@ -20,20 +20,16 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:id="@+id/personalisation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground"
                 android:orientation="horizontal"
-                android:padding="10dp">
+                android:padding="10dp"
+                android:layout_marginHorizontal="12dp">
 
                 <ImageView
-                    android:id="@+id/personalisationIcon"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_margin="10dp"
@@ -43,71 +39,159 @@
                     android:src="@drawable/ic_sliders" />
 
                 <TextView
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/personalisationIcon"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:text="Personalisation"
                     android:textColor="@color/black"
-                    android:textSize="16dp" />
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
 
-                <ToggleButton
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:id="@+id/up_down_arrow_toggle_button"
-                    android:layout_width="50dp"
-                    android:layout_height="wrap_content"
-                    android:textOn=""
-                    android:textOff=""
-                    android:background="@drawable/up_down_arrow_toggle" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/personalisationPopDown"
+                android:background="@drawable/background_border"
+                android:id="@+id/change_country"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginBottom="12dp"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/background_border_shape"
+                    android:backgroundTint="#66BB6A"
+                    android:padding="4dp"
+                    android:src="@drawable/ic_baseline_flag_24" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:text="Change Country"
+                    android:textColor="@color/black"
+                    android:textSize="16dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:weightSum="6">
+
+                    <TextView
+                        android:id="@+id/selected_country_name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="5"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        tools:text="India" />
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_baseline_arrow_forward_ios_24" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:background="@color/background"
+        android:orientation="vertical"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="16dp"
+        tools:context=".ui.fragments.SettingsFragment">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/others"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:layout_marginHorizontal="12dp">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/background_border_shape"
+                    android:backgroundTint="#5C6BC0"
+                    android:padding="8dp"
+                    android:src="@drawable/ic_baseline_info_24" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:text="Others"
+                    android:textColor="@color/black"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone"
-                tools:visibility="visible">
+                android:background="@drawable/background_border"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginBottom="12dp">
 
                 <LinearLayout
+                    android:id="@+id/aboutApp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:foreground="?android:attr/selectableItemBackground"
                     android:orientation="horizontal"
-                    android:paddingHorizontal="35dp"
-                    android:paddingVertical="10dp">
+                    android:padding="10dp">
 
                     <ImageView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_margin="10dp"
                         android:background="@drawable/background_border_shape"
-                        android:backgroundTint="#FF7043"
-                        android:padding="6dp"
-                        android:src="@drawable/day_night" />
+                        android:backgroundTint="#AB47BC"
+                        android:padding="4dp"
+                        android:src="@drawable/ic_baseline_android_24_white" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_margin="10dp"
-                        android:text="Preferred Mode"
+                        android:text="About App"
                         android:textColor="@color/black"
                         android:textSize="16dp" />
-
-                    <ToggleButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:textOff="Dark Mode"
-                        android:textOn="Light Mode" />
 
                 </LinearLayout>
 
@@ -118,116 +202,33 @@
                     android:background="@color/color_desire_font" />
 
                 <LinearLayout
-                    android:id="@+id/changeCountry"
+                    android:id="@+id/help"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:foreground="?android:attr/selectableItemBackground"
                     android:orientation="horizontal"
-                    android:paddingHorizontal="35dp"
-                    android:paddingVertical="10dp">
+                    android:padding="10dp">
 
                     <ImageView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_margin="10dp"
                         android:background="@drawable/background_border_shape"
-                        android:backgroundTint="#66BB6A"
+                        android:backgroundTint="#EF5350"
                         android:padding="4dp"
-                        android:src="@drawable/ic_baseline_flag_24" />
+                        android:src="@drawable/ic_baseline_help_24_white" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_margin="10dp"
-                        android:text="Change Country"
+                        android:text="Help"
                         android:textColor="@color/black"
                         android:textSize="16dp" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="right">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="30dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_baseline_arrow_forward_ios_24" />
-
-                    </LinearLayout>
-
                 </LinearLayout>
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginHorizontal="16dp"
-                android:background="@color/color_desire_font" />
-
-            <LinearLayout
-                android:id="@+id/aboutApp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:orientation="horizontal"
-                android:padding="10dp">
-
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/background_border_shape"
-                    android:backgroundTint="#AB47BC"
-                    android:padding="4dp"
-                    android:src="@drawable/ic_baseline_android_24_white" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:text="About App"
-                    android:textColor="@color/black"
-                    android:textSize="16dp" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginHorizontal="16dp"
-                android:background="@color/color_desire_font" />
-
-            <LinearLayout
-                android:id="@+id/help"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:orientation="horizontal"
-                android:padding="10dp">
-
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/background_border_shape"
-                    android:backgroundTint="#EF5350"
-                    android:padding="4dp"
-                    android:src="@drawable/ic_baseline_help_24_white" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:text="Help"
-                    android:textColor="@color/black"
-                    android:textSize="16dp" />
 
             </LinearLayout>
 

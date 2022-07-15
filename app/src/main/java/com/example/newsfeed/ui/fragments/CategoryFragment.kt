@@ -1,5 +1,7 @@
 package com.example.newsfeed.ui.fragments
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Color.rgb
 import android.os.Build
@@ -22,6 +24,7 @@ class CategoryFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentCategoryBinding
     private lateinit var viewModel: NewsViewModel
+    private lateinit var sharedPref: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,6 +37,8 @@ class CategoryFragment : Fragment(), View.OnClickListener {
 
         binding = FragmentCategoryBinding.inflate(layoutInflater)
 
+        sharedPref = requireActivity().getSharedPreferences("application", Context.MODE_PRIVATE)
+
         binding.entertainment.setOnClickListener(this)
         binding.general.setOnClickListener(this)
         binding.business.setOnClickListener(this)
@@ -45,7 +50,7 @@ class CategoryFragment : Fragment(), View.OnClickListener {
         viewModel = (activity as MainActivity).viewModel
 
         val selectedColor = Color.rgb(200,255,255)
-        when(viewModel.selectedCategory) {
+        when(sharedPref.getString("category","")) {
 //            rgb(119, 76, 216)
             "general" -> {
                 binding.general.setCardBackgroundColor(selectedColor)
@@ -91,6 +96,12 @@ class CategoryFragment : Fragment(), View.OnClickListener {
         return binding.root
     }
 
+    private fun saveCategory(newCategory: String) {
+        val editor = sharedPref.edit()
+        editor.putString("category", newCategory)
+        editor.apply()
+    }
+
     private fun onSelectedItemClick(v: View) {
         v.setOnClickListener {
             Toast.makeText(requireActivity(), "Please select different category!!", Toast.LENGTH_SHORT).show()
@@ -98,8 +109,16 @@ class CategoryFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        val action = CategoryFragmentDirections.actionCategoryFragmentToHomeFragment(v!!.id)
-        findNavController().navigate(action)
+        when(v!!.id) {
+            R.id.general -> saveCategory("general")
+            R.id.entertainment -> saveCategory("entertainment")
+            R.id.business -> saveCategory("business")
+            R.id.health -> saveCategory("health")
+            R.id.science -> saveCategory("science")
+            R.id.sports -> saveCategory("sports")
+            R.id.technology -> saveCategory("technology")
+        }
+        requireActivity().onBackPressed()
     }
 
 }
