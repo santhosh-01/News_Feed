@@ -10,19 +10,16 @@ class RetrofitInstance {
 
     companion object {
 
+        //Creating Retrofit Instance
         private val retrofit by lazy {
             val loggingInterceptor: HttpLoggingInterceptor = HttpLoggingInterceptor()
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-            val client = OkHttpClient.Builder().
-                    addInterceptor(loggingInterceptor).
-                    build()
-            Retrofit.Builder().
-                    baseUrl(Constants.BASE_URL).
-                    addConverterFactory(GsonConverterFactory.create()).
-                    client(client).
-                    build()
+            val client = OkHttpClient.Builder().addInterceptor(loggingInterceptor).build()
+            Retrofit.Builder().baseUrl(Constants.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create()).client(client).build()
         }
 
+        //Creating the public variable for api using NewsAPI Interface
         val api by lazy {
             retrofit.create(NewsAPI::class.java)
         }

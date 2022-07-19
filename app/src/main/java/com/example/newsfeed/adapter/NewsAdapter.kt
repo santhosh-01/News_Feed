@@ -30,7 +30,7 @@ class NewsAdapter(
 
     inner class ArticleViewHolder(itemView: View) : CustomViewHolder(itemView) {
 
-        val secondPart: LinearLayout
+        //        val secondPart: LinearLayout
         val textTitle: TextView
         val textSource: TextView
         val textTime: TextView
@@ -43,7 +43,7 @@ class NewsAdapter(
         val blockedCheckBox: View
 
         init {
-            secondPart = itemView.findViewById(R.id.secondPart)
+//            secondPart = itemView.findViewById(R.id.secondPart)
             textTitle = itemView.findViewById(R.id.text_title)
             textSource = itemView.findViewById(R.id.text_source)
             textTime = itemView.findViewById(R.id.text_time)
@@ -79,7 +79,7 @@ class NewsAdapter(
                 cardView.setOnLongClickListener {
                     onArticleClickListener.onLongClick(currentArticle, cardView)
                     isCheckboxEnabled = true
-                    checkBox.isChecked = true
+//                    checkBox.isChecked = true
                     currentArticle.isChecked = true
                     onManageItemsInViewModel.addSelectedItemPositionToList(position)
                     onManageItemsInViewModel.addSelectedItemToList(currentArticle)
@@ -94,16 +94,14 @@ class NewsAdapter(
             }
             if (!isCheckboxEnabled) {
                 checkBox.visibility = View.GONE
-                secondPart.visibility = View.VISIBLE
                 blockedCheckBox.visibility = View.GONE
             }
             if (isCheckboxEnabled) {
-                secondPart.visibility = View.GONE
                 checkBox.visibility = View.VISIBLE
                 if ((isHomePage && currentArticle.isExistInDB) || (!isHomePage && !currentArticle.isExistInDB)) {
-//                    checkBox.isChecked = false
-//                    cardView.isEnabled = false
-//                    cardView.isClickable = false
+                    checkBox.isChecked = false
+                    cardView.isEnabled = false
+                    cardView.isClickable = false
                     blockedCheckBox.visibility = View.VISIBLE
                     cardView.setOnClickListener(null)
                 } else {
@@ -134,12 +132,12 @@ class NewsAdapter(
                     }
 
                     override fun onError(e: Exception?) {
-                        newsImage.setImageResource(R.drawable.img_not_available)
+                        newsImage.setImageResource(R.drawable.default_news_image)
                         progressBar.visibility = View.GONE
                     }
                 })
             } else {
-                newsImage.setImageResource(R.drawable.img_not_available)
+                newsImage.setImageResource(R.drawable.default_news_image)
                 progressBar.visibility = View.GONE
             }
         }
@@ -205,7 +203,7 @@ class NewsAdapter(
             val root =
                 LayoutInflater.from(parent.context)
                     .inflate(
-                        R.layout.news_article_item,
+                        R.layout.news_article_item1,
                         parent,
                         false
                     )

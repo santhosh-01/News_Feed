@@ -54,8 +54,8 @@
                             android:id="@+id/img_detail_news"
                             style="@style/NewsArticle.Image"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/image_size"
-                            tools:src="@drawable/default_news_image"/>
+                            android:layout_height="@dimen/image_size_big"
+                            tools:src="@drawable/default_news_image" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -121,8 +121,6 @@ In another news, beloved Bollywood playback singer Krishnakumar Kunnath, popular
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Read More"
-                    android:textSize="14dp"
-                    android:layout_marginVertical="10dp"
                     style="@style/MaterialAlertDialog.Material3"
                     android:layout_gravity="center"/>
 

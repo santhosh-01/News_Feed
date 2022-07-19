@@ -79,6 +79,13 @@
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/menu/bottom_nav_bar_menu.xml" value="0.264" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/menu/overflow_menu.xml" value="0.264" />
         <entry key="..\:/Users/santhosh-13022/Documents/NewsFeed/app/src/main/res/menu/search_menu.xml" value="0.2630208333333333" />
+        <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/drawable/ic_baseline_turned_in_24.xml" value="0.1" />
+        <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/drawable/ic_baseline_turned_in_not_24.xml" value="0.1" />
+        <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/drawable/ic_share.xml" value="0.1" />
+        <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/layout/fragment_article_preview.xml" value="0.1" />
+        <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/layout/fragment_article_preview1.xml" value="0.1" />
+        <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/layout/fragment_settings.xml" value="0.2630208333333333" />
+        <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/layout/news_article_item1.xml" value="0.10400000000000001" />
       </map>
     </option>
   </component>

@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.newsfeed.R
 import com.example.newsfeed.databinding.FragmentCategoryBinding
 import com.example.newsfeed.ui.MainActivity
@@ -27,8 +28,6 @@ class CategoryFragment : Fragment(), View.OnClickListener {
     ): View? {
 
         (requireActivity() as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu_right_lined)
-
-        requireActivity().title = "News Categories"
 
         binding = FragmentCategoryBinding.inflate(layoutInflater)
 
@@ -111,7 +110,8 @@ class CategoryFragment : Fragment(), View.OnClickListener {
             R.id.sports -> saveCategory("sports")
             R.id.technology -> saveCategory("technology")
         }
-        requireActivity().onBackPressed()
+        findNavController().navigate(CategoryFragmentDirections.actionCategoryFragmentToHomeFragment())
+//        requireActivity().onBackPressed()
     }
 
 }

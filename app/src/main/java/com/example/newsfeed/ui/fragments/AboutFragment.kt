@@ -18,8 +18,6 @@ class AboutFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        requireActivity().title = "About"
-
         // Inflate the layout for this fragment
         binding = FragmentAboutBinding.inflate(layoutInflater)
 

@@ -1,5 +1,6 @@
 package com.example.newsfeed.ui.fragments
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +13,7 @@ import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.newsfeed.R
 import com.example.newsfeed.databinding.FragmentArticlePreviewBinding
 import com.example.newsfeed.entity.Article
@@ -34,6 +36,8 @@ class ArticlePreviewFragment : Fragment() {
     private lateinit var fromBottom: Animation
     private lateinit var toBottom: Animation
 
+    private val arguments: ArticlePreviewFragmentArgs by navArgs()
+
     companion object {
         val TAG = "ArticlePreviewFragment"
     }
@@ -43,16 +47,16 @@ class ArticlePreviewFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
+        Log.i("ArticlePreviewFragment", "onCreateView")
+
         fromBottom = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.from_bottom_anim)
         toBottom = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.to_bottom_anim)
-
-        requireActivity().title = "Article Preview"
 
         binding = FragmentArticlePreviewBinding.inflate(layoutInflater)
 
         viewModel = (activity as MainActivity).viewModel
 
-        val arguments = ArticlePreviewFragmentArgs.fromBundle(requireArguments())
+//        val arguments = ArticlePreviewFragmentArgs.fromBundle(requireArguments())
         article = arguments.article
 
         if (!arguments.isHomePageNews) {
@@ -72,7 +76,7 @@ class ArticlePreviewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val arguments = ArticlePreviewFragmentArgs.fromBundle(requireArguments())
+//        val arguments = ArticlePreviewFragmentArgs.fromBundle(requireArguments())
 
         binding.help.setOnClickListener {
             onAddButtonClicked()
@@ -83,6 +87,11 @@ class ArticlePreviewFragment : Fragment() {
         }
 
         binding.continueReading.setOnClickListener {
+            val action = ArticlePreviewFragmentDirections.actionArticlePreviewFragmentToArticleFragment(article, arguments.isHomePageNews)
+            requireView().findNavController().navigate(action)
+        }
+
+        binding.continueReadingButton.setOnClickListener {
             val action = ArticlePreviewFragmentDirections.actionArticlePreviewFragmentToArticleFragment(article, arguments.isHomePageNews)
             requireView().findNavController().navigate(action)
         }
@@ -138,7 +147,7 @@ class ArticlePreviewFragment : Fragment() {
                 binding.help.isClickable = true
             }
 
-        // For HorizontalScrollView
+            // For HorizontalScrollView
             // DO SOMETHING WITH THE SCROLL COORDINATES
         })
     }
@@ -172,31 +181,6 @@ class ArticlePreviewFragment : Fragment() {
         val snackbar = Snackbar.make(requireView(),"Article was removed from bookmark Successfully", Snackbar.LENGTH_SHORT)
         snackbar.show()
         snackbar.view.setOnClickListener { snackbar.dismiss() }
-    }
-
-    override fun onDetach() {
-        Log.i("ArticlePreviewFragment", "onDetach")
-        super.onDetach()
-        fromBottom.cancel()
-        toBottom.cancel()
-    }
-
-    override fun onDestroyView() {
-        Log.i("ArticlePreviewFragment", "onDestroyView")
-        super.onDestroyView()
-        fromBottom.cancel()
-        toBottom.cancel()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.i("ArticlePreviewFragment", "onResume")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        clicked = false
-        Log.i("ArticlePreviewFragment", "onPause")
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -270,7 +254,7 @@ class ArticlePreviewFragment : Fragment() {
             if (article.author.isNullOrBlank()) {
                 textDetailAuthor.visibility = View.GONE
             }
-            else textDetailAuthor.text = article.author
+            else textDetailAuthor.text = article.author!!.trim()
             if (article.publishedAt.isNullOrBlank()) {
                 textDetailTime.visibility = View.GONE
             }
@@ -278,10 +262,60 @@ class ArticlePreviewFragment : Fragment() {
             textDetailContent.text = article.content
             textDetailDetail.text = article.description
             if (article.urlToImage.isNullOrBlank()) {
-                Picasso.get().load(R.drawable.img_not_available).into(imgDetailNews)
+                Picasso.get().load(R.drawable.default_news_image).into(imgDetailNews)
             }
             else Picasso.get().load(article.urlToImage).into(imgDetailNews)
         }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        Log.i("ArticlePreviewFragment", "onAttach")
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.i("ArticlePreviewFragment", "onCreate")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.i("ArticlePreviewFragment", "onStart")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.i("ArticlePreviewFragment", "onResume")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        clicked = false
+        Log.i("ArticlePreviewFragment", "onPause")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.i("ArticlePreviewFragment", "onStop")
+    }
+
+    override fun onDestroyView() {
+        Log.i("ArticlePreviewFragment", "onDestroyView")
+        super.onDestroyView()
+        fromBottom.cancel()
+        toBottom.cancel()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.i("ArticlePreviewFragment", "onDestroy")
+    }
+
+    override fun onDetach() {
+        Log.i("ArticlePreviewFragment", "onDetach")
+        super.onDetach()
+        fromBottom.cancel()
+        toBottom.cancel()
     }
 
 }

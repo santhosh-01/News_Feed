@@ -19,11 +19,20 @@
             app:exitAnim="@anim/slide_out_right"
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_left" />
+        <argument
+            android:name="preferredCountry"
+            app:argType="string"
+            android:defaultValue="none" />
+        <argument
+            android:name="selectedCategory"
+            app:argType="string"
+            android:defaultValue="none" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.newsfeed.ui.fragments.SettingsFragment"
-        tools:layout="@layout/fragment_settings" >
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings">
         <action
             android:id="@+id/action_settingsFragment_to_aboutFragment2"
             app:destination="@id/aboutFragment"
@@ -37,19 +46,20 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_settingsFragment_to_changeCountryFragment"
             app:destination="@id/changeCountryFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/bookmarksFragment"
         android:name="com.example.newsfeed.ui.fragments.BookmarksFragment"
-        tools:layout="@layout/fragment_bookmarks" >
+        android:label="Bookmarks"
+        tools:layout="@layout/fragment_bookmarks">
         <action
             android:id="@+id/action_bookmarksFragment_to_articlePreviewFragment"
             app:destination="@id/articlePreviewFragment" />
@@ -57,15 +67,18 @@
     <fragment
         android:id="@+id/aboutFragment"
         android:name="com.example.newsfeed.ui.fragments.AboutFragment"
+        android:label="About"
         tools:layout="@layout/fragment_about" />
     <fragment
         android:id="@+id/helpFragment"
         android:name="com.example.newsfeed.ui.fragments.HelpFragment"
+        android:label="Help"
         tools:layout="@layout/fragment_help" />
     <fragment
         android:id="@+id/articlePreviewFragment"
         android:name="com.example.newsfeed.ui.fragments.ArticlePreviewFragment"
-        tools:layout="@layout/fragment_article_preview" >
+        android:label="Article Preview"
+        tools:layout="@layout/fragment_article_preview">
         <argument
             android:name="article"
             app:argType="com.example.newsfeed.entity.Article" />
@@ -79,7 +92,8 @@
     <fragment
         android:id="@+id/articleFragment"
         android:name="com.example.newsfeed.ui.fragments.ArticleFragment"
-        tools:layout="@layout/fragment_article" >
+        android:label="News Article"
+        tools:layout="@layout/fragment_article">
         <argument
             android:name="article"
             app:argType="com.example.newsfeed.entity.Article" />
@@ -95,9 +109,25 @@
     <fragment
         android:id="@+id/categoryFragment"
         android:name="com.example.newsfeed.ui.fragments.CategoryFragment"
-        tools:layout="@layout/fragment_category"/>
+        android:label="News Categories"
+        tools:layout="@layout/fragment_category">
+        <action
+            android:id="@+id/action_categoryFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
     <fragment
         android:id="@+id/changeCountryFragment"
         android:name="com.example.newsfeed.ui.fragments.ChangeCountryFragment"
-        tools:layout="@layout/fragment_change_country" />
+        android:label="Choose Your Country"
+        tools:layout="@layout/fragment_change_country">
+        <action
+            android:id="@+id/action_changeCountryFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/main_navigation" />
+    </fragment>
+
 </navigation>

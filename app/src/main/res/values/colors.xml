@@ -21,4 +21,8 @@
     <color name="secondaryColor">#FFCA28</color>
     <color name="background">#f2f4f6</color>
     <color name="ltgray">#CFCCCB</color>
+
+    <!-- Other colors -->
+    <color name="color_transparent">#33000000</color>
+
 </resources>

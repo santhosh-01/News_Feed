@@ -41,8 +41,6 @@ class BookmarksFragment : Fragment() {
 
         requireActivity().findViewById<SearchView>(R.id.search_view).visibility = View.GONE
 
-        requireActivity().title = "Bookmarks"
-
         binding = FragmentBookmarksBinding.inflate(layoutInflater)
 
         viewModel = (activity as MainActivity).viewModel
@@ -188,12 +186,13 @@ class BookmarksFragment : Fragment() {
 
                             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                                 super.onDismissed(transientBottomBar, event)
-                                viewModel.unSelectAllArticles()
+                                viewModel.unSelectBookmarkArticles()
                             }
                         })
                     snackbar.setAction("Undo") {
                         for (article in temp) {
                             lifecycleScope.launch {
+                                viewModel.clearSelectedItemsInBookmark()
                                 article.id = viewModel.insertArticle(article).toInt()
                                 article.isExistInDB = true
                             }

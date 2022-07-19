@@ -1,14 +1,10 @@
 package com.example.newsfeed.ui
 
-import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
 import android.content.DialogInterface
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.res.ResourcesCompat
@@ -17,6 +13,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
+import com.example.newsfeed.R
 import com.example.newsfeed.databinding.ActivityMainBinding
 import com.example.newsfeed.db.ArticleDatabase
 import com.example.newsfeed.repository.NewsRepository
@@ -30,99 +27,116 @@ import com.example.newsfeed.viewmodel.NewsViewModelFactory
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var myToolbar: Toolbar
     private lateinit var binding: ActivityMainBinding
     lateinit var viewModel: NewsViewModel
-    private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var myToolbar: Toolbar
     private lateinit var navHostFragment: NavHostFragment
     private lateinit var navController: NavController
-    private lateinit var sharedPref: SharedPreferences
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Here, we are setting the complete background including status bas as primary_gradient
-        window.setBackgroundDrawable(ResourcesCompat.getDrawable(this.resources, com.example.newsfeed.R.drawable.primary_gradient, null))
-
-//        window.statusBarColor = ContextCompat.getColor(this, R.color.primaryGradientColor)
+        Log.i("MainActivity", "onCreate")
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        myToolbar = findViewById(com.example.newsfeed.R.id.my_toolbar)
-        myToolbar.setNavigationIcon(com.example.newsfeed.R.drawable.ic_menu_left_lined)
-        setSupportActionBar(myToolbar)
+        initAllElements()
 
-//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        val newsRepository = NewsRepository(ArticleDatabase.getInstance(this))
-        val newsViewModelFactory =  NewsViewModelFactory(application, newsRepository)
-        viewModel = ViewModelProvider(this, newsViewModelFactory).get(NewsViewModel::class.java)
-
-        navHostFragment = supportFragmentManager.findFragmentById(com.example.newsfeed.R.id.fragmentContainerView) as NavHostFragment
-        navController = navHostFragment.navController
-
-        // To specify top level navigation in Nav Graph
-        appBarConfiguration = AppBarConfiguration(setOf(com.example.newsfeed.R.id.homeFragment,
-            com.example.newsfeed.R.id.settingsFragment, com.example.newsfeed.R.id.bookmarksFragment))
-
-        navController.addOnDestinationChangedListener { controller, destination, arguments ->
-            when(destination.id) {
-                com.example.newsfeed.R.id.articlePreviewFragment -> {
-                    hideSearchView()
-                    hideBottomNavBar()
-                    binding.customAppBar.navigationIcon.visibility = View.GONE
-                }
-//                R.id.articleFragment -> hideBottomNavBar()
-                com.example.newsfeed.R.id.homeFragment -> {
-                    showSearchView()
-                    showBottomNavBar()
-                    binding.customAppBar.navigationIcon.visibility = View.VISIBLE
-                    binding.customAppBar.backNavigationIcon.visibility = View.GONE
-                }
-                com.example.newsfeed.R.id.settingsFragment -> {
-                    hideSearchView()
-                    showBottomNavBar()
-                    binding.customAppBar.navigationIcon.visibility = View.GONE
-                    viewModel.unSelectAllArticles()
-                }
-                com.example.newsfeed.R.id.bookmarksFragment -> {
-                    showSearchView()
-                    showBottomNavBar()
-                    binding.customAppBar.navigationIcon.visibility = View.GONE
-                    viewModel.unSelectAllArticles()
-                }
-                com.example.newsfeed.R.id.categoryFragment -> {
-                    hideSearchView()
-                    hideBottomNavBar()
-                    binding.customAppBar.navigationIcon.visibility = View.GONE
-                    viewModel.unSelectAllArticles()
-                }
-                com.example.newsfeed.R.id.aboutFragment -> binding.customAppBar.navigationIcon.visibility = View.GONE
-                com.example.newsfeed.R.id.helpFragment -> binding.customAppBar.navigationIcon.visibility = View.GONE
-                com.example.newsfeed.R.id.change_country -> {
-                    hideBottomNavBar()
-                }
-            }
-        }
-
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
-        NavigationUI.setupWithNavController(binding.bottomNavBar, navController)
-
-        sharedPref = this.getSharedPreferences("application", Context.MODE_PRIVATE)
-
-        if (!sharedPref.contains("category") || savedInstanceState == null) {
-            val editor = sharedPref.edit()
-            editor.putString("category", "general")
-            editor.apply()
-        }
-
-        if (!sharedPref.contains("country")) {
-            val editor = sharedPref.edit()
-            editor.putString("country", "global")
-            editor.apply()
+        if (savedInstanceState == null) {
+            viewModel.saveNewsCategory("general")
         }
     }
+
+    private fun initAllElements() {
+        // window.statusBarColor = ContextCompat.getColor(this, R.color.primaryGradientColor)
+        setWindowBackgroundDrawable()
+        setupCustomToolbar()
+        initializeAttributes()
+        setupActionBarAndBottomNavBarWithNavController()
+    }
+
+    private fun setWindowBackgroundDrawable() {
+        // Here, we are setting the complete background including status bas as primary_gradient
+        window.setBackgroundDrawable(
+            ResourcesCompat.getDrawable(
+                this.resources,
+                R.drawable.primary_gradient,
+                null
+            )
+        )
+    }
+
+    private fun setupCustomToolbar() {
+        myToolbar = findViewById(R.id.my_toolbar)
+        myToolbar.setNavigationIcon(R.drawable.ic_menu_left_lined)
+        setSupportActionBar(myToolbar)
+    }
+
+    private fun setupActionBarAndBottomNavBarWithNavController() {
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
+        NavigationUI.setupWithNavController(binding.bottomNavBar, navController)
+    }
+
+    private fun initializeAttributes() {
+        // initializeViewModel
+        val newsRepository = NewsRepository(ArticleDatabase.getInstance(this))
+        val newsViewModelFactory = NewsViewModelFactory(application, newsRepository)
+        viewModel = ViewModelProvider(this, newsViewModelFactory).get(NewsViewModel::class.java)
+
+        // To specify top level navigation in Nav Graph
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.homeFragment,
+                R.id.settingsFragment,
+                R.id.bookmarksFragment
+            )
+        )
+
+        // Define NavController
+        navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+        navController = navHostFragment.navController
+        navController.addOnDestinationChangedListener(onDestinationChangedListener)
+    }
+
+    private val onDestinationChangedListener =
+        NavController.OnDestinationChangedListener { controller, destination, arguments ->
+            when (destination.id) {
+                R.id.articlePreviewFragment -> {
+                    hideSearchView()
+                    hideBottomNavBar()
+                    hideNavigationIcon()
+                }
+                R.id.homeFragment -> {
+                    showSearchView()
+                    showBottomNavBar()
+                    showNavigationIcon()
+                }
+                R.id.settingsFragment -> {
+                    hideSearchView()
+                    showBottomNavBar()
+                    hideNavigationIcon()
+                    viewModel.unSelectAllArticles()
+                }
+                R.id.bookmarksFragment -> {
+                    showSearchView()
+                    showBottomNavBar()
+                    hideNavigationIcon()
+                    viewModel.unSelectAllArticles()
+                }
+                R.id.categoryFragment -> {
+                    hideSearchView()
+                    hideBottomNavBar()
+                    hideNavigationIcon()
+                    viewModel.unSelectAllArticles()
+                }
+                R.id.aboutFragment -> hideNavigationIcon()
+                R.id.helpFragment -> hideNavigationIcon()
+                R.id.change_country -> hideBottomNavBar()
+            }
+        }
 
     private fun showSearchView() {
         binding.customAppBar.searchView.visibility = View.VISIBLE
@@ -130,6 +144,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun hideSearchView() {
         binding.customAppBar.searchView.visibility = View.GONE
+    }
+
+    private fun showNavigationIcon() {
+        binding.customAppBar.navigationIcon.visibility = View.VISIBLE
+    }
+
+    private fun hideNavigationIcon() {
+        binding.customAppBar.navigationIcon.visibility = View.GONE
     }
 
     private fun showBottomNavBar() {
@@ -141,7 +163,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        if (navController.currentDestination!!.id == com.example.newsfeed.R.id.categoryFragment)
+        if (navController.currentDestination!!.id == R.id.categoryFragment)
             title = ""
         return NavigationUI.navigateUp(navController, appBarConfiguration) ||
                 super.onSupportNavigateUp()
@@ -152,13 +174,12 @@ class MainActivity : AppCompatActivity() {
         if (binding.customAppBar.searchView.query.isNotEmpty()) {
             val homeFragment = navHostFragment.childFragmentManager.fragments[0] as HomeFragment
             homeFragment.setUpRecyclerView(mutableListOf())
-            binding.customAppBar.searchView.setQuery("",false)
+            binding.customAppBar.searchView.setQuery("", false)
             viewModel.clearSearchQueryStack()
             viewModel.newSearchQuery = null
             viewModel.initAccordingToCurrentConfig()
 //                    viewModel.isSearchOn = false
-        }
-        else {
+        } else {
             showExitAlert()
         }
     }
@@ -184,54 +205,46 @@ class MainActivity : AppCompatActivity() {
             val homeFragment = navHostFragment.childFragmentManager.fragments[0] as HomeFragment
             if (homeFragment.isCheckboxEnable()) {
                 homeFragment.clearAdapterCheckboxes()
-            }
-            else if (viewModel.searchQueryStack.value!!.size <= 1) {
+            } else if (viewModel.searchQueryStack.value!!.size <= 1) {
                 popSearchQuery()
-            }
-            else {
-                val editor = sharedPref.edit()
-                editor.putString("sortBy", "relevancy")
-                editor.apply()
+            } else {
                 viewModel.popFromSearchQueryStack()
                 binding.customAppBar.searchView.setQuery(viewModel.popFromSearchQueryStack(), true)
             }
-        }
-        else if (navController.currentDestination!!.id == com.example.newsfeed.R.id.bookmarksFragment) {
-            val bookmarksFragment = navHostFragment.childFragmentManager.fragments[0] as BookmarksFragment
+        } else if (navController.currentDestination!!.id == R.id.bookmarksFragment) {
+            val bookmarksFragment =
+                navHostFragment.childFragmentManager.fragments[0] as BookmarksFragment
             if (bookmarksFragment.isCheckboxEnable()) {
                 bookmarksFragment.clearAdapterCheckboxes()
-            }
-            else
+            } else
                 super.onBackPressed()
-        }
-        else if (navController.currentDestination!!.id == com.example.newsfeed.R.id.articlePreviewFragment) {
-            val articlePreviewFragment = navHostFragment.childFragmentManager.fragments[0] as ArticlePreviewFragment
+        } else if (navController.currentDestination!!.id == R.id.articlePreviewFragment) {
+            val articlePreviewFragment =
+                navHostFragment.childFragmentManager.fragments[0] as ArticlePreviewFragment
             if (articlePreviewFragment.clicked) {
                 articlePreviewFragment.onAddButtonClicked()
-            }
-            else
+            } else
                 super.onBackPressed()
-        }
-        else if (navController.currentDestination!!.id == com.example.newsfeed.R.id.articleFragment) {
-            val articleFragment = navHostFragment.childFragmentManager.fragments[0] as ArticleFragment
+        } else if (navController.currentDestination!!.id == com.example.newsfeed.R.id.articleFragment) {
+            val articleFragment =
+                navHostFragment.childFragmentManager.fragments[0] as ArticleFragment
             if (articleFragment.clicked) {
                 articleFragment.onAddButtonClicked()
-            }
-            else
+            } else
                 super.onBackPressed()
-        }
-        else {
+        } else {
             super.onBackPressed()
         }
     }
 
-    fun Activity.hideKeyboard() {
-        hideKeyboard(currentFocus ?: View(this))
+    override fun onStart() {
+        super.onStart()
+        Log.i("MainActivity", "onStart")
     }
 
-    fun Context.hideKeyboard(view: View) {
-        val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+    override fun onResume() {
+        super.onResume()
+        Log.i("MainActivity", "onResume")
     }
 
     override fun onPause() {
@@ -249,9 +262,8 @@ class MainActivity : AppCompatActivity() {
         Log.i("MainActivity", "onRestart")
     }
 
-    override fun onResume() {
-        super.onResume()
-        Log.i("MainActivity", "onResume")
+    override fun onStop() {
+        super.onStop()
+        Log.i("MainActivity", "onStop")
     }
-
 }

@@ -23,8 +23,6 @@ class SettingsFragment : Fragment() {
 
         binding = FragmentSettingsBinding.inflate(layoutInflater)
 
-        requireActivity().title = "Settings"
-
         sharedPref = requireActivity().getSharedPreferences("application", Context.MODE_PRIVATE)
 
         val countries = resources.getStringArray(com.example.newsfeed.R.array.country_code_array)

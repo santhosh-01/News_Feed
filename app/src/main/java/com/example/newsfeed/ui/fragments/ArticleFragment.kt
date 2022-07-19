@@ -40,8 +40,6 @@ class ArticleFragment : Fragment() {
         fromBottom = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.from_bottom_anim)
         toBottom = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.to_bottom_anim)
 
-        requireActivity().title = "News Article"
-
         binding = FragmentArticleBinding.inflate(layoutInflater)
 
         viewModel = (activity as MainActivity).viewModel

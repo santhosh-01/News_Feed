@@ -9,24 +9,26 @@ import retrofit2.Response
 
 class NewsRepository(
     val db: ArticleDatabase
-//    val onFetchArticleListener: OnFetchArticleListener<NewsArticle>
 ) {
 
     suspend fun getBreakingNews(
         pageNumber: Int,
         category: String,
-        countryAbbr: String = ""
+        countryAbbr: String,
+        apiKey: String
     ): Response<NewsArticle> {
-        if (countryAbbr == "") {
+        if (countryAbbr == "global") {
             return RetrofitInstance.api.getTopHeadlines(
                 pageNumber = pageNumber,
-                category = category
+                category = category,
+                apiKey = apiKey
             )
         } else {
             return RetrofitInstance.api.getTopHeadlinesWithCountry(
                 pageNumber = pageNumber,
                 category = category,
-                country = countryAbbr
+                country = countryAbbr,
+                apiKey = apiKey
             )
         }
     }
@@ -35,16 +37,18 @@ class NewsRepository(
         pageNumber: Int,
         searchQuery: String,
         sortBy: String,
-        language: String
+        language: String,
+        apiKey: String
     ): Response<NewsArticle> {
         if (sortBy == "") {
-            return RetrofitInstance.api.searchForNews(pageNumber = pageNumber, query = searchQuery, language = language)
+            return RetrofitInstance.api.searchForNews(pageNumber = pageNumber, query = searchQuery, language = language, apiKey = apiKey)
         } else {
             return RetrofitInstance.api.searchForNews(
                 pageNumber = pageNumber,
                 query = searchQuery,
                 sortBy = sortBy,
-                language = language
+                language = language,
+                apiKey = apiKey
             )
         }
     }

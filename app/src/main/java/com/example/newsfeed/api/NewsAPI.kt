@@ -11,7 +11,7 @@ interface NewsAPI {
     @GET("/v2/everything")
     suspend fun searchForNews(
         @Query("apiKey")
-        apiKey: String = Constants.API_KEY,
+        apiKey: String = Constants.API_KEYS[0],
         @Query("q")
         query: String,
         @Query("sortBy")
@@ -27,7 +27,7 @@ interface NewsAPI {
     @GET("/v2/top-headlines")
     suspend fun getTopHeadlines(
         @Query("apiKey")
-        apiKey: String = Constants.API_KEY,
+        apiKey: String = Constants.API_KEYS[0],
         @Query("category")
         category: String = "general",
         @Query("page")
@@ -39,7 +39,7 @@ interface NewsAPI {
     @GET("/v2/top-headlines")
     suspend fun getTopHeadlinesWithCountry(
         @Query("apiKey")
-        apiKey: String = Constants.API_KEY,
+        apiKey: String = Constants.API_KEYS[0],
         @Query("category")
         category: String = "general",
         @Query("country")

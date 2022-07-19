@@ -8,11 +8,11 @@
     <androidx.cardview.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="15dp"
+        android:layout_margin="@dimen/card_margin"
         android:background="@color/background"
         android:orientation="vertical"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="16dp"
+        app:cardElevation="@dimen/card_elevation"
+        app:cardCornerRadius="8dp"
         tools:context=".ui.fragments.SettingsFragment">
 
         <LinearLayout
@@ -28,15 +28,6 @@
                 android:orientation="horizontal"
                 android:padding="10dp"
                 android:layout_marginHorizontal="12dp">
-
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/background_border_shape"
-                    android:backgroundTint="#5C6BC0"
-                    android:padding="8dp"
-                    android:src="@drawable/ic_sliders" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -116,11 +107,11 @@
     <androidx.cardview.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="15dp"
+        android:layout_margin="@dimen/card_margin"
+        app:cardCornerRadius="8dp"
         android:background="@color/background"
         android:orientation="vertical"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="16dp"
+        app:cardElevation="@dimen/card_elevation"
         tools:context=".ui.fragments.SettingsFragment">
 
         <LinearLayout
@@ -136,15 +127,6 @@
                 android:orientation="horizontal"
                 android:padding="10dp"
                 android:layout_marginHorizontal="12dp">
-
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/background_border_shape"
-                    android:backgroundTint="#5C6BC0"
-                    android:padding="8dp"
-                    android:src="@drawable/ic_baseline_info_24" />
 
                 <TextView
                     android:layout_width="wrap_content"

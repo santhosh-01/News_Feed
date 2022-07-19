@@ -15,8 +15,6 @@ class HelpFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        requireActivity().title = "Help"
-
         val bottomNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav_bar)
         bottomNavBar.visibility = View.GONE
 
