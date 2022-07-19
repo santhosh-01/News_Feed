@@ -1,0 +1,99 @@
+<resources>
+
+    <!--    App Name-->
+    <string name="app_name">News Feed</string>
+
+    <!--    Bottom Nav Bar Titles-->
+    <string name="home">Home</string>
+    <string name="settings">Settings</string>
+    <string name="bookmarks">Bookmarks</string>
+
+    <!--    About News Feed App-->
+    <string name="about_app">\u2022 News Feed App is to get the Breaking News and to get the News in Customizable way
+        \n\n\u2022 User can do search, filter based on the categories, countries, etc..
+        \n\n\u2022 User can bookmark any news article and can see the bookmarked news articles</string>
+
+    <!--    Help Page Content-->
+    <string name="app_help">\u2022 On opening the open, the user will be landing on Home Page will bottom Nav Bar and Overflow menu at top right
+        \n\n\u2022 The Bottom Nav Bar contains Home Tab, Settings Tab, Bookmarks Tab
+        \n\n\u2022 The overflow menu contains the navigation for About App Page and Help Page
+        \n\n\u2022 On Clicking Settings Tab on the bottom Nav Bar, user will land on Settings Page and can customise their app
+        \n\n\u2022 On Clicking Bookmarks Tab, user will land on Bookmarks Page and can see all bookmarked articles</string>
+
+    <!--    String Array of Country Names-->
+    <string-array name="country_code_array">
+        <item>United Arab Emirates - AE</item>
+        <item>Argentina - AR</item>
+        <item>Austria - AT</item>
+        <item>Australia - AU</item>
+        <item>Belgium - BE</item>
+        <item>Bulgaria - BG</item>
+        <item>Brazil - BR</item>
+        <item>Canada - CA</item>
+        <item>Switzerland - CH</item>
+        <item>China - CN</item>
+        <item>Colombia - CO</item>
+        <item>Cuba - CU</item>
+        <item>Czech Republic - CZ</item>
+        <item>Germany - DE</item>
+        <item>General - global</item>
+        <item>Egypt - EG</item>
+        <item>France - FR</item>
+        <item>United Kingdom - GB</item>
+        <item>Greece - GR</item>
+        <item>Hong Kong - HK</item>
+        <item>Hungary - HU</item>
+        <item>Indonesia - ID</item>
+        <item>Ireland - IE</item>
+        <item>Israel - IL</item>
+        <item>India - IN</item>
+        <item>Italy - IT</item>
+        <item>Japan - JP</item>
+        <item>South Korea - KR</item>
+        <item>Lithuania - LT</item>
+        <item>Latvia - LV</item>
+        <item>Morocco - MA</item>
+        <item>Mexico - MX</item>
+        <item>Malaysia - MY</item>
+        <item>Nigeria - NG</item>
+        <item>Netherlands - NL</item>
+        <item>Norway - NO</item>
+        <item>New Zealand - NZ</item>
+        <item>Philippines - PH</item>
+        <item>Poland - PL</item>
+        <item>Portugal - PT</item>
+        <item>Romania - RO</item>
+        <item>Serbia - RS</item>
+        <item>Russian Federation - RU</item>
+        <item>Saudi Arabia - SA</item>
+        <item>Sweden - SE</item>
+        <item>Singapore - SG</item>
+        <item>Slovenia - SI</item>
+        <item>Slovakia - SK</item>
+        <item>Thailand - TH</item>
+        <item>Turkey - TR</item>
+        <item>Taiwan, Republic of China - TW</item>
+        <item>Ukraine - UA</item>
+        <item>United States of America - US</item>
+        <item>Venezuela (Bolivarian Republic) - VE</item>
+        <item>South Africa - ZA</item>
+    </string-array>
+
+    <!--    String Array of Languages-->
+    <string-array name="language_code_array">
+        <item>Arabic - AR</item>
+        <item>German - DE</item>
+        <item>English - EN</item>
+        <item>Estonian - ET</item>
+        <item>French - FR</item>
+        <item>Hebrew - HE</item>
+        <item>Italian - IT</item>
+        <item>Dutch,Flemish - NL</item>
+        <item>Norwegian - NO</item>
+        <item>Portuguese - PT</item>
+        <item>Russian - RU</item>
+        <item>Swedish - SV</item>
+        <item>Chinese - ZH</item>
+    </string-array>
+
+</resources>

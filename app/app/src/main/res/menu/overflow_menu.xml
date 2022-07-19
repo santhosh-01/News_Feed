@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--<item
+        android:id="@+id/search_view"
+        android:title="Search"
+        android:icon="@drawable/ic_baseline_search_24"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="always|collapseActionView" />-->
+
+    <item
+        android:id="@+id/sort"
+        android:title="Sort"
+        android:icon="@drawable/ic_advanced_search"
+        app:showAsAction="always"
+        android:visible="false"/>
+
+
+    <item
+        android:id="@+id/add_bookmark"
+        android:title="Add to Bookmarks"
+        android:icon="@drawable/ic_baseline_bookmark_add_24"
+        app:showAsAction="always"
+        android:visible="false"/>
+
+<!--    <item
+        android:id="@+id/unselect"
+        android:icon="@drawable/ic_baseline_close_24"
+        android:title="Unselect"
+        app:showAsAction="always" />-->
+
+</menu>

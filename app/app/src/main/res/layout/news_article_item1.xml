@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/container"
+        style="@style/NewsArticle.View"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="@dimen/card_elevation">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- News block -->
+            <RelativeLayout
+                android:id="@+id/newsImage"
+                android:layout_width="match_parent"
+                android:layout_height="180sp">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/news_image"
+                        style="@style/NewsArticle.Image"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/image_size"
+                        tools:src="@drawable/default_news_image" />
+
+                    <ProgressBar
+                        android:id="@+id/progressBar"
+                        style="?android:attr/progressBarStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center" />
+
+                </FrameLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    style="@style/NewsArticle.Author"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/text_source"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="ABC News" />
+
+                    <ToggleButton
+                        android:id="@+id/bookmark_toggle"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/bookmark_button_bg"
+                        android:textOff=""
+                        android:textOn=""
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/share_button"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageButton
+                        android:id="@+id/share_button"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/ic_share"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@+id/newsImage">
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <CheckBox
+                        android:id="@+id/article_check_box"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:buttonTint="#5C6BC0"
+                        android:visibility="gone"
+                        tools:visibility="visible"
+                        android:clickable="false"
+                        android:focusable="false"/>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/blocked_checkbox"
+                        android:visibility="gone"
+                        android:layout_width="19dp"
+                        android:layout_height="19dp"
+                        android:backgroundTint="@color/color_desire_front"
+                        android:layout_gravity="center"
+                        app:cardCornerRadius="4dp"
+                        tools:visibility="visible">
+
+                    </androidx.cardview.widget.CardView>
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:id="@+id/secondPart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- News Title -->
+                    <TextView
+                        android:id="@+id/text_title"
+                        style="@style/NewsArticle.Title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/newsImage"
+                        tools:text="Elon Musk says Tesla can't yet launch in India" />
+
+                    <!-- Publish at -->
+                    <TextView
+                        android:id="@+id/text_time"
+                        style="@style/NewsArticle.PublishedAt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/text_title"
+                        android:layout_marginStart="@dimen/normal_padding"
+                        android:layout_marginLeft="@dimen/normal_padding"
+                        tools:text="18/07/22, 11:30 UTC" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </RelativeLayout>
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>
