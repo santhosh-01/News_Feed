@@ -132,12 +132,12 @@ class NewsAdapter(
                     }
 
                     override fun onError(e: Exception?) {
-                        newsImage.setImageResource(R.drawable.default_news_image)
+                        newsImage.setImageResource(R.drawable.news_logo_final)
                         progressBar.visibility = View.GONE
                     }
                 })
             } else {
-                newsImage.setImageResource(R.drawable.default_news_image)
+                newsImage.setImageResource(R.drawable.news_logo_final)
                 progressBar.visibility = View.GONE
             }
         }
@@ -265,6 +265,11 @@ class NewsAdapter(
         integersList.forEach {
             articleList.add(it)
         }
+        notifyDataSetChanged()
+    }
+
+    fun filterList(list: MutableList<Article>) {
+        articleList = list.toMutableList()
         notifyDataSetChanged()
     }
 }

@@ -8,23 +8,27 @@ import android.net.NetworkCapabilities
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.newsfeed.entity.Article
 import com.example.newsfeed.entity.NewsArticle
 import com.example.newsfeed.repository.NewsRepository
 import com.example.newsfeed.util.Constants.Companion.API_KEYS
 import com.example.newsfeed.util.Resource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import retrofit2.Response
 import java.io.IOException
 import java.util.*
+import javax.inject.Inject
 
-class NewsViewModel(
+@HiltViewModel
+class NewsViewModel @Inject constructor(
     val app: Application,
     val newsRepository: NewsRepository
-) : AndroidViewModel(app) {
+) : ViewModel() {
 
     private val sharedPref: SharedPreferences =
         app.getSharedPreferences("application", Context.MODE_PRIVATE)
@@ -33,7 +37,8 @@ class NewsViewModel(
 
     private lateinit var searchQuery: String
     var sortBy: String = "relevancy"
-    var languagesMap: HashMap<String, String> = hashMapOf()
+    val languageMap: HashMap<String, String> = hashMapOf()
+    val countryMap: HashMap<String, String> = hashMapOf()
 
 //    private var apiKey: String = API_KEY
 
@@ -53,9 +58,12 @@ class NewsViewModel(
     var newSearchQuery: String? = null
     var oldSearchQuery: String? = null
 
+    var bookmarkSearchQuery: String? = null
+
     val searchQueryStack: MutableLiveData<Stack<String>> = MutableLiveData(Stack())
 
     val articleList: MutableList<Article> = mutableListOf()
+    var temp: MutableList<Article> = mutableListOf()
 
     val breakingNews: MutableLiveData<Resource<NewsArticle>> = MutableLiveData()
 
@@ -71,9 +79,18 @@ class NewsViewModel(
     init {
         initCategoryAndCountryForFirstTime()
         setupMapOfLanguages()
+        setupMapOfCountries()
     }
 
-    fun initCategoryAndCountryForFirstTime() {
+    private fun setupMapOfCountries() {
+        val countries = app.resources.getStringArray(com.example.newsfeed.R.array.country_code_array)
+        for (countryNameWithCountryAbbr in countries) {
+            val (countryName, countryAbbr) = countryNameWithCountryAbbr.split(" - ")
+            countryMap[countryAbbr] = countryName
+        }
+    }
+
+    private fun initCategoryAndCountryForFirstTime() {
         if (!sharedPref.contains("category")) {
             saveNewsCategory("general")
         }
@@ -88,20 +105,11 @@ class NewsViewModel(
 
         for (languageNameWithLanguageAbbr in languages) {
             val (languageName, languageAbbr) = languageNameWithLanguageAbbr.split(" - ")
-            languagesMap[languageAbbr.lowercase()] = languageName
+            languageMap[languageAbbr.lowercase()] = languageName
         }
     }
 
     fun initBreakingNews() {
-//        if (sharedPref.getString("country", "") == "global") {
-//            getBreakingNews(sharedPref.getString("category", "")!!)
-//        } else {
-//            getBreakingNews(
-//                sharedPref.getString("category", "")!!,
-//                sharedPref.getString("country", "")!!
-//            )
-//        }
-
         getBreakingNews(
             sharedPref.getString("category", "")!!,
             sharedPref.getString("country", "")!!
@@ -111,11 +119,17 @@ class NewsViewModel(
     fun initAccordingToCurrentConfig() {
         val currentCategory = sharedPref.getString("category", "")
         val currentCountry = sharedPref.getString("country", "")
-        breakingNewsPage = 0
+        breakingNewsPage = 1
         breakingNewsResponse = null
-        initBreakingNews()
         selectedCategory = currentCategory!!
         selectedCountry = currentCountry!!
+        initBreakingNews()
+    }
+
+    fun initSearchAccordingToCurrentConfig() {
+        searchNewsPage = 0
+        searchNewsResponse = null
+        searchNews(searchQuery, sortBy)
     }
 
     fun getBreakingNews(category: String, countryAbbr: String) = viewModelScope.launch {
@@ -151,7 +165,6 @@ class NewsViewModel(
                 return Resource.Success(breakingNewsResponse ?: resultResponse)
             }
         }
-        breakingNewsPage--
         return Resource.Error(response.message())
     }
 
@@ -293,16 +306,13 @@ class NewsViewModel(
         breakingNews.postValue(Resource.Loading())
         try {
             if (hasInternetConnection()) {
-                breakingNewsPage++
                 val response =
                     newsRepository.getBreakingNews(breakingNewsPage, category, countryAbbr, apiKey)
                 breakingNews.postValue(handleBreakingNewsResponse(response))
             } else {
-                breakingNewsPage--
                 breakingNews.postValue(Resource.Error("No internet connection"))
             }
         } catch (t: Throwable) {
-            breakingNewsPage--
             when (t) {
                 is IOException -> breakingNews.postValue(Resource.Error("Network Failure"))
                 else -> breakingNews.postValue(Resource.Error("Conversion Error"))
@@ -382,6 +392,26 @@ class NewsViewModel(
         return successFlag
     }
 
+    fun filterBookmarkNews(query: String): MutableList<Article> {
+        if (bookmarkSearchQuery == null)
+            temp.addAll(articleList)
+        bookmarkSearchQuery = query
+        val filteredList: MutableList<Article> = mutableListOf()
+        for (article in articleList) {
+            if (article.title.lowercase().contains(query.lowercase())) {
+                filteredList.add(article)
+            }
+        }
+        return filteredList
+    }
+
+    fun revertFilterBookmark() {
+        articleList.clear()
+        articleList.addAll(temp)
+        bookmarkSearchQuery = null
+//        temp.clear()
+    }
+
     fun saveNewsCategory(category: String) {
         val editor = sharedPref.edit()
         editor.putString("category", category)
@@ -392,6 +422,10 @@ class NewsViewModel(
         val editor = sharedPref.edit()
         editor.putString("country", countryAbbr)
         editor.apply()
+    }
+
+    fun getNewsCategoryFromSharedPref(): String {
+        return sharedPref.getString("category","")!!
     }
 
     fun isCategoryOrCountryChanged(): Boolean {
@@ -410,8 +444,15 @@ class NewsViewModel(
     }
 
     fun clearAdapterAndGetBreakingNews() {
-        breakingNewsPage = 0
+        breakingNewsPage = 1
         breakingNewsResponse = null
         initBreakingNews()
+    }
+
+    fun clearAdapterAndGetSearchNews(searchQuery: String) {
+        searchNewsPage = 0
+        searchNewsResponse = null
+        pushToSearchQueryStack(searchQuery)
+        searchNews(searchQuery, sortBy)
     }
 }

@@ -1,7 +1,6 @@
 package com.example.newsfeed.ui.fragments
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -12,15 +11,16 @@ import android.widget.ArrayAdapter
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.newsfeed.R
 import com.example.newsfeed.databinding.FragmentChangeCountryBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.newsfeed.ui.MainActivity
+import com.example.newsfeed.viewmodel.NewsViewModel
 
 
-class ChangeCountryFragment: Fragment() {
+class ChangeCountryFragment : Fragment() {
 
     private lateinit var binding: FragmentChangeCountryBinding
-    private lateinit var sharedPref: SharedPreferences
-    private var map: HashMap<String, String> = hashMapOf()
+    private lateinit var viewModel: NewsViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,79 +29,72 @@ class ChangeCountryFragment: Fragment() {
 
         Log.i("ArticlePreviewFragment", "onCreateView")
 
-        val bottomNavBar = requireActivity().findViewById<BottomNavigationView>(com.example.newsfeed.R.id.bottom_nav_bar)
-        bottomNavBar.visibility = View.GONE
-
         binding = FragmentChangeCountryBinding.inflate(layoutInflater)
+        viewModel = (activity as MainActivity).viewModel
 
+        setupDropDownAdapter()
+
+//        binding.autoCompleteTextView.postDelayed({ binding.autoCompleteTextView.showDropDown() }, 500)
+//        binding.autoCompleteTextView.setText("${map[sharedPref.getString("country", "india")]} - ${sharedPref.getString("country", "india")}")
+
+        return binding.root
+    }
+
+    private fun setupDropDownAdapter() {
         val countries = resources.getStringArray(com.example.newsfeed.R.array.country_code_array)
-
-        val arrayAdapter = ArrayAdapter(requireContext(), com.example.newsfeed.R.layout.dropdown_item, countries)
+        val arrayAdapter =
+            ArrayAdapter(requireContext(), R.layout.dropdown_item, countries)
 
         binding.autoCompleteTextView.setAdapter(arrayAdapter)
         binding.autoCompleteTextView.threshold = 1
-
-        binding.autoCompleteTextView.addTextChangedListener {
-            binding.autoCompleteTextView.setTextColor(Color.BLACK)
-        }
-
-        sharedPref = requireActivity().getSharedPreferences("application", Context.MODE_PRIVATE)
-
-        for (countryNameWithCountryAbbr in countries) {
-            val (countryName, countryAbbr) = countryNameWithCountryAbbr.split(" - ")
-            map[countryAbbr] = countryName
-        }
-
-        binding.autoCompleteTextView.postDelayed({ binding.autoCompleteTextView.showDropDown() }, 500)
-        binding.autoCompleteTextView.setText("${map[sharedPref.getString("country", "india")]} - ${sharedPref.getString("country", "india")}")
-
-        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.autoCompleteTextView.addTextChangedListener {
+            binding.autoCompleteTextView.setTextColor(Color.BLACK)
+        }
+
         binding.saveCountryButton.setOnClickListener {
-            val countryNameWithCountryAbbr: String = binding.chooseCountryDropdown.editText!!.text.toString()
+            val countryNameWithCountryAbbr: String =
+                binding.chooseCountryDropdown.editText!!.text.toString()
 
             if ("-" !in countryNameWithCountryAbbr) {
-                for ((key, value) in map) {
+                for ((key, value) in viewModel.countryMap) {
                     if (countryNameWithCountryAbbr.trim().lowercase() == value.lowercase()) {
-                        savePreferredCountry(key)
-                        val action = ChangeCountryFragmentDirections.actionChangeCountryFragmentToHomeFragment()
-                        findNavController().navigate(action)
-//                        requireActivity().onBackPressed()
-//                        requireActivity().onBackPressed()
+                        viewModel.saveNewsCountry(key)
+//                        val action =
+//                            ChangeCountryFragmentDirections.actionChangeCountryFragmentToHomeFragment()
+//                        findNavController().navigate(action)
+                        requireActivity().onBackPressed()
+                        requireActivity().onBackPressed()
                     }
                 }
-                binding.autoCompleteTextView.setTextColor(Color.RED)
-            }
-            else {
+                showError()
+            } else {
                 try {
                     val countryAbbr = countryNameWithCountryAbbr.split(" - ")[1]
-                    if (countryAbbr.lowercase() !in map.keys) {
-                        savePreferredCountry(countryAbbr)
-                        val action = ChangeCountryFragmentDirections.actionChangeCountryFragmentToHomeFragment()
-                        findNavController().navigate(action)
-//                        requireActivity().onBackPressed()
-//                        requireActivity().onBackPressed()
-                    }
-                    else
+                    if (countryAbbr.lowercase() !in viewModel.countryMap.keys) {
+                        viewModel.saveNewsCountry(countryAbbr)
+//                        val action =
+//                            ChangeCountryFragmentDirections.actionChangeCountryFragmentToHomeFragment()
+//                        findNavController().navigate(action)
+                        requireActivity().onBackPressed()
+                        requireActivity().onBackPressed()
+                    } else
                         binding.autoCompleteTextView.setTextColor(Color.RED)
-                }
-                catch (e: Exception) {
-//                binding.autoCompleteTextView.error = "Please select the valid country from dropdown"
-                    binding.autoCompleteTextView.setTextColor(Color.RED)
-//                binding.autoCompleteTextView.setText("Please select the valid country from dropdown")
+                } catch (e: Exception) {
+                    showError()
                 }
             }
         }
     }
 
-    private fun savePreferredCountry(countryAbbr : String) {
-        val editor = sharedPref.edit()
-        editor.putString("country", countryAbbr)
-        editor.apply()
+    private fun showError() {
+        binding.autoCompleteTextView.error =
+            "Please select the valid country from the given options"
+        binding.autoCompleteTextView.setTextColor(Color.RED)
     }
 
     override fun onAttach(context: Context) {

@@ -26,6 +26,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import java.util.Locale.filter
 
 class BookmarksFragment : Fragment() {
 
@@ -39,23 +40,43 @@ class BookmarksFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        requireActivity().findViewById<SearchView>(R.id.search_view).visibility = View.GONE
-
         binding = FragmentBookmarksBinding.inflate(layoutInflater)
 
         viewModel = (activity as MainActivity).viewModel
 
-        setHasOptionsMenu(true)
-
-//        newsAdapter = NewsAdapter(articleClickListener,onAddItemToList, listOf())
-        setUpRecyclerView(mutableListOf())
+        initUIElements()
 
         // Inflate the layout for this fragment
         return binding.root
     }
 
+    private fun initUIElements() {
+        // newsAdapter = NewsAdapter(articleClickListener,onAddItemToList, listOf())
+        setUpRecyclerView(mutableListOf())
+        if (viewModel.bookmarkSearchQuery != null)
+            requireActivity().findViewById<SearchView>(R.id.search_view)
+                .setQuery(viewModel.bookmarkSearchQuery, false)
+        else
+            requireActivity().findViewById<SearchView>(R.id.search_view)
+                .setQuery("", false)
+        setHasOptionsMenu(true)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        requireActivity().findViewById<SearchView>(R.id.search_view)
+            .setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    newsAdapter.filterList(viewModel.filterBookmarkNews(query.toString()))
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    return false
+                }
+
+            })
 
         viewModel.getSavedNewsArticles().observe(viewLifecycleOwner, Observer { articles ->
             viewModel.articleList.clear()
@@ -67,8 +88,7 @@ class BookmarksFragment : Fragment() {
                 }
                 newsAdapter.loadList(articles)
                 binding.noBookmarkText.visibility = View.GONE
-            }
-            else {
+            } else {
                 overflowMenu.findItem(R.id.delete_bookmark).isVisible = false
                 newsAdapter.loadList(listOf())
                 binding.noBookmarkText.visibility = View.VISIBLE
@@ -86,13 +106,21 @@ class BookmarksFragment : Fragment() {
 
     private val articleClickListener = object : OnArticleClickListener {
         override fun onClick(article: Article) {
-            val action = BookmarksFragmentDirections.actionBookmarksFragmentToArticlePreviewFragment(article, false)
+            val action =
+                BookmarksFragmentDirections.actionBookmarksFragmentToArticlePreviewFragment(
+                    article,
+                    false
+                )
             requireView().findNavController().navigate(action)
         }
 
         override fun onBookmarkButtonClick(article: Article) {
             unbookmarkArticle(article)
-            val snackbar = Snackbar.make(requireView(), "Article removed from bookmarks successfully", Snackbar.LENGTH_SHORT)
+            val snackbar = Snackbar.make(
+                requireView(),
+                "Article removed from bookmarks successfully",
+                Snackbar.LENGTH_SHORT
+            )
             snackbar.setAction("Undo") {
                 lifecycleScope.launch {
                     article.id = viewModel.insertArticle(article).toInt()
@@ -138,8 +166,9 @@ class BookmarksFragment : Fragment() {
     }
 
     private fun setUpRecyclerView(list: MutableList<Article?>) {
-        newsAdapter = NewsAdapter(articleClickListener,onManageItemsInViewModel, list)
-        newsAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        newsAdapter = NewsAdapter(articleClickListener, onManageItemsInViewModel, list)
+        newsAdapter.stateRestorationPolicy =
+            RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         newsAdapter.isHomePage = false
         binding.recyclerSaved.adapter = newsAdapter
         binding.recyclerSaved.setHasFixedSize(true)
@@ -202,8 +231,7 @@ class BookmarksFragment : Fragment() {
                     snackbar.show()
                     snackbar.view.setOnClickListener { snackbar.dismiss() }
                 }
-            }
-            else {
+            } else {
                 val builder: AlertDialog.Builder = AlertDialog.Builder(requireActivity())
                 builder.setMessage("Do you want to remove all the bookmarks?")
                     .setPositiveButton("Yes", object : DialogInterface.OnClickListener {
@@ -211,11 +239,15 @@ class BookmarksFragment : Fragment() {
                             // When deleting the list, it will affect the reference
                             // So, we store the copy instead of saving the same reference.
                             val temp = viewModel.articleList.map { it }
-                            for(article in viewModel.articleList) {
+                            for (article in viewModel.articleList) {
                                 viewModel.deleteArticle(article)
                                 article.isChecked = false
                             }
-                            val snackbar = Snackbar.make(requireView(), "All Article(s) removed from bookmarks successfully", Snackbar.LENGTH_SHORT)
+                            val snackbar = Snackbar.make(
+                                requireView(),
+                                "All Article(s) removed from bookmarks successfully",
+                                Snackbar.LENGTH_SHORT
+                            )
                             viewModel.articleList.clear()
                             snackbar.setAction("Undo") {
                                 for (article in temp) {
@@ -247,6 +279,12 @@ class BookmarksFragment : Fragment() {
         newsAdapter.isCheckboxEnabled = false
         viewModel.unSelectBookmarkArticles()
         newsAdapter.notifyDataSetChanged()
+    }
+
+    fun showAllBookmarks() {
+        requireActivity().findViewById<SearchView>(R.id.search_view).setQuery("", false)
+        viewModel.revertFilterBookmark()
+        newsAdapter.loadList(viewModel.articleList)
     }
 
 }

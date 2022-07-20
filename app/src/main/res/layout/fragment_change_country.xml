@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="24dp"
-        android:text="Choose your country from below dropdown..."
+        android:text="Choose your country from below options..."
         android:textColor="@color/black"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -27,6 +27,7 @@
         android:layout_marginHorizontal="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:endIconMode="none"
         app:layout_constraintTop_toBottomOf="@+id/choose_country_text">
 
         <AutoCompleteTextView
@@ -34,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:hint="Country" />
+            android:hint="Enter your country" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

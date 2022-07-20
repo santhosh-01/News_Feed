@@ -21,16 +21,7 @@ class AboutFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentAboutBinding.inflate(layoutInflater)
 
-        val bottomNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav_bar)
-        bottomNavBar.visibility = View.GONE
-
         return binding.root
-    }
-
-    override fun onDestroyView() {
-        val bottomNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav_bar)
-        bottomNavBar.visibility = View.VISIBLE
-        super.onDestroyView()
     }
 
 }

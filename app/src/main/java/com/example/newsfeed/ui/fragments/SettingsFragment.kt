@@ -9,12 +9,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.newsfeed.databinding.FragmentSettingsBinding
+import com.example.newsfeed.ui.MainActivity
+import com.example.newsfeed.viewmodel.NewsViewModel
 
 class SettingsFragment : Fragment() {
 
     private lateinit var binding: FragmentSettingsBinding
-    private lateinit var sharedPref: SharedPreferences
-    private var map: HashMap<String, String> = hashMapOf()
+    private lateinit var viewModel: NewsViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,15 +24,9 @@ class SettingsFragment : Fragment() {
 
         binding = FragmentSettingsBinding.inflate(layoutInflater)
 
-        sharedPref = requireActivity().getSharedPreferences("application", Context.MODE_PRIVATE)
+        viewModel = (activity as MainActivity).viewModel
 
-        val countries = resources.getStringArray(com.example.newsfeed.R.array.country_code_array)
-        for (countryNameWithCountryAbbr in countries) {
-            val (countryName, countryAbbr) = countryNameWithCountryAbbr.split(" - ")
-            map[countryAbbr] = countryName
-        }
-
-        binding.selectedCountryName.text = map[sharedPref.getString("country", "")]
+        binding.selectedCountryName.text = viewModel.countryMap[viewModel.selectedCountry]
         // Inflate the layout for this fragment
         return binding.root
     }

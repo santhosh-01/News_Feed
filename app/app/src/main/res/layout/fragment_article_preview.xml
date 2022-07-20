@@ -55,7 +55,7 @@
                             style="@style/NewsArticle.Image"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/image_size"
-                            tools:src="@drawable/default_news_image" />
+                            tools:src="@drawable/news_logo_final" />
 
                         <LinearLayout
                             android:layout_width="match_parent"

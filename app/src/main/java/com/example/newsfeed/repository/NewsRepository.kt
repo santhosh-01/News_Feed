@@ -40,17 +40,13 @@ class NewsRepository(
         language: String,
         apiKey: String
     ): Response<NewsArticle> {
-        if (sortBy == "") {
-            return RetrofitInstance.api.searchForNews(pageNumber = pageNumber, query = searchQuery, language = language, apiKey = apiKey)
-        } else {
-            return RetrofitInstance.api.searchForNews(
-                pageNumber = pageNumber,
-                query = searchQuery,
-                sortBy = sortBy,
-                language = language,
-                apiKey = apiKey
-            )
-        }
+        return RetrofitInstance.api.searchForNews(
+            pageNumber = pageNumber,
+            query = searchQuery,
+            sortBy = sortBy,
+            language = language,
+            apiKey = apiKey
+        )
     }
 
     suspend fun insertArticle(article: Article): Long {

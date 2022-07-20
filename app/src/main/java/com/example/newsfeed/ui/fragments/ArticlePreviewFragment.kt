@@ -23,7 +23,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
 
-
 class ArticlePreviewFragment : Fragment() {
 
     private lateinit var binding: FragmentArticlePreviewBinding
@@ -37,10 +36,6 @@ class ArticlePreviewFragment : Fragment() {
     private lateinit var toBottom: Animation
 
     private val arguments: ArticlePreviewFragmentArgs by navArgs()
-
-    companion object {
-        val TAG = "ArticlePreviewFragment"
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,17 +51,6 @@ class ArticlePreviewFragment : Fragment() {
 
         viewModel = (activity as MainActivity).viewModel
 
-//        val arguments = ArticlePreviewFragmentArgs.fromBundle(requireArguments())
-        article = arguments.article
-
-        if (!arguments.isHomePageNews) {
-            binding.bookmarkToggle.setImageResource(R.drawable.ic_baseline_bookmark_remove_24)
-            isHomePageNews = false
-        }
-
-        if (article.isExistInDB)
-            binding.bookmarkToggle.setImageResource(R.drawable.ic_baseline_bookmark_remove_24)
-
         initUIElements()
 
         // Inflate the layout for this fragment
@@ -75,8 +59,6 @@ class ArticlePreviewFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-//        val arguments = ArticlePreviewFragmentArgs.fromBundle(requireArguments())
 
         binding.help.setOnClickListener {
             onAddButtonClicked()
@@ -249,6 +231,8 @@ class ArticlePreviewFragment : Fragment() {
     }
 
     private fun initUIElements() {
+        article = arguments.article
+
         binding.apply {
             textDetailTitle.text = article.title
             if (article.author.isNullOrBlank()) {
@@ -262,10 +246,18 @@ class ArticlePreviewFragment : Fragment() {
             textDetailContent.text = article.content
             textDetailDetail.text = article.description
             if (article.urlToImage.isNullOrBlank()) {
-                Picasso.get().load(R.drawable.default_news_image).into(imgDetailNews)
+                Picasso.get().load(R.drawable.news_logo_final).into(imgDetailNews)
             }
             else Picasso.get().load(article.urlToImage).into(imgDetailNews)
         }
+
+        if (!arguments.isHomePageNews) {
+            binding.bookmarkToggle.setImageResource(R.drawable.ic_baseline_bookmark_remove_24)
+            isHomePageNews = false
+        }
+
+        if (article.isExistInDB)
+            binding.bookmarkToggle.setImageResource(R.drawable.ic_baseline_bookmark_remove_24)
     }
 
     override fun onAttach(context: Context) {

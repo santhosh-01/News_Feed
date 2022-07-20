@@ -15,16 +15,14 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.example.newsfeed.R
 import com.example.newsfeed.databinding.ActivityMainBinding
-import com.example.newsfeed.db.ArticleDatabase
-import com.example.newsfeed.repository.NewsRepository
 import com.example.newsfeed.ui.fragments.ArticleFragment
 import com.example.newsfeed.ui.fragments.ArticlePreviewFragment
 import com.example.newsfeed.ui.fragments.BookmarksFragment
 import com.example.newsfeed.ui.fragments.HomeFragment
 import com.example.newsfeed.viewmodel.NewsViewModel
-import com.example.newsfeed.viewmodel.NewsViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -81,9 +79,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initializeAttributes() {
         // initializeViewModel
-        val newsRepository = NewsRepository(ArticleDatabase.getInstance(this))
-        val newsViewModelFactory = NewsViewModelFactory(application, newsRepository)
-        viewModel = ViewModelProvider(this, newsViewModelFactory).get(NewsViewModel::class.java)
+        viewModel = ViewModelProvider(this)[NewsViewModel::class.java]
 
         // To specify top level navigation in Nav Graph
         appBarConfiguration = AppBarConfiguration(
@@ -132,8 +128,14 @@ class MainActivity : AppCompatActivity() {
                     hideNavigationIcon()
                     viewModel.unSelectAllArticles()
                 }
-                R.id.aboutFragment -> hideNavigationIcon()
-                R.id.helpFragment -> hideNavigationIcon()
+                R.id.aboutFragment -> {
+                    hideNavigationIcon()
+                    hideBottomNavBar()
+                }
+                R.id.helpFragment -> {
+                    hideNavigationIcon()
+                    hideBottomNavBar()
+                }
                 R.id.change_country -> hideBottomNavBar()
             }
         }
@@ -211,12 +213,17 @@ class MainActivity : AppCompatActivity() {
                 viewModel.popFromSearchQueryStack()
                 binding.customAppBar.searchView.setQuery(viewModel.popFromSearchQueryStack(), true)
             }
-        } else if (navController.currentDestination!!.id == R.id.bookmarksFragment) {
+        }
+        else if (navController.currentDestination!!.id == R.id.bookmarksFragment) {
             val bookmarksFragment =
                 navHostFragment.childFragmentManager.fragments[0] as BookmarksFragment
             if (bookmarksFragment.isCheckboxEnable()) {
                 bookmarksFragment.clearAdapterCheckboxes()
-            } else
+            }
+            else if (viewModel.bookmarkSearchQuery != null) {
+                bookmarksFragment.showAllBookmarks()
+            }
+            else
                 super.onBackPressed()
         } else if (navController.currentDestination!!.id == R.id.articlePreviewFragment) {
             val articlePreviewFragment =

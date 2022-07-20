@@ -16,6 +16,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.newsfeed.R
 import com.example.newsfeed.adapter.NewsAdapter
 import com.example.newsfeed.databinding.FragmentHomeBinding
@@ -101,6 +102,19 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
             val action = HomeFragmentDirections.actionHomeFragmentToCategoryFragment()
             requireView().findNavController().navigate(action)
         }
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            binding.swipeRefreshLayout.isRefreshing = true
+            if (requireActivity().findViewById<SearchView>(R.id.search_view).query.isEmpty()) {
+                setUpRecyclerView(mutableListOf())
+                viewModel.clearSearchQueryStack()
+                viewModel.initAccordingToCurrentConfig()
+            }
+            else {
+                setUpSearchNewsRecyclerView(mutableListOf())
+                viewModel.initSearchAccordingToCurrentConfig()
+            }
+        }
     }
 
     private fun initLiveDataObserverForBreakingNews() {
@@ -110,12 +124,13 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
             }
             when (response) {
                 is Resource.Loading -> {
-                    if (viewModel.breakingNewsPage == 1)
+                    if (viewModel.breakingNewsPage == 1 && !binding.swipeRefreshLayout.isRefreshing)
                         binding.progressBarMiddle.visibility = View.VISIBLE
-                    else
+                    else if (!binding.swipeRefreshLayout.isRefreshing)
                         newsAdapter?.addNullData()
                 }
                 is Resource.Success -> {
+                    binding.swipeRefreshLayout.isRefreshing = false
                     response.data?.let {
                         val articleList = response.data.articles
                         lifecycleScope.launch(Dispatchers.Main) {
@@ -141,10 +156,12 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                                 infiniteScrollListener.pauseScrollListener(true)
                                 binding.recyclerMain.setPadding(0, 0, 0, 0)
                             }
+                            viewModel.breakingNewsPage++
                         }
                     }
                 }
                 is Resource.Error -> {
+                    binding.swipeRefreshLayout.isRefreshing = false
                     response.message?.let { message ->
                         if (message == "No internet connection") {
                             Toast.makeText(
@@ -187,10 +204,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                 query?.let {
                     viewModel.sortBy = "relevancy"
                     viewModel.preferredLanguage = "en"
-                    viewModel.pushToSearchQueryStack(query)
-                    viewModel.searchNewsPage = 0
-                    viewModel.searchNewsResponse = null
-                    viewModel.searchNews(query, viewModel.sortBy)
+                    viewModel.clearAdapterAndGetSearchNews(query)
                 }
                 hideKeyboard()
                 searchView.clearFocus()
@@ -219,10 +233,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
     private fun explicitSearch(query: String?) {
         setUpSearchNewsRecyclerView(mutableListOf())
         query?.let {
-            viewModel.pushToSearchQueryStack(query)
-            viewModel.searchNewsPage = 0
-            viewModel.searchNewsResponse = null
-            viewModel.searchNews(query, viewModel.sortBy)
+            viewModel.clearAdapterAndGetSearchNews(query)
         }
         hideKeyboard()
     }
@@ -235,12 +246,13 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
             when (response) {
                 is Resource.Loading -> {
 //                    Log.i("HomeFragment", viewModel.searchNewsPage.toString())
-                    if (viewModel.searchNewsPage == 1)
+                    if (viewModel.searchNewsPage == 1 && !binding.swipeRefreshLayout.isRefreshing)
                         binding.progressBarMiddle.visibility = View.VISIBLE
-                    else
+                    else if (!binding.swipeRefreshLayout.isRefreshing)
                         searchNewsAdapter?.addNullData()
                 }
                 is Resource.Success -> {
+                    binding.swipeRefreshLayout.isRefreshing = false
                     response.data?.let {
                         val articleList = response.data.articles
                         lifecycleScope.launch(Dispatchers.Main) {
@@ -270,6 +282,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                     }
                 }
                 is Resource.Error -> {
+                    binding.swipeRefreshLayout.isRefreshing = false
                     response.message?.let { message ->
                         if (message == "No internet connection") {
                             Toast.makeText(
@@ -434,7 +447,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
 
 //        autoCompleteTextView.postDelayed({ autoCompleteTextView.showDropDown() }, 500)
         autoCompleteTextView.hint =
-            ("${viewModel.languagesMap[viewModel.preferredLanguage]} - ${viewModel.preferredLanguage.uppercase()}")
+            ("${viewModel.languageMap[viewModel.preferredLanguage]} - ${viewModel.preferredLanguage.uppercase()}")
         autoCompleteTextView.setHintTextColor(Color.BLACK)
     }
 
