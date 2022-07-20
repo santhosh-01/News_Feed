@@ -3,13 +3,15 @@
     <!--    App Name-->
     <string name="app_name">News Feed</string>
 
-    <!--    Bottom Nav Bar Titles-->
     <string name="home">Home</string>
     <string name="settings">Settings</string>
     <string name="bookmarks">Bookmarks</string>
+    <string name="advanced_search">Advanced Search</string>
+    <string name="add_to_bookmarks">Add to Bookmarks</string>
+    <string name="delete_bookmark">Delete Bookmark</string>
 
     <!--    About News Feed App-->
-    <string name="about_app">\u2022 News Feed App is to get the Breaking News and to get the News in Customizable way
+    <string name="about_app_text">\u2022 News Feed App is to get the Breaking News and to get the News in Customizable way
         \n\n\u2022 User can do search, filter based on the categories, countries, etc..
         \n\n\u2022 User can bookmark any news article and can see the bookmarked news articles</string>
 
@@ -19,6 +21,33 @@
         \n\n\u2022 The overflow menu contains the navigation for About App Page and Help Page
         \n\n\u2022 On Clicking Settings Tab on the bottom Nav Bar, user will land on Settings Page and can customise their app
         \n\n\u2022 On Clicking Bookmarks Tab, user will land on Bookmarks Page and can see all bookmarked articles</string>
+    <string name="sort_by">SORT BY</string>
+    <string name="apply">Apply</string>
+    <string name="relevance">Relevance</string>
+    <string name="popularity">Popularity</string>
+    <string name="time">Time</string>
+    <string name="choose_language">CHOOSE LANGUAGE</string>
+    <string name="textview">TextView</string>
+    <string name="share_article_link">Share Article Link</string>
+    <string name="bookmark_toggle">Bookmark Toggle</string>
+    <string name="read_more">Read More</string>
+    <string name="continue_reading">Continue reading…</string>
+    <string name="no_bookmarks_available">No Bookmarks Available!!</string>
+    <string name="general">GENERAL</string>
+    <string name="entertainment">ENTERTAINMENT</string>
+    <string name="business">BUSINESS</string>
+    <string name="health">HEALTH</string>
+    <string name="science">SCIENCE</string>
+    <string name="sports">SPORTS</string>
+    <string name="technology">TECHNOLOGY</string>
+    <string name="choose_your_country_from_below_options">Choose your country from below options…</string>
+    <string name="enter_your_country">Enter your country</string>
+    <string name="save">SAVE</string>
+    <string name="personalisation">Personalisation</string>
+    <string name="change_country">Change Country</string>
+    <string name="others">Others</string>
+    <string name="about_app">About App</string>
+    <string name="help">Help</string>
 
     <!--    String Array of Country Names-->
     <string-array name="country_code_array">

@@ -6,6 +6,6 @@
         android:id="@+id/delete_bookmark"
         android:icon="@drawable/ic_baseline_bookmark_remove_24"
         app:showAsAction="always"
-        android:title="Delete Bookmark" />
+        android:title="@string/delete_bookmark" />
 
 </menu>

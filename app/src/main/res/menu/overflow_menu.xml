@@ -10,24 +10,18 @@
         app:showAsAction="always|collapseActionView" />-->
 
     <item
-        android:id="@+id/sort"
-        android:title="Sort"
+        android:id="@+id/advanced_search"
+        android:title="@string/advanced_search"
         android:icon="@drawable/ic_advanced_search"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:visible="false"/>
 
 
     <item
         android:id="@+id/add_bookmark"
-        android:title="Add to Bookmarks"
+        android:title="@string/add_to_bookmarks"
         android:icon="@drawable/ic_baseline_bookmark_add_24"
         app:showAsAction="always"
         android:visible="false"/>
-
-<!--    <item
-        android:id="@+id/unselect"
-        android:icon="@drawable/ic_baseline_close_24"
-        android:title="Unselect"
-        app:showAsAction="always" />-->
 
 </menu>

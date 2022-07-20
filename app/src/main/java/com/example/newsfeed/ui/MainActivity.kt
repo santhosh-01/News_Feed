@@ -190,11 +190,8 @@ class MainActivity : AppCompatActivity() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setTitle("Are you sure?")
             .setMessage("Do you want to Exit?")
-            .setPositiveButton("Yes", object : DialogInterface.OnClickListener {
-                override fun onClick(dialog: DialogInterface?, which: Int) {
-                    finish()
-                }
-            })
+            .setPositiveButton("Yes"
+            ) { dialog, which -> finish() }
             .setNegativeButton("No", null)
             .setCancelable(false)
 
@@ -232,7 +229,7 @@ class MainActivity : AppCompatActivity() {
                 articlePreviewFragment.onAddButtonClicked()
             } else
                 super.onBackPressed()
-        } else if (navController.currentDestination!!.id == com.example.newsfeed.R.id.articleFragment) {
+        } else if (navController.currentDestination!!.id == R.id.articleFragment) {
             val articleFragment =
                 navHostFragment.childFragmentManager.fragments[0] as ArticleFragment
             if (articleFragment.clicked) {

@@ -5,11 +5,14 @@ import androidx.recyclerview.widget.RecyclerView
 
 class InfiniteScrollListener(private val linearLayoutManager: LinearLayoutManager, private val listener: OnLoadMoreListener) : RecyclerView.OnScrollListener() {
 
-    private val VISIBLE_THRESHOLD = 2
+    companion object {
+        private const val VISIBLE_THRESHOLD = 2
+    }
+
     private var loading = false // LOAD MORE Progress dialog
     private var pauseListening = false
 
-    private var END_OF_FEED_ADDED = false
+    private var endOfFeedAdded = false
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         super.onScrolled(recyclerView, dx, dy)
@@ -17,7 +20,7 @@ class InfiniteScrollListener(private val linearLayoutManager: LinearLayoutManage
         if (dx == 0 && dy == 0) return
         val totalItemCount = linearLayoutManager.itemCount
         val lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition()
-        if (!loading && totalItemCount <= lastVisibleItem + VISIBLE_THRESHOLD && totalItemCount != 0 && !END_OF_FEED_ADDED && !pauseListening) {
+        if (!loading && totalItemCount <= lastVisibleItem + VISIBLE_THRESHOLD && totalItemCount != 0 && !endOfFeedAdded && !pauseListening) {
             listener.onLoadMore()
             loading = true
         }
@@ -28,7 +31,7 @@ class InfiniteScrollListener(private val linearLayoutManager: LinearLayoutManage
     }
 
     fun addEndOfRequests() {
-        END_OF_FEED_ADDED = true
+        endOfFeedAdded = true
     }
 
     interface OnLoadMoreListener {

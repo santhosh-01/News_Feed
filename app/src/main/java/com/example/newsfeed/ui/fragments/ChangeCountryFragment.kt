@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.example.newsfeed.R
 import com.example.newsfeed.databinding.FragmentChangeCountryBinding
 import com.example.newsfeed.ui.MainActivity
@@ -25,7 +24,7 @@ class ChangeCountryFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         Log.i("ArticlePreviewFragment", "onCreateView")
 
@@ -41,7 +40,7 @@ class ChangeCountryFragment : Fragment() {
     }
 
     private fun setupDropDownAdapter() {
-        val countries = resources.getStringArray(com.example.newsfeed.R.array.country_code_array)
+        val countries = resources.getStringArray(R.array.country_code_array)
         val arrayAdapter =
             ArrayAdapter(requireContext(), R.layout.dropdown_item, countries)
 

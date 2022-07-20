@@ -110,26 +110,11 @@
         android:id="@+id/categoryFragment"
         android:name="com.example.newsfeed.ui.fragments.CategoryFragment"
         android:label="News Categories"
-        tools:layout="@layout/fragment_category">
-        <action
-            android:id="@+id/action_categoryFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
-            app:popUpTo="@id/main_navigation"
-            app:popUpToInclusive="true" />
-    </fragment>
+        tools:layout="@layout/fragment_category"/>
     <fragment
         android:id="@+id/changeCountryFragment"
         android:name="com.example.newsfeed.ui.fragments.ChangeCountryFragment"
         android:label="Choose Your Country"
-        tools:layout="@layout/fragment_change_country">
-        <action
-            android:id="@+id/action_changeCountryFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
-            app:popUpTo="@id/main_navigation" />
-    </fragment>
+        tools:layout="@layout/fragment_change_country"/>
 
 </navigation>

@@ -19,7 +19,7 @@
     <color name="primaryColor">#eaeef7</color>
     <color name="selected">#C8F0F7</color>
     <color name="secondaryColor">#FFCA28</color>
-    <color name="background">#f2f4f6</color>
+    <color name="background">#eaeef7</color>
     <color name="ltgray">#CFCCCB</color>
 
     <!-- Other colors -->

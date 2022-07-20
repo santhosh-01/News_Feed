@@ -5,18 +5,17 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.newsfeed.R
 import com.example.newsfeed.adapter.NewsAdapter
 import com.example.newsfeed.databinding.FragmentHomeBinding
@@ -33,10 +32,7 @@ import com.example.newsfeed.viewmodel.NewsViewModel
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import kotlin.math.ceil
 import kotlin.math.min
 
@@ -53,7 +49,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(layoutInflater)
 
@@ -118,7 +114,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
     }
 
     private fun initLiveDataObserverForBreakingNews() {
-        viewModel.breakingNews.observe(viewLifecycleOwner, Observer { response ->
+        viewModel.breakingNews.observe(viewLifecycleOwner) { response ->
             if (newsAdapter == null) {
                 setUpRecyclerView(mutableListOf())
             }
@@ -171,26 +167,34 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                             ).show()
                             binding.progressBarMiddle.visibility = View.GONE
                         } else {
-                            val isSuccess = runBlocking { viewModel.changeAPIKey() }
-                            if (!isSuccess) {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "ALL API Keys are used!! Try again after some time",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                                binding.progressBarMiddle.visibility = View.GONE
-                            } else {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "API Request limit completed!!, So, Trying to fetch news from other API Key ${viewModel.apiKey}",
-                                    Toast.LENGTH_LONG
-                                ).show()
+                            var isSuccess: Boolean = false
+                            Log.i("HomeFragment",Thread.currentThread().name.toString()+"1")
+                            lifecycleScope.launch(Dispatchers.Main) {
+                                Log.i("HomeFragment",Thread.currentThread().name.toString()+"2")
+                                withContext(Dispatchers.IO) {
+                                    Log.i("HomeFragment",Thread.currentThread().name.toString()+"3")
+                                    isSuccess = viewModel.changeAPIKey()
+                                }
+                                if (!isSuccess) {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "ALL API Keys are used!! Try again after some time",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    binding.progressBarMiddle.visibility = View.GONE
+                                } else {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "API Request limit completed!!, So, Trying to fetch news from other API Key ${viewModel.apiKey}",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
                             }
                         }
                     }
                 }
             }
-        })
+        }
     }
 
     private fun initUIElementForSearch() {
@@ -239,7 +243,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
     }
 
     private fun initLiveDataObserverForSearch() {
-        viewModel.searchNews.observe(viewLifecycleOwner, Observer { response ->
+        viewModel.searchNews.observe(viewLifecycleOwner) { response ->
             if (searchNewsAdapter == null) {
                 setUpSearchNewsRecyclerView(mutableListOf())
             }
@@ -278,6 +282,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                                 infiniteScrollListener.pauseScrollListener(true)
                                 binding.recyclerMain.setPadding(0, 0, 0, 0)
                             }
+                            viewModel.searchNewsPage ++
                         }
                     }
                 }
@@ -312,7 +317,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                     }
                 }
             }
-        })
+        }
     }
 
 
@@ -320,18 +325,18 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.overflow_menu, menu)
 
-        val sort = menu.findItem(R.id.sort)
+        val advancedSearch = menu.findItem(R.id.advanced_search)
         val bookmark = menu.findItem(R.id.add_bookmark)
 
-        viewModel.searchQueryStack.observe(viewLifecycleOwner, Observer {
-            sort.isVisible = it.isNotEmpty()
-        })
+        viewModel.searchQueryStack.observe(viewLifecycleOwner) {
+            advancedSearch.isVisible = it.isNotEmpty()
+        }
 
-        viewModel.selectedItemPositionsInHome.observe(viewLifecycleOwner, Observer {
+        viewModel.selectedItemPositionsInHome.observe(viewLifecycleOwner) {
             bookmark.isVisible = it.isNotEmpty()
-        })
+        }
 
-        sort.setOnMenuItemClickListener {
+        advancedSearch.setOnMenuItemClickListener {
             showDialog()
             true
         }
@@ -640,11 +645,6 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
     fun isCheckboxEnable(): Boolean {
         return if (!viewModel.isSearchQueryStackEmpty()) searchNewsAdapter!!.isCheckboxEnabled
         else newsAdapter!!.isCheckboxEnabled
-    }
-
-    fun notifyAdapterAsDataSetChanged() {
-        if (!viewModel.isSearchQueryStackEmpty()) searchNewsAdapter!!.notifyDataSetChanged()
-        else newsAdapter!!.notifyDataSetChanged()
     }
 
 

@@ -1,16 +1,12 @@
 package com.example.newsfeed.ui.fragments
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.example.newsfeed.R
 import com.example.newsfeed.databinding.FragmentCategoryBinding
 import com.example.newsfeed.ui.MainActivity
@@ -24,7 +20,7 @@ class CategoryFragment : Fragment(), View.OnClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         (requireActivity() as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu_right_lined)
 

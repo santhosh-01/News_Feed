@@ -17,14 +17,14 @@ class NewsRepository(
         countryAbbr: String,
         apiKey: String
     ): Response<NewsArticle> {
-        if (countryAbbr == "global") {
-            return RetrofitInstance.api.getTopHeadlines(
+        return if (countryAbbr == "global") {
+            RetrofitInstance.api.getTopHeadlines(
                 pageNumber = pageNumber,
                 category = category,
                 apiKey = apiKey
             )
         } else {
-            return RetrofitInstance.api.getTopHeadlinesWithCountry(
+            RetrofitInstance.api.getTopHeadlinesWithCountry(
                 pageNumber = pageNumber,
                 category = category,
                 country = countryAbbr,

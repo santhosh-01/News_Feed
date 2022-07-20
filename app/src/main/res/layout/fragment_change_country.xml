@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="24dp"
-        android:text="Choose your country from below options..."
+        android:text="@string/choose_your_country_from_below_options"
         android:textColor="@color/black"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:hint="Enter your country" />
+            android:hint="@string/enter_your_country" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -48,7 +48,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SAVE"/>
+        android:text="@string/save"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

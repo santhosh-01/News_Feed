@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver.OnScrollChangedListener
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
@@ -40,7 +39,7 @@ class ArticlePreviewFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         Log.i("ArticlePreviewFragment", "onCreateView")
 
@@ -107,7 +106,7 @@ class ArticlePreviewFragment : Fragment() {
             }
         }
 
-        binding.scrollView.viewTreeObserver.addOnScrollChangedListener(OnScrollChangedListener {
+        binding.scrollView.viewTreeObserver.addOnScrollChangedListener {
 
             context?.let {
                 fromBottom = AnimationUtils.loadAnimation(context, R.anim.from_bottom_anim)
@@ -116,13 +115,12 @@ class ArticlePreviewFragment : Fragment() {
 
             val scrollY: Int = binding.scrollView.scrollY // For ScrollView
 
-            if(scrollY > 200) {
+            if (scrollY > 200) {
                 toBottom.duration = 500
                 binding.help.visibility = View.INVISIBLE
                 binding.help.animation = toBottom
                 binding.help.isClickable = false
-            }
-            else {
+            } else {
                 fromBottom.duration = 500
                 binding.help.visibility = View.VISIBLE
                 binding.help.animation = fromBottom
@@ -131,7 +129,7 @@ class ArticlePreviewFragment : Fragment() {
 
             // For HorizontalScrollView
             // DO SOMETHING WITH THE SCROLL COORDINATES
-        })
+        }
     }
 
     private fun parseTime(publishedTime: String?): String {

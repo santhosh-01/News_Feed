@@ -16,9 +16,7 @@ import com.example.newsfeed.repository.NewsRepository
 import com.example.newsfeed.util.Constants.Companion.API_KEYS
 import com.example.newsfeed.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import retrofit2.Response
 import java.io.IOException
 import java.util.*
@@ -53,7 +51,7 @@ class NewsViewModel @Inject constructor(
     var searchNewsResponse: NewsArticle? = null
 
     var breakingNewsPage: Int = 1
-    var searchNewsPage: Int = 0
+    var searchNewsPage: Int = 1
 
     var newSearchQuery: String? = null
     var oldSearchQuery: String? = null
@@ -127,7 +125,7 @@ class NewsViewModel @Inject constructor(
     }
 
     fun initSearchAccordingToCurrentConfig() {
-        searchNewsPage = 0
+        searchNewsPage = 1
         searchNewsResponse = null
         searchNews(searchQuery, sortBy)
     }
@@ -186,7 +184,6 @@ class NewsViewModel @Inject constructor(
                 return Resource.Success(searchNewsResponse ?: resultResponse)
             }
         }
-        searchNewsPage--
         return Resource.Error("No Result")
     }
 
@@ -282,16 +279,13 @@ class NewsViewModel @Inject constructor(
         searchNews.postValue(Resource.Loading())
         try {
             if (hasInternetConnection()) {
-                searchNewsPage++
                 val response =
                     newsRepository.searchNews(searchNewsPage, searchQuery, sortBy, language, apiKey)
                 searchNews.postValue(handleSearchNewsResponse(response))
             } else {
-                searchNewsPage--
                 searchNews.postValue(Resource.Error("No internet connection"))
             }
         } catch (t: Throwable) {
-            searchNewsPage--
             when (t) {
                 is IOException -> searchNews.postValue(Resource.Error("Network Failure"))
                 else -> searchNews.postValue(Resource.Error("Conversion Error"))
@@ -345,29 +339,29 @@ class NewsViewModel @Inject constructor(
 //        return false
     }
 
-    fun changeAPIKey(): Boolean {
-        var successFlag = false
-        runBlocking {
-            val task = async {
-                for (apiKey in API_KEYS.drop(1))  {
-                    this@NewsViewModel.apiKey = apiKey
-                    val response =
-                        newsRepository.getBreakingNews(breakingNewsPage, selectedCategory, selectedCountry, apiKey)
-                    if (response.isSuccessful) {
-                        getBreakingNews(selectedCategory, selectedCountry)
-                        successFlag = true
-                        break
-                    }
+    suspend fun changeAPIKey(): Boolean {
+        Log.i("NewsViewModel",Thread.currentThread().name.toString()+"4")
+        val successFlag = withContext(Dispatchers.IO) {
+            var successFlag = false
+            Log.i("NewsViewModel",Thread.currentThread().name.toString()+"5")
+            for (apiKey in API_KEYS.drop(1))  {
+                this@NewsViewModel.apiKey = apiKey
+                val response =
+                    newsRepository.getBreakingNews(breakingNewsPage, selectedCategory, selectedCountry, apiKey)
+                if (response.isSuccessful) {
+                    getBreakingNews(selectedCategory, selectedCountry)
+                    successFlag = true
+                    break
                 }
             }
-            task.await()
+            return@withContext successFlag
         }
+        Log.i("NewsViewModel",Thread.currentThread().name.toString()+"6")
         return successFlag
     }
 
     fun changeAPIKeyForSearch(): Boolean {
         var successFlag = false
-        searchNewsPage++
         runBlocking {
             val task = async {
                 for (apiKey in API_KEYS.drop(1))  {
@@ -450,7 +444,7 @@ class NewsViewModel @Inject constructor(
     }
 
     fun clearAdapterAndGetSearchNews(searchQuery: String) {
-        searchNewsPage = 0
+        searchNewsPage = 1
         searchNewsResponse = null
         pushToSearchQueryStack(searchQuery)
         searchNews(searchQuery, sortBy)

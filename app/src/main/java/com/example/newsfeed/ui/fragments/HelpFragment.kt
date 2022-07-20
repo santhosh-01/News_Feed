@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.newsfeed.R
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HelpFragment : Fragment() {
 

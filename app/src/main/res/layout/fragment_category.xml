@@ -46,7 +46,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="GENERAL"
+                    android:text="@string/general"
                     android:textAlignment="center"
                     android:textStyle="bold"
                     android:textSize="16sp"
@@ -84,7 +84,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ENTERTAINMENT"
+                    android:text="@string/entertainment"
                     android:textAlignment="center"
                     android:textStyle="bold"
                     android:textSize="16sp"
@@ -122,7 +122,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="BUSINESS"
+                    android:text="@string/business"
                     android:textAlignment="center"
                     android:textStyle="bold"
                     android:textSize="16sp"
@@ -160,7 +160,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="HEALTH"
+                    android:text="@string/health"
                     android:textAlignment="center"
                     android:textStyle="bold"
                     android:textSize="16sp"
@@ -198,7 +198,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="SCIENCE"
+                    android:text="@string/science"
                     android:textAlignment="center"
                     android:textStyle="bold"
                     android:textSize="16sp"
@@ -236,7 +236,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="SPORTS"
+                    android:text="@string/sports"
                     android:textAlignment="center"
                     android:textStyle="bold"
                     android:textSize="16sp"
@@ -274,7 +274,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TECHNOLOGY"
+                    android:text="@string/technology"
                     android:textAlignment="center"
                     android:textStyle="bold"
                     android:textSize="16sp"

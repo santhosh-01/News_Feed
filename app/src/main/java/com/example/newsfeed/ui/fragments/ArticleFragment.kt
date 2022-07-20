@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.webkit.WebView
@@ -35,7 +34,7 @@ class ArticleFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         fromBottom = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.from_bottom_anim)
         toBottom = AnimationUtils.loadAnimation(requireActivity().applicationContext, R.anim.to_bottom_anim)
@@ -119,7 +118,7 @@ class ArticleFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.webView.viewTreeObserver.addOnScrollChangedListener(ViewTreeObserver.OnScrollChangedListener {
+        binding.webView.viewTreeObserver.addOnScrollChangedListener {
 
             context?.let {
                 fromBottom = AnimationUtils.loadAnimation(context, R.anim.from_bottom_anim)
@@ -142,7 +141,7 @@ class ArticleFragment : Fragment() {
 
             // For HorizontalScrollView
             // DO SOMETHING WITH THE SCROLL COORDINATES
-        })
+        }
     }
 
     private fun bookmarkArticle(article: Article) {

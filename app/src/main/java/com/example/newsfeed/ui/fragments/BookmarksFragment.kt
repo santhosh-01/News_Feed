@@ -1,13 +1,11 @@
 package com.example.newsfeed.ui.fragments
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,7 +24,6 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import java.util.Locale.filter
 
 class BookmarksFragment : Fragment() {
 
@@ -38,7 +35,7 @@ class BookmarksFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         binding = FragmentBookmarksBinding.inflate(layoutInflater)
 
@@ -78,7 +75,7 @@ class BookmarksFragment : Fragment() {
 
             })
 
-        viewModel.getSavedNewsArticles().observe(viewLifecycleOwner, Observer { articles ->
+        viewModel.getSavedNewsArticles().observe(viewLifecycleOwner) { articles ->
             viewModel.articleList.clear()
             viewModel.articleList.addAll(articles)
             if (articles.isNotEmpty()) {
@@ -93,7 +90,7 @@ class BookmarksFragment : Fragment() {
                 newsAdapter.loadList(listOf())
                 binding.noBookmarkText.visibility = View.VISIBLE
             }
-        })
+        }
     }
 
     private fun unbookmarkArticle(article: Article) {
@@ -234,34 +231,32 @@ class BookmarksFragment : Fragment() {
             } else {
                 val builder: AlertDialog.Builder = AlertDialog.Builder(requireActivity())
                 builder.setMessage("Do you want to remove all the bookmarks?")
-                    .setPositiveButton("Yes", object : DialogInterface.OnClickListener {
-                        override fun onClick(dialog: DialogInterface?, which: Int) {
-                            // When deleting the list, it will affect the reference
-                            // So, we store the copy instead of saving the same reference.
-                            val temp = viewModel.articleList.map { it }
-                            for (article in viewModel.articleList) {
-                                viewModel.deleteArticle(article)
-                                article.isChecked = false
-                            }
-                            val snackbar = Snackbar.make(
-                                requireView(),
-                                "All Article(s) removed from bookmarks successfully",
-                                Snackbar.LENGTH_SHORT
-                            )
-                            viewModel.articleList.clear()
-                            snackbar.setAction("Undo") {
-                                for (article in temp) {
-                                    lifecycleScope.launch {
-                                        article.id = viewModel.insertArticle(article).toInt()
-                                        article.isExistInDB = true
-                                    }
-                                }
-                                snackbar.dismiss()
-                            }
-                            snackbar.show()
-                            snackbar.view.setOnClickListener { snackbar.dismiss() }
+                    .setPositiveButton("Yes"
+                    ) { dialog, which -> // When deleting the list, it will affect the reference
+                        // So, we store the copy instead of saving the same reference.
+                        val temp = viewModel.articleList.map { it }
+                        for (article in viewModel.articleList) {
+                            viewModel.deleteArticle(article)
+                            article.isChecked = false
                         }
-                    })
+                        val snackbar = Snackbar.make(
+                            requireView(),
+                            "All Article(s) removed from bookmarks successfully",
+                            Snackbar.LENGTH_SHORT
+                        )
+                        viewModel.articleList.clear()
+                        snackbar.setAction("Undo") {
+                            for (article in temp) {
+                                lifecycleScope.launch {
+                                    article.id = viewModel.insertArticle(article).toInt()
+                                    article.isExistInDB = true
+                                }
+                            }
+                            snackbar.dismiss()
+                        }
+                        snackbar.show()
+                        snackbar.view.setOnClickListener { snackbar.dismiss() }
+                    }
                     .setNegativeButton("No", null)
 
                 val alert: AlertDialog = builder.create()

@@ -19,8 +19,11 @@ class NewsAdapter(
     private var articleList: MutableList<Article?>
 ) : RecyclerView.Adapter<NewsAdapter.CustomViewHolder>() {
 
-    private val VIEW_TYPE_ITEM: Int = 1
-    private val VIEW_TYPE_LOADING: Int = 0
+    companion object {
+        private const val VIEW_TYPE_ITEM: Int = 1
+        private const val VIEW_TYPE_LOADING: Int = 0
+    }
+
     var isCheckboxEnabled = false
     var isHomePage = true
     var canSelectBookmark = false
@@ -30,20 +33,20 @@ class NewsAdapter(
 
     inner class ArticleViewHolder(itemView: View) : CustomViewHolder(itemView) {
 
-        //        val secondPart: LinearLayout
-        val textTitle: TextView
-        val textSource: TextView
-        val textTime: TextView
+        private val secondPart: LinearLayout
+        private val textTitle: TextView
+        private val textSource: TextView
+        private val textTime: TextView
         val progressBar: ProgressBar
         val newsImage: ImageView
-        val cardView: MaterialCardView
-        val shareButton: ImageButton
-        val bookmarkButton: ToggleButton
-        val checkBox: CheckBox
-        val blockedCheckBox: View
+        private val cardView: MaterialCardView
+        private val shareButton: ImageButton
+        private val bookmarkButton: ToggleButton
+        private val checkBox: CheckBox
+        private val blockedCheckBox: View
 
         init {
-//            secondPart = itemView.findViewById(R.id.secondPart)
+            secondPart = itemView.findViewById(R.id.secondPart)
             textTitle = itemView.findViewById(R.id.text_title)
             textSource = itemView.findViewById(R.id.text_source)
             textTime = itemView.findViewById(R.id.text_time)
@@ -93,11 +96,13 @@ class NewsAdapter(
                 }
             }
             if (!isCheckboxEnabled) {
+                secondPart.visibility = View.VISIBLE
                 checkBox.visibility = View.GONE
                 blockedCheckBox.visibility = View.GONE
             }
             if (isCheckboxEnabled) {
                 checkBox.visibility = View.VISIBLE
+                secondPart.visibility = View.GONE
                 if ((isHomePage && currentArticle.isExistInDB) || (!isHomePage && !currentArticle.isExistInDB)) {
                     checkBox.isChecked = false
                     cardView.isEnabled = false
@@ -179,9 +184,9 @@ class NewsAdapter(
         }
 
         // Extension Function to get Double Digit using the integer
-        private fun Int.formatToDoubleDigit(): String {
-            return "%02d".format(this)
-        }
+//        private fun Int.formatToDoubleDigit(): String {
+//            return "%02d".format(this)
+//        }
 
         fun bind(position: Int) {
             val currentArticle = articleList[position]
@@ -242,10 +247,10 @@ class NewsAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (articleList[position] != null)
-            return VIEW_TYPE_ITEM;
+        return if (articleList[position] != null)
+            VIEW_TYPE_ITEM
         else
-            return VIEW_TYPE_LOADING;
+            VIEW_TYPE_LOADING
     }
 
     fun addNullData() {

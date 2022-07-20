@@ -82,6 +82,8 @@
         <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/app/src/main/res/layout/fragment_article_preview.xml" value="0.1" />
         <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/app/src/main/res/layout/fragment_article_preview1.xml" value="0.1" />
         <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/app/src/main/res/layout/news_article_item1.xml" value="0.1" />
+        <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/drawable/background_border.xml" value="0.207" />
+        <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/drawable/ic_baseline_close_24.xml" value="0.207" />
         <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/drawable/ic_baseline_turned_in_24.xml" value="0.1" />
         <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/drawable/ic_baseline_turned_in_not_24.xml" value="0.1" />
         <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/drawable/ic_general_news.xml" value="0.1" />
@@ -90,14 +92,25 @@
         <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/drawable/ic_photo_film_solid.xml" value="0.1" />
         <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/drawable/ic_share.xml" value="0.1" />
         <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/layout/activity_main.xml" value="0.2630208333333333" />
+        <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/layout/bottom_sheet_layout.xml" value="0.2630208333333333" />
         <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/layout/custom_app_bar.xml" value="0.2630208333333333" />
+        <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/layout/dropdown_item.xml" value="0.2630208333333333" />
         <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/layout/fragment_about.xml" value="0.2630208333333333" />
-        <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/layout/fragment_article_preview.xml" value="0.4" />
+        <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/layout/fragment_article.xml" value="0.2630208333333333" />
+        <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/layout/fragment_article_preview.xml" value="0.2" />
         <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/layout/fragment_article_preview1.xml" value="0.1" />
+        <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/layout/fragment_bookmarks.xml" value="0.2630208333333333" />
+        <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/layout/fragment_category.xml" value="0.2630208333333333" />
         <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/layout/fragment_change_country.xml" value="0.2630208333333333" />
+        <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/layout/fragment_help.xml" value="0.11458333333333333" />
         <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/layout/fragment_home.xml" value="0.2630208333333333" />
         <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/layout/fragment_settings.xml" value="0.2630208333333333" />
-        <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/layout/news_article_item1.xml" value="0.128" />
+        <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/layout/item_progress.xml" value="0.11458333333333333" />
+        <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/layout/news_article_item.xml" value="0.11458333333333333" />
+        <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/layout/news_article_item1.xml" value="0.2" />
+        <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/menu/bookmark_delete.xml" value="0.2630208333333333" />
+        <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/menu/bottom_nav_bar_menu.xml" value="0.2630208333333333" />
+        <entry key="..\:/Users/santhosh-13022/Documents/News_Feed/app/src/main/res/menu/overflow_menu.xml" value="0.2630208333333333" />
       </map>
     </option>
   </component>

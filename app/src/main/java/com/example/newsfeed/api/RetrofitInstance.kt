@@ -12,7 +12,7 @@ class RetrofitInstance {
 
         //Creating Retrofit Instance
         private val retrofit by lazy {
-            val loggingInterceptor: HttpLoggingInterceptor = HttpLoggingInterceptor()
+            val loggingInterceptor = HttpLoggingInterceptor()
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
             val client = OkHttpClient.Builder().addInterceptor(loggingInterceptor).build()
             Retrofit.Builder().baseUrl(Constants.BASE_URL)
@@ -20,7 +20,7 @@ class RetrofitInstance {
         }
 
         //Creating the public variable for api using NewsAPI Interface
-        val api by lazy {
+        val api: NewsAPI by lazy {
             retrofit.create(NewsAPI::class.java)
         }
 
