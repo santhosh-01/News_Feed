@@ -3,7 +3,9 @@ package com.example.newsfeed.ui.fragments
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -15,6 +17,7 @@ import com.example.newsfeed.adapter.NewsAdapter
 import com.example.newsfeed.databinding.FragmentBookmarksBinding
 import com.example.newsfeed.entity.Article
 import com.example.newsfeed.ui.MainActivity
+import com.example.newsfeed.util.HandleKeyboard.Companion.hideKeyboard
 import com.example.newsfeed.util.listener.OnArticleClickListener
 import com.example.newsfeed.util.listener.OnManageItemsInViewModel
 import com.example.newsfeed.viewmodel.NewsViewModel
@@ -50,29 +53,52 @@ class BookmarksFragment : Fragment() {
     private fun initUIElements() {
         // newsAdapter = NewsAdapter(articleClickListener,onAddItemToList, listOf())
         setUpRecyclerView(mutableListOf())
-        if (viewModel.bookmarkSearchQuery != null)
-            requireActivity().findViewById<SearchView>(R.id.search_view)
-                .setQuery(viewModel.bookmarkSearchQuery, false)
-        else
-            requireActivity().findViewById<SearchView>(R.id.search_view)
-                .setQuery("", false)
+        requireActivity().findViewById<SearchView>(R.id.search_view)
+            .setQuery("", false)
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            binding.swipeRefreshLayout.isRefreshing = true
+            setUpRecyclerView(mutableListOf())
+            if (viewModel.bookmarkSearchQuery != null) {
+                viewModel.bookmarkSearchQuery = null
+                requireActivity().findViewById<SearchView>(R.id.search_view).setQuery("",false)
+                newsAdapter.loadList(viewModel.temp.reversed())
+                viewModel.temp.clear()
+            }
+            else {
+                newsAdapter.loadList(viewModel.articleList.reversed())
+            }
+            binding.swipeRefreshLayout.isRefreshing = false
+            newsAdapter.notifyDataSetChanged()
+//            Log.i("BookmarkFragment", viewModel.temp.size.toString())
+//            Log.i("BookmarkFragment", viewModel.temp.size.toString())
+        }
+
         setHasOptionsMenu(true)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        requireActivity().findViewById<SearchView>(R.id.search_view)
-            .setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        val searchView = requireActivity().findViewById<SearchView>(R.id.search_view)
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    newsAdapter.filterList(viewModel.filterBookmarkNews(query.toString()))
+                    val filteredList = viewModel.filterBookmarkNews(query.toString())
+                    if (filteredList.isEmpty()) {
+                        Toast.makeText(requireContext(), "No Matching Record Found!!", Toast.LENGTH_LONG).show()
+                        newsAdapter.clearAdapterList()
+                        newsAdapter.notifyDataSetChanged()
+                    }
+                    else
+                        newsAdapter.filterList(filteredList)
+                    hideKeyboard()
+                    searchView.clearFocus()
                     return true
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
                     return false
                 }
-
             })
 
         viewModel.getSavedNewsArticles().observe(viewLifecycleOwner) { articles ->
@@ -83,11 +109,10 @@ class BookmarksFragment : Fragment() {
                 articles.forEach { article ->
                     article.isExistInDB = true
                 }
-                newsAdapter.loadList(articles)
+                newsAdapter.loadList(articles.reversed())
                 binding.noBookmarkText.visibility = View.GONE
             } else {
                 overflowMenu.findItem(R.id.delete_bookmark).isVisible = false
-                newsAdapter.loadList(listOf())
                 binding.noBookmarkText.visibility = View.VISIBLE
             }
         }
@@ -105,7 +130,7 @@ class BookmarksFragment : Fragment() {
         override fun onClick(article: Article) {
             val action =
                 BookmarksFragmentDirections.actionBookmarksFragmentToArticlePreviewFragment(
-                    article,
+                    article.title,
                     false
                 )
             requireView().findNavController().navigate(action)
@@ -279,7 +304,7 @@ class BookmarksFragment : Fragment() {
     fun showAllBookmarks() {
         requireActivity().findViewById<SearchView>(R.id.search_view).setQuery("", false)
         viewModel.revertFilterBookmark()
-        newsAdapter.loadList(viewModel.articleList)
+        newsAdapter.loadList(viewModel.articleList.reversed())
     }
 
 }

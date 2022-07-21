@@ -24,7 +24,6 @@ class ArticleFragment : Fragment() {
 
     private lateinit var binding: FragmentArticleBinding
     private lateinit var viewModel: NewsViewModel
-    private var isHomePageNews = true
 
     private lateinit var fromBottom: Animation
     private lateinit var toBottom: Animation
@@ -44,16 +43,20 @@ class ArticleFragment : Fragment() {
         viewModel = (activity as MainActivity).viewModel
 
         val arguments = ArticleFragmentArgs.fromBundle(requireArguments())
-        val article = arguments.article
-        val url = arguments.article.url.toString()
+        
+        val article = if (arguments.isHomePageNews)
+            viewModel.getArticleFromViewModelByTitle(arguments.articleTitle)!!
+        else
+            viewModel.getSavedArticleFromViewModelByTitle(arguments.articleTitle)!!
 
-        if (!arguments.isHomePageNews) {
+        val url = article.url.toString()
+
+        if (article.isExistInDB) {
             binding.bookmarkToggle.setImageResource(R.drawable.ic_baseline_bookmark_remove_24)
-            isHomePageNews = false
         }
-
-        if (article.isExistInDB)
-            binding.bookmarkToggle.setImageResource(R.drawable.ic_baseline_bookmark_remove_24)
+        else {
+            binding.bookmarkToggle.setImageResource(R.drawable.ic_baseline_bookmark_add_24)
+        }
 
 //        binding.webView.apply {
 //            webViewClient = WebViewClient()
@@ -90,13 +93,11 @@ class ArticleFragment : Fragment() {
         }
 
         binding.bookmarkToggle.setOnClickListener {
-            if (isHomePageNews) {
-                isHomePageNews = if (article.isExistInDB) {
+            if (arguments.isHomePageNews) {
+                if (article.isExistInDB) {
                     unbookmarkArticle(article)
-                    true
                 } else {
                     bookmarkArticle(article)
-                    false
                 }
             }
             else {
@@ -106,8 +107,9 @@ class ArticleFragment : Fragment() {
                     findNavController().navigate(
                         ArticleFragmentDirections.actionArticleFragmentToBookmarksFragment())
                 }
-                unbookmarkArticle(article)
-                isHomePageNews = true
+                else {
+                    unbookmarkArticle(article)
+                }
             }
         }
 

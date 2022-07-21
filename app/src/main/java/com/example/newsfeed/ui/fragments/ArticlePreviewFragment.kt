@@ -56,6 +56,38 @@ class ArticlePreviewFragment : Fragment() {
         return binding.root
     }
 
+    private fun initUIElements() {
+        article = if (arguments.isHomePageNews)
+            viewModel.getArticleFromViewModelByTitle(arguments.articleTitle)!!
+        else
+            viewModel.getSavedArticleFromViewModelByTitle(arguments.articleTitle)!!
+
+        binding.apply {
+            textDetailTitle.text = article.title
+            if (article.author.isNullOrBlank()) {
+                textDetailAuthor.visibility = View.GONE
+            }
+            else textDetailAuthor.text = article.author!!.trim()
+            if (article.publishedAt.isNullOrBlank()) {
+                textDetailTime.visibility = View.GONE
+            }
+            else textDetailTime.text = parseTime(article.publishedAt)
+            textDetailContent.text = article.content
+            textDetailDetail.text = article.description
+            if (article.urlToImage.isNullOrBlank()) {
+                Picasso.get().load(R.drawable.news_logo_final).into(imgDetailNews)
+            }
+            else Picasso.get().load(article.urlToImage).into(imgDetailNews)
+        }
+
+        if (article.isExistInDB) {
+            binding.bookmarkToggle.setImageResource(R.drawable.ic_baseline_bookmark_remove_24)
+        }
+        else {
+            binding.bookmarkToggle.setImageResource(R.drawable.ic_baseline_bookmark_add_24)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -68,12 +100,12 @@ class ArticlePreviewFragment : Fragment() {
         }
 
         binding.continueReading.setOnClickListener {
-            val action = ArticlePreviewFragmentDirections.actionArticlePreviewFragmentToArticleFragment(article, arguments.isHomePageNews)
+            val action = ArticlePreviewFragmentDirections.actionArticlePreviewFragmentToArticleFragment(arguments.articleTitle, arguments.isHomePageNews)
             requireView().findNavController().navigate(action)
         }
 
         binding.continueReadingButton.setOnClickListener {
-            val action = ArticlePreviewFragmentDirections.actionArticlePreviewFragmentToArticleFragment(article, arguments.isHomePageNews)
+            val action = ArticlePreviewFragmentDirections.actionArticlePreviewFragmentToArticleFragment(arguments.articleTitle, arguments.isHomePageNews)
             requireView().findNavController().navigate(action)
         }
 
@@ -226,36 +258,6 @@ class ArticlePreviewFragment : Fragment() {
         binding.continueReading.isClickable = clicked
         binding.bookmarkToggle.isClickable = clicked
         binding.shareButton.isClickable = clicked
-    }
-
-    private fun initUIElements() {
-        article = arguments.article
-
-        binding.apply {
-            textDetailTitle.text = article.title
-            if (article.author.isNullOrBlank()) {
-                textDetailAuthor.visibility = View.GONE
-            }
-            else textDetailAuthor.text = article.author!!.trim()
-            if (article.publishedAt.isNullOrBlank()) {
-                textDetailTime.visibility = View.GONE
-            }
-            else textDetailTime.text = parseTime(article.publishedAt)
-            textDetailContent.text = article.content
-            textDetailDetail.text = article.description
-            if (article.urlToImage.isNullOrBlank()) {
-                Picasso.get().load(R.drawable.news_logo_final).into(imgDetailNews)
-            }
-            else Picasso.get().load(article.urlToImage).into(imgDetailNews)
-        }
-
-        if (!arguments.isHomePageNews) {
-            binding.bookmarkToggle.setImageResource(R.drawable.ic_baseline_bookmark_remove_24)
-            isHomePageNews = false
-        }
-
-        if (article.isExistInDB)
-            binding.bookmarkToggle.setImageResource(R.drawable.ic_baseline_bookmark_remove_24)
     }
 
     override fun onAttach(context: Context) {

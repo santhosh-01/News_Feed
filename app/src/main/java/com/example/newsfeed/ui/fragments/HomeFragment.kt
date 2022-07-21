@@ -41,8 +41,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var viewModel: NewsViewModel
-    private var newsAdapter: NewsAdapter? = null
-    private var searchNewsAdapter: NewsAdapter? = null
+    private lateinit var newsAdapter: NewsAdapter
     private lateinit var infiniteScrollListener: InfiniteScrollListener
     private lateinit var dialog: Dialog
 
@@ -75,6 +74,8 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
         if (!viewModel.isSearchQueryStackEmpty())
             requireActivity().findViewById<SearchView>(R.id.search_view)
                 .setQuery(viewModel.getPeekElementFromSearchQueryStack(), false)
+        else
+            requireActivity().findViewById<SearchView>(R.id.search_view).setQuery("", false)
 
         if (viewModel.isCategoryOrCountryChanged()) {
             viewModel.clearSearchQueryStack()
@@ -82,13 +83,10 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
         }
 
         // Setting up Recycler View
-        if (viewModel.isSearchQueryStackEmpty())
-            setUpRecyclerView(mutableListOf())
-        else
-            setUpSearchNewsRecyclerView(mutableListOf())
+        setUpRecyclerView(mutableListOf())
 
         if (viewModel.isCategoryOrCountryChanged()) {
-            newsAdapter?.stateRestorationPolicy =
+            newsAdapter.stateRestorationPolicy =
                 RecyclerView.Adapter.StateRestorationPolicy.PREVENT
             viewModel.clearAdapterAndGetBreakingNews()
             viewModel.changeCategoryAndCountryOnViewModel()
@@ -100,14 +98,15 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
+            clearAdapter()
+            binding.recyclerMain.visibility = View.GONE
             binding.swipeRefreshLayout.isRefreshing = true
             if (requireActivity().findViewById<SearchView>(R.id.search_view).query.isEmpty()) {
-                setUpRecyclerView(mutableListOf())
+                newsAdapter.clearAdapterList()
                 viewModel.clearSearchQueryStack()
                 viewModel.initAccordingToCurrentConfig()
-            }
-            else {
-                setUpSearchNewsRecyclerView(mutableListOf())
+            } else {
+                newsAdapter.clearAdapterList()
                 viewModel.initSearchAccordingToCurrentConfig()
             }
         }
@@ -115,49 +114,53 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
 
     private fun initLiveDataObserverForBreakingNews() {
         viewModel.breakingNews.observe(viewLifecycleOwner) { response ->
-            if (newsAdapter == null) {
-                setUpRecyclerView(mutableListOf())
-            }
             when (response) {
                 is Resource.Loading -> {
-                    if (viewModel.breakingNewsPage == 1 && !binding.swipeRefreshLayout.isRefreshing)
+                    if (viewModel.breakingNewsPage == 1 && !binding.swipeRefreshLayout.isRefreshing) {
+                        clearAdapter()
+                        binding.recyclerMain.visibility = View.GONE
                         binding.progressBarMiddle.visibility = View.VISIBLE
+                    }
                     else if (!binding.swipeRefreshLayout.isRefreshing)
-                        newsAdapter?.addNullData()
+                        newsAdapter.addNullData()
                 }
                 is Resource.Success -> {
-                    binding.swipeRefreshLayout.isRefreshing = false
-                    response.data?.let {
-                        val articleList = response.data.articles
-                        lifecycleScope.launch(Dispatchers.Main) {
-                            val task = async(Dispatchers.IO) {
-                                articleList.forEach { article ->
-                                    article.isExistInDB = viewModel.isRecordExist(article.title)
-                                    if (article.isExistInDB)
-                                        article.id = viewModel.getArticleByTitle(article.title).id
+                    if (viewModel.isSearchQueryStackEmpty()) {
+                        binding.swipeRefreshLayout.isRefreshing = false
+                        response.data?.let {
+                            val articleList = response.data.articles
+                            lifecycleScope.launch(Dispatchers.Main) {
+                                val task = async(Dispatchers.IO) {
+                                    articleList.forEach { article ->
+                                        article.isExistInDB = viewModel.isRecordExist(article.title)
+                                        if (article.isExistInDB)
+                                            article.id = viewModel.getArticleByTitle(article.title).id
+                                    }
                                 }
-                            }
-                            task.await()
-                            if (viewModel.breakingNewsPage == 1) {
-                                binding.progressBarMiddle.visibility = View.INVISIBLE
-                            } else
-                                newsAdapter!!.removeNull()
-                            newsAdapter!!.addData(articleList)
-                            infiniteScrollListener.setLoaded()
+                                task.await()
+                                if (viewModel.breakingNewsPage == 1) {
+                                    binding.progressBarMiddle.visibility = View.INVISIBLE
+                                } else
+                                    newsAdapter.removeNull()
+                                binding.recyclerMain.visibility = View.VISIBLE
+                                newsAdapter.addData(articleList)
+                                infiniteScrollListener.setLoaded()
 
-                            val totalRecords = min(TOTAL_RECORD, response.data.totalResults)
-                            val totalPages = ceil(totalRecords.toFloat() / QUERY_PAGE_SIZE).toInt()
-                            val isLastPage = viewModel.breakingNewsPage == totalPages
-                            if (isLastPage) {
-                                infiniteScrollListener.pauseScrollListener(true)
-                                binding.recyclerMain.setPadding(0, 0, 0, 0)
+                                val totalRecords = min(TOTAL_RECORD, response.data.totalResults)
+                                val totalPages = ceil(totalRecords.toFloat() / QUERY_PAGE_SIZE).toInt()
+                                val isLastPage = viewModel.breakingNewsPage == totalPages
+                                if (isLastPage) {
+                                    infiniteScrollListener.pauseScrollListener(true)
+                                    binding.recyclerMain.setPadding(0, 0, 0, 0)
+                                }
+                                viewModel.breakingNewsPage++
                             }
-                            viewModel.breakingNewsPage++
                         }
                     }
                 }
                 is Resource.Error -> {
                     binding.swipeRefreshLayout.isRefreshing = false
+                    infiniteScrollListener.setLoaded()
                     response.message?.let { message ->
                         if (message == "No internet connection") {
                             Toast.makeText(
@@ -168,11 +171,14 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                             binding.progressBarMiddle.visibility = View.GONE
                         } else {
                             var isSuccess: Boolean = false
-                            Log.i("HomeFragment",Thread.currentThread().name.toString()+"1")
+                            Log.i("HomeFragment", Thread.currentThread().name.toString() + "1")
                             lifecycleScope.launch(Dispatchers.Main) {
-                                Log.i("HomeFragment",Thread.currentThread().name.toString()+"2")
+                                Log.i("HomeFragment", Thread.currentThread().name.toString() + "2")
                                 withContext(Dispatchers.IO) {
-                                    Log.i("HomeFragment",Thread.currentThread().name.toString()+"3")
+                                    Log.i(
+                                        "HomeFragment",
+                                        Thread.currentThread().name.toString() + "3"
+                                    )
                                     isSuccess = viewModel.changeAPIKey()
                                 }
                                 if (!isSuccess) {
@@ -204,11 +210,11 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                setUpSearchNewsRecyclerView(mutableListOf())
+                newsAdapter.clearAdapterList()
                 query?.let {
                     viewModel.sortBy = "relevancy"
                     viewModel.preferredLanguage = "en"
-                    viewModel.clearAdapterAndGetSearchNews(query)
+                    viewModel.clearListAndGetSearchNews(query)
                 }
                 hideKeyboard()
                 searchView.clearFocus()
@@ -235,61 +241,65 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
     }
 
     private fun explicitSearch(query: String?) {
-        setUpSearchNewsRecyclerView(mutableListOf())
+        newsAdapter.clearAdapterList()
         query?.let {
-            viewModel.clearAdapterAndGetSearchNews(query)
+            viewModel.clearListAndGetSearchNews(query)
         }
         hideKeyboard()
     }
 
     private fun initLiveDataObserverForSearch() {
         viewModel.searchNews.observe(viewLifecycleOwner) { response ->
-            if (searchNewsAdapter == null) {
-                setUpSearchNewsRecyclerView(mutableListOf())
-            }
             when (response) {
                 is Resource.Loading -> {
 //                    Log.i("HomeFragment", viewModel.searchNewsPage.toString())
-                    if (viewModel.searchNewsPage == 1 && !binding.swipeRefreshLayout.isRefreshing)
+                    if (viewModel.searchNewsPage == 1 && !binding.swipeRefreshLayout.isRefreshing) {
+                        clearAdapter()
+                        binding.recyclerMain.visibility = View.GONE
                         binding.progressBarMiddle.visibility = View.VISIBLE
+                    }
                     else if (!binding.swipeRefreshLayout.isRefreshing)
-                        searchNewsAdapter?.addNullData()
+                        newsAdapter.addNullData()
                 }
                 is Resource.Success -> {
-                    binding.swipeRefreshLayout.isRefreshing = false
-                    response.data?.let {
-                        val articleList = response.data.articles
-                        lifecycleScope.launch(Dispatchers.Main) {
-                            val task = async(Dispatchers.IO) {
-                                articleList.forEach { article ->
-                                    article.isExistInDB = viewModel.isRecordExist(article.title)
+                    if (!viewModel.isSearchQueryStackEmpty()) {
+                        binding.swipeRefreshLayout.isRefreshing = false
+                        response.data?.let {
+                            val articleList = response.data.articles
+                            lifecycleScope.launch(Dispatchers.Main) {
+                                val task = async(Dispatchers.IO) {
+                                    articleList.forEach { article ->
+                                        article.isExistInDB = viewModel.isRecordExist(article.title)
+                                    }
                                 }
-                            }
-                            task.await()
-                            if (viewModel.searchNewsPage == 1)
-                                binding.progressBarMiddle.visibility = View.INVISIBLE
-                            else
-                                searchNewsAdapter!!.removeNull()
-                            searchNewsAdapter!!.addData(response.data.articles)
-                            infiniteScrollListener.setLoaded()
+                                task.await()
+                                if (viewModel.searchNewsPage == 1)
+                                    binding.progressBarMiddle.visibility = View.INVISIBLE
+                                else
+                                    newsAdapter.removeNull()
+                                binding.recyclerMain.visibility = View.VISIBLE
+                                newsAdapter.addData(response.data.articles)
+                                infiniteScrollListener.setLoaded()
 
-                            viewModel.unSelectAllArticles()
+                                viewModel.unSelectAllArticles()
 
-                            val totalRecords = min(TOTAL_RECORD, response.data.totalResults)
-                            val totalPages = ceil(totalRecords.toFloat() / QUERY_PAGE_SIZE).toInt()
-                            val isLastPage = viewModel.searchNewsPage == totalPages
-                            if (isLastPage) {
-                                infiniteScrollListener.pauseScrollListener(true)
-                                binding.recyclerMain.setPadding(0, 0, 0, 0)
+                                val totalRecords = min(TOTAL_RECORD, response.data.totalResults)
+                                val totalPages = ceil(totalRecords.toFloat() / QUERY_PAGE_SIZE).toInt()
+                                val isLastPage = viewModel.searchNewsPage == totalPages
+                                if (isLastPage) {
+                                    infiniteScrollListener.pauseScrollListener(true)
+                                    binding.recyclerMain.setPadding(0, 0, 0, 0)
+                                }
+                                viewModel.searchNewsPage++
                             }
-                            viewModel.searchNewsPage ++
                         }
                     }
                 }
                 is Resource.Error -> {
                     binding.swipeRefreshLayout.isRefreshing = false
+                    infiniteScrollListener.setLoaded()
                     response.message?.let { message ->
-                        if (message == "No internet connection") {
+                        if (message == "No internet connection" || message == "No Result Found!!") {
                             Toast.makeText(
                                 requireContext(),
                                 message,
@@ -359,12 +369,8 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                         }
                     }
                     task.await()
-                    newsAdapter!!.isCheckboxEnabled = false
-                    newsAdapter!!.notifyDataSetChanged()
-                    if (!viewModel.isSearchQueryStackEmpty()) {
-                        searchNewsAdapter!!.isCheckboxEnabled = false
-                        searchNewsAdapter!!.notifyDataSetChanged()
-                    }
+                    newsAdapter.isCheckboxEnabled = false
+                    newsAdapter.notifyDataSetChanged()
                     val temp = viewModel.selectedNewsListInHome
                     val snackbar = Snackbar.make(
                         requireView(),
@@ -387,10 +393,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                             viewModel.deleteArticle(article)
                         }
                         snackbar.dismiss()
-                        newsAdapter!!.notifyDataSetChanged()
-                        if (!viewModel.isSearchQueryStackEmpty()) {
-                            searchNewsAdapter!!.notifyDataSetChanged()
-                        }
+                        newsAdapter.notifyDataSetChanged()
                     }
                     snackbar.show()
                     snackbar.view.setOnClickListener { snackbar.dismiss() }
@@ -524,7 +527,10 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
     private val articleClickListener = object : OnArticleClickListener {
         override fun onClick(article: Article) {
             val action =
-                HomeFragmentDirections.actionHomeFragmentToArticlePreviewFragment(article, true)
+                HomeFragmentDirections.actionHomeFragmentToArticlePreviewFragment(
+                    article.title,
+                    true
+                )
             requireView().findNavController().navigate(action)
         }
 
@@ -568,9 +574,9 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                     requireActivity(), "The article was already bookmarked!!\n" +
                             "So you can't select this article", Toast.LENGTH_SHORT
                 ).show()
-                newsAdapter!!.canSelectBookmark = false
+                newsAdapter.canSelectBookmark = false
             } else {
-                newsAdapter!!.canSelectBookmark = true
+                newsAdapter.canSelectBookmark = true
             }
         }
 
@@ -596,8 +602,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
 
         }
 
-
-    fun setUpRecyclerView(list: MutableList<Article?>) {
+    private fun setUpRecyclerView(list: MutableList<Article?>) {
         val linearLayoutManager = LinearLayoutManager(requireContext())
         infiniteScrollListener = InfiniteScrollListener(linearLayoutManager, this)
 
@@ -610,53 +615,50 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
              )
          )*/
         newsAdapter = NewsAdapter(articleClickListener, onManageItemsInViewModel, list)
-        newsAdapter?.stateRestorationPolicy =
+        newsAdapter.stateRestorationPolicy =
             RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         binding.recyclerMain.adapter = newsAdapter
         binding.recyclerMain.setHasFixedSize(true)
     }
 
-    private fun setUpSearchNewsRecyclerView(list: MutableList<Article?>) {
-        val linearLayoutManager = LinearLayoutManager(requireContext())
-        infiniteScrollListener = InfiniteScrollListener(linearLayoutManager, this)
-
-        binding.recyclerMain.layoutManager = linearLayoutManager
-        binding.recyclerMain.addOnScrollListener(infiniteScrollListener)
-        searchNewsAdapter = NewsAdapter(articleClickListener, onManageItemsInViewModel, list)
-        searchNewsAdapter?.stateRestorationPolicy =
-            RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-        binding.recyclerMain.adapter = searchNewsAdapter
-        binding.recyclerMain.setHasFixedSize(true)
-    }
+//    private fun setUpSearchNewsRecyclerView(list: MutableList<Article?>) {
+//        val linearLayoutManager = LinearLayoutManager(requireContext())
+//        infiniteScrollListener = InfiniteScrollListener(linearLayoutManager, this)
+//
+//        binding.recyclerMain.layoutManager = linearLayoutManager
+//        binding.recyclerMain.addOnScrollListener(infiniteScrollListener)
+//        searchNewsAdapter = NewsAdapter(articleClickListener, onManageItemsInViewModel, list)
+//        searchNewsAdapter?.stateRestorationPolicy =
+//            RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+//        binding.recyclerMain.adapter = searchNewsAdapter
+//        binding.recyclerMain.setHasFixedSize(true)
+//    }
 
 
     fun clearAdapterCheckboxes() {
-        if (!viewModel.isSearchQueryStackEmpty()) {
-            searchNewsAdapter!!.isCheckboxEnabled = false
-            viewModel.unSelectAllArticles()
-            searchNewsAdapter!!.notifyDataSetChanged()
-        } else {
-            newsAdapter!!.isCheckboxEnabled = false
-            viewModel.unSelectAllArticles()
-            newsAdapter!!.notifyDataSetChanged()
-        }
+        newsAdapter.isCheckboxEnabled = false
+        viewModel.unSelectAllArticles()
+        newsAdapter.notifyDataSetChanged()
     }
 
     fun isCheckboxEnable(): Boolean {
-        return if (!viewModel.isSearchQueryStackEmpty()) searchNewsAdapter!!.isCheckboxEnabled
-        else newsAdapter!!.isCheckboxEnabled
+        return newsAdapter.isCheckboxEnabled
     }
 
 
     override fun onLoadMore() {
         if (!viewModel.isSearchQueryStackEmpty()) {
-            viewModel.searchNews(viewModel.newSearchQuery!!, viewModel.sortBy)
+            viewModel.searchNews(viewModel.searchQuery!!, viewModel.sortBy)
         } else {
             viewModel.getBreakingNews(
                 viewModel.selectedCategory,
                 viewModel.selectedCountry
             )
         }
+    }
+
+    fun clearAdapter() {
+        newsAdapter.clearAdapterList()
     }
 
 }

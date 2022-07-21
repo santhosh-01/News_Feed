@@ -277,4 +277,8 @@ class NewsAdapter(
         articleList = list.toMutableList()
         notifyDataSetChanged()
     }
+
+    fun clearAdapterList() {
+        articleList.clear()
+    }
 }

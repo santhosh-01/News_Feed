@@ -1,7 +1,6 @@
 package com.example.newsfeed.ui
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -175,10 +174,10 @@ class MainActivity : AppCompatActivity() {
         viewModel.clearSearchQueryStack()
         if (binding.customAppBar.searchView.query.isNotEmpty()) {
             val homeFragment = navHostFragment.childFragmentManager.fragments[0] as HomeFragment
-            homeFragment.setUpRecyclerView(mutableListOf())
             binding.customAppBar.searchView.setQuery("", false)
             viewModel.clearSearchQueryStack()
-            viewModel.newSearchQuery = null
+            viewModel.searchQuery = null
+            homeFragment.clearAdapter()
             viewModel.initAccordingToCurrentConfig()
 //                    viewModel.isSearchOn = false
         } else {

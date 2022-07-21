@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -33,7 +33,6 @@ class NewsViewModel @Inject constructor(
 
     var apiKey: String = API_KEYS[0]
 
-    private lateinit var searchQuery: String
     var sortBy: String = "relevancy"
     val languageMap: HashMap<String, String> = hashMapOf()
     val countryMap: HashMap<String, String> = hashMapOf()
@@ -53,7 +52,7 @@ class NewsViewModel @Inject constructor(
     var breakingNewsPage: Int = 1
     var searchNewsPage: Int = 1
 
-    var newSearchQuery: String? = null
+    var searchQuery: String? = null
     var oldSearchQuery: String? = null
 
     var bookmarkSearchQuery: String? = null
@@ -73,6 +72,7 @@ class NewsViewModel @Inject constructor(
     val selectedItemPositionsInHome: MutableLiveData<List<Int>> = MutableLiveData(listOf())
     private val selectedItemPositionsInBookmark: MutableLiveData<List<Int>> =
         MutableLiveData(listOf())
+
 
     init {
         initCategoryAndCountryForFirstTime()
@@ -125,9 +125,11 @@ class NewsViewModel @Inject constructor(
     }
 
     fun initSearchAccordingToCurrentConfig() {
-        searchNewsPage = 1
-        searchNewsResponse = null
-        searchNews(searchQuery, sortBy)
+        searchQuery?.let {
+            searchNewsPage = 1
+            searchNewsResponse = null
+            searchNews(searchQuery!!, sortBy)
+        }
     }
 
     fun getBreakingNews(category: String, countryAbbr: String) = viewModelScope.launch {
@@ -164,6 +166,27 @@ class NewsViewModel @Inject constructor(
             }
         }
         return Resource.Error(response.message())
+    }
+
+    fun getArticleFromViewModelByTitle(title: String): Article? {
+        if (searchQuery != null) {
+            searchNewsResponse!!.articles.forEach {
+                if (it.title == title) return it
+            }
+        }
+        else {
+            breakingNewsResponse!!.articles.forEach {
+                if (it.title == title) return it
+            }
+        }
+        return null
+    }
+
+    fun getSavedArticleFromViewModelByTitle(title: String): Article? {
+        articleList.forEach {
+            if (it.title == title) return it
+        }
+        return null
     }
 
     private fun handleSearchNewsResponse(response: Response<NewsArticle>): Resource<NewsArticle> {
@@ -275,7 +298,7 @@ class NewsViewModel @Inject constructor(
         sortBy: String,
         language: String
     ) {
-        newSearchQuery = searchQuery
+        this.searchQuery = searchQuery
         searchNews.postValue(Resource.Loading())
         try {
             if (hasInternetConnection()) {
@@ -314,7 +337,7 @@ class NewsViewModel @Inject constructor(
         }
     }
 
-    private fun hasInternetConnection(): Boolean {
+    fun hasInternetConnection(): Boolean {
         val connectivityManager = app.getSystemService(
             Context.CONNECTIVITY_SERVICE
         ) as ConnectivityManager
@@ -368,13 +391,13 @@ class NewsViewModel @Inject constructor(
                     this@NewsViewModel.apiKey = apiKey
                     val response =  newsRepository.searchNews(
                         searchNewsPage,
-                        searchQuery,
+                        searchQuery!!,
                         sortBy,
                         preferredLanguage,
                         apiKey
                     )
                     if (response.isSuccessful) {
-                        searchNews(searchQuery, sortBy)
+                        searchNews(searchQuery!!, sortBy)
                         successFlag = true
                         Log.i("NewsViewModel","API SUCCESS")
                         break
@@ -443,7 +466,7 @@ class NewsViewModel @Inject constructor(
         initBreakingNews()
     }
 
-    fun clearAdapterAndGetSearchNews(searchQuery: String) {
+    fun clearListAndGetSearchNews(searchQuery: String) {
         searchNewsPage = 1
         searchNewsResponse = null
         pushToSearchQueryStack(searchQuery)

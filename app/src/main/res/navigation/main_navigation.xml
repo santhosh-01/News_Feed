@@ -80,8 +80,8 @@
         android:label="Article Preview"
         tools:layout="@layout/fragment_article_preview">
         <argument
-            android:name="article"
-            app:argType="com.example.newsfeed.entity.Article" />
+            android:name="articleTitle"
+            app:argType="string" />
         <action
             android:id="@+id/action_articlePreviewFragment_to_articleFragment"
             app:destination="@id/articleFragment" />
@@ -95,8 +95,8 @@
         android:label="News Article"
         tools:layout="@layout/fragment_article">
         <argument
-            android:name="article"
-            app:argType="com.example.newsfeed.entity.Article" />
+            android:name="articleTitle"
+            app:argType="string" />
         <argument
             android:name="isHomePageNews"
             app:argType="boolean" />
