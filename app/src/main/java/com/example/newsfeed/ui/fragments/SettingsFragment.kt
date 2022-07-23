@@ -24,7 +24,7 @@ class SettingsFragment : Fragment() {
 
         viewModel = (activity as MainActivity).viewModel
 
-        binding.selectedCountryName.text = viewModel.countryMap[viewModel.selectedCountry]
+        binding.selectedCountryName.text = viewModel.countryMap[viewModel.selectedCountry.uppercase()]
         // Inflate the layout for this fragment
         return binding.root
     }

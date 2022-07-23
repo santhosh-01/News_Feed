@@ -27,7 +27,6 @@ class ArticlePreviewFragment : Fragment() {
     private lateinit var binding: FragmentArticlePreviewBinding
     private lateinit var viewModel: NewsViewModel
     private lateinit var article: Article
-    private var isHomePageNews = true
 
     var clicked: Boolean = false
 
@@ -117,13 +116,11 @@ class ArticlePreviewFragment : Fragment() {
         }
 
         binding.bookmarkToggle.setOnClickListener {
-            if (isHomePageNews) {
-                isHomePageNews = if (article.isExistInDB) {
+            if (arguments.isHomePageNews) {
+                if (article.isExistInDB) {
                     unbookmarkArticle(article)
-                    true
                 } else {
                     bookmarkArticle(article)
-                    false
                 }
             }
             else {
@@ -134,7 +131,6 @@ class ArticlePreviewFragment : Fragment() {
                     requireActivity().onBackPressed()
                 }
                 unbookmarkArticle(article)
-                isHomePageNews = true
             }
         }
 

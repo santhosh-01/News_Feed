@@ -1,12 +1,14 @@
 package com.example.newsfeed.ui
 
 import android.app.AlertDialog
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.res.ResourcesCompat
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -19,6 +21,8 @@ import com.example.newsfeed.ui.fragments.ArticlePreviewFragment
 import com.example.newsfeed.ui.fragments.BookmarksFragment
 import com.example.newsfeed.ui.fragments.HomeFragment
 import com.example.newsfeed.viewmodel.NewsViewModel
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -43,6 +47,7 @@ class MainActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             viewModel.saveNewsCategory("general")
+            viewModel.saveNewsCountry("in")
         }
     }
 
@@ -56,13 +61,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun setWindowBackgroundDrawable() {
         // Here, we are setting the complete background including status bas as primary_gradient
-        window.setBackgroundDrawable(
-            ResourcesCompat.getDrawable(
-                this.resources,
-                R.drawable.primary_gradient,
-                null
-            )
-        )
+//        window.setBackgroundDrawable(
+//            ResourcesCompat.getDrawable(
+//                this.resources,
+//                R.drawable.primary_gradient,
+//                null
+//            )
+//        )
+
+        // Here, we are setting taskbar
+        window.statusBarColor = Color.rgb(55,71,79)
     }
 
     private fun setupCustomToolbar() {
@@ -100,11 +108,20 @@ class MainActivity : AppCompatActivity() {
         NavController.OnDestinationChangedListener { controller, destination, arguments ->
             when (destination.id) {
                 R.id.articlePreviewFragment -> {
+                    (binding.customAppBar.myToolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP_MARGINS
+                    (binding.fragmentContainerView.layoutParams as CoordinatorLayout.LayoutParams).behavior = null
+                    (binding.fragmentContainerView.layoutParams as CoordinatorLayout.LayoutParams).topMargin = 220
                     hideSearchView()
                     hideBottomNavBar()
                     hideNavigationIcon()
                 }
                 R.id.homeFragment -> {
+                    (binding.customAppBar.myToolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags =
+                        (AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
+                                or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS)
+                    (binding.fragmentContainerView.layoutParams as CoordinatorLayout.LayoutParams).behavior = AppBarLayout.ScrollingViewBehavior()
+                    (binding.fragmentContainerView.layoutParams as CoordinatorLayout.LayoutParams).topMargin = 0
+
                     showSearchView()
                     showBottomNavBar()
                     showNavigationIcon()
@@ -116,6 +133,12 @@ class MainActivity : AppCompatActivity() {
                     viewModel.unSelectAllArticles()
                 }
                 R.id.bookmarksFragment -> {
+                    (binding.customAppBar.myToolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags =
+                        (AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
+                                or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS)
+                    (binding.fragmentContainerView.layoutParams as CoordinatorLayout.LayoutParams).behavior = AppBarLayout.ScrollingViewBehavior()
+                    (binding.fragmentContainerView.layoutParams as CoordinatorLayout.LayoutParams).topMargin = 0
+
                     showSearchView()
                     showBottomNavBar()
                     hideNavigationIcon()
@@ -240,33 +263,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        Log.i("MainActivity", "onStart")
-    }
+    fun customizeSnackBar(snackbar: Snackbar) {
+        val snackBarView = snackbar.view
+        val params = snackBarView.layoutParams as CoordinatorLayout.LayoutParams
 
-    override fun onResume() {
-        super.onResume()
-        Log.i("MainActivity", "onResume")
-    }
+        params.setMargins(
+            params.leftMargin,
+            params.topMargin,
+            params.rightMargin,
+            params.bottomMargin + 160
+        )
 
-    override fun onPause() {
-        super.onPause()
-        Log.i("MainActivity", "onPause")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.i("MainActivity", "onDestroy")
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-        Log.i("MainActivity", "onRestart")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.i("MainActivity", "onStop")
+        snackBarView.layoutParams = params
     }
 }

@@ -64,23 +64,25 @@
 
                             <TextView
                                 android:id="@+id/text_detail_author"
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/purple_500"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
                                 android:padding="@dimen/normal_padding"
+                                android:layout_weight="1"
                                 tools:text="Santhosh" />
 
                             <TextView
                                 android:id="@+id/text_detail_time"
-                                android:layout_width="match_parent"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:gravity="end"
                                 android:padding="@dimen/normal_padding"
+                                android:layout_weight="1.2"
                                 android:textColor="@color/black"
                                 android:textSize="16sp"
-                                tools:text="15:14" />
+                                tools:text="2022-07-22, 04:33 UTC" />
 
                         </LinearLayout>
 

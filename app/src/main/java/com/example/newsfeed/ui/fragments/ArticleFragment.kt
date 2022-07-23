@@ -9,6 +9,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -104,6 +105,9 @@ class ArticleFragment : Fragment() {
                 if (!arguments.isHomePageNews) {
                     article.isExistInDB = false
                     viewModel.deleteArticle(article)
+                    val snackbar = Snackbar.make(requireView(),"Article was removed from bookmark Successfully", Snackbar.LENGTH_SHORT)
+                    snackbar.show()
+                    snackbar.view.setOnClickListener { snackbar.dismiss() }
                     findNavController().navigate(
                         ArticleFragmentDirections.actionArticleFragmentToBookmarksFragment())
                 }

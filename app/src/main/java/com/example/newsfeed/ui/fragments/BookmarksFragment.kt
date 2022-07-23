@@ -3,10 +3,10 @@ package com.example.newsfeed.ui.fragments
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
@@ -27,6 +27,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+
 
 class BookmarksFragment : Fragment() {
 
@@ -58,6 +59,7 @@ class BookmarksFragment : Fragment() {
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             binding.swipeRefreshLayout.isRefreshing = true
+            clearAdapterCheckboxes()
             setUpRecyclerView(mutableListOf())
             if (viewModel.bookmarkSearchQuery != null) {
                 viewModel.bookmarkSearchQuery = null
@@ -105,6 +107,7 @@ class BookmarksFragment : Fragment() {
             viewModel.articleList.clear()
             viewModel.articleList.addAll(articles)
             if (articles.isNotEmpty()) {
+                binding.recyclerSaved.visibility = View.VISIBLE
                 overflowMenu.findItem(R.id.delete_bookmark).isVisible = true
                 articles.forEach { article ->
                     article.isExistInDB = true
@@ -112,6 +115,7 @@ class BookmarksFragment : Fragment() {
                 newsAdapter.loadList(articles.reversed())
                 binding.noBookmarkText.visibility = View.GONE
             } else {
+                binding.recyclerSaved.visibility = View.GONE
                 overflowMenu.findItem(R.id.delete_bookmark).isVisible = false
                 binding.noBookmarkText.visibility = View.VISIBLE
             }
@@ -143,13 +147,7 @@ class BookmarksFragment : Fragment() {
                 "Article removed from bookmarks successfully",
                 Snackbar.LENGTH_SHORT
             )
-            snackbar.setAction("Undo") {
-                lifecycleScope.launch {
-                    article.id = viewModel.insertArticle(article).toInt()
-                    article.isExistInDB = true
-                }
-                snackbar.dismiss()
-            }
+            (requireActivity() as MainActivity).customizeSnackBar(snackbar)
             snackbar.show()
             snackbar.view.setOnClickListener { snackbar.dismiss() }
             newsAdapter.notifyDataSetChanged()
@@ -248,8 +246,10 @@ class BookmarksFragment : Fragment() {
                                 article.isExistInDB = true
                             }
                         }
+                        (requireActivity() as MainActivity).customizeSnackBar(snackbar)
                         snackbar.dismiss()
                     }
+                    (requireActivity() as MainActivity).customizeSnackBar(snackbar)
                     snackbar.show()
                     snackbar.view.setOnClickListener { snackbar.dismiss() }
                 }
@@ -277,8 +277,10 @@ class BookmarksFragment : Fragment() {
                                     article.isExistInDB = true
                                 }
                             }
+                            (requireActivity() as MainActivity).customizeSnackBar(snackbar)
                             snackbar.dismiss()
                         }
+                        (requireActivity() as MainActivity).customizeSnackBar(snackbar)
                         snackbar.show()
                         snackbar.view.setOnClickListener { snackbar.dismiss() }
                     }

@@ -73,7 +73,6 @@ class NewsViewModel @Inject constructor(
     private val selectedItemPositionsInBookmark: MutableLiveData<List<Int>> =
         MutableLiveData(listOf())
 
-
     init {
         initCategoryAndCountryForFirstTime()
         setupMapOfLanguages()

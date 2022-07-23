@@ -98,9 +98,8 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
-            clearAdapter()
-            binding.recyclerMain.visibility = View.GONE
             binding.swipeRefreshLayout.isRefreshing = true
+            binding.recyclerMain.visibility = View.GONE
             if (requireActivity().findViewById<SearchView>(R.id.search_view).query.isEmpty()) {
                 newsAdapter.clearAdapterList()
                 viewModel.clearSearchQueryStack()
@@ -109,6 +108,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                 newsAdapter.clearAdapterList()
                 viewModel.initSearchAccordingToCurrentConfig()
             }
+            clearAdapterCheckboxes()
         }
     }
 
@@ -120,6 +120,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                         clearAdapter()
                         binding.recyclerMain.visibility = View.GONE
                         binding.progressBarMiddle.visibility = View.VISIBLE
+                        infiniteScrollListener.pauseScrollListener(false)
                     }
                     else if (!binding.swipeRefreshLayout.isRefreshing)
                         newsAdapter.addNullData()
@@ -160,7 +161,6 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                 }
                 is Resource.Error -> {
                     binding.swipeRefreshLayout.isRefreshing = false
-                    infiniteScrollListener.setLoaded()
                     response.message?.let { message ->
                         if (message == "No internet connection") {
                             Toast.makeText(
@@ -189,11 +189,12 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                                     ).show()
                                     binding.progressBarMiddle.visibility = View.GONE
                                 } else {
-                                    Toast.makeText(
+                                    /*Toast.makeText(
                                         requireContext(),
                                         "API Request limit completed!!, So, Trying to fetch news from other API Key ${viewModel.apiKey}",
                                         Toast.LENGTH_LONG
-                                    ).show()
+                                    ).show()*/
+                                    binding.progressBarMiddle.visibility = View.GONE
                                 }
                             }
                         }
@@ -257,6 +258,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                         clearAdapter()
                         binding.recyclerMain.visibility = View.GONE
                         binding.progressBarMiddle.visibility = View.VISIBLE
+                        infiniteScrollListener.pauseScrollListener(false)
                     }
                     else if (!binding.swipeRefreshLayout.isRefreshing)
                         newsAdapter.addNullData()
@@ -297,7 +299,6 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                 }
                 is Resource.Error -> {
                     binding.swipeRefreshLayout.isRefreshing = false
-                    infiniteScrollListener.setLoaded()
                     response.message?.let { message ->
                         if (message == "No internet connection" || message == "No Result Found!!") {
                             Toast.makeText(
@@ -311,16 +312,16 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                             if (!isSuccess) {
                                 Toast.makeText(
                                     requireContext(),
-                                    message,
+                                    "ALL API Keys are used!! Try again after some time",
                                     Toast.LENGTH_LONG
                                 ).show()
                                 binding.progressBarMiddle.visibility = View.GONE
                             } else {
-                                Toast.makeText(
+                                /*Toast.makeText(
                                     requireContext(),
                                     "$message, So, Trying to fetch news from other API Key ${viewModel.apiKey}",
                                     Toast.LENGTH_LONG
-                                ).show()
+                                ).show()*/
                                 binding.progressBarMiddle.visibility = View.GONE
                             }
                         }
@@ -395,6 +396,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                         snackbar.dismiss()
                         newsAdapter.notifyDataSetChanged()
                     }
+                    (requireActivity() as MainActivity).customizeSnackBar(snackbar)
                     snackbar.show()
                     snackbar.view.setOnClickListener { snackbar.dismiss() }
                 }
@@ -544,6 +546,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                         "Article added to bookmark Successfully!!",
                         Snackbar.LENGTH_SHORT
                     )
+                    (requireActivity() as MainActivity).customizeSnackBar(snackbar)
                     snackbar.show()
                     snackbar.view.setOnClickListener { snackbar.dismiss() }
                 } else {
@@ -554,6 +557,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                         "Article removed from bookmark Successfully!!",
                         Snackbar.LENGTH_SHORT
                     )
+                    (requireActivity() as MainActivity).customizeSnackBar(snackbar)
                     snackbar.show()
                     snackbar.view.setOnClickListener { snackbar.dismiss() }
                 }
@@ -620,19 +624,6 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
         binding.recyclerMain.adapter = newsAdapter
         binding.recyclerMain.setHasFixedSize(true)
     }
-
-//    private fun setUpSearchNewsRecyclerView(list: MutableList<Article?>) {
-//        val linearLayoutManager = LinearLayoutManager(requireContext())
-//        infiniteScrollListener = InfiniteScrollListener(linearLayoutManager, this)
-//
-//        binding.recyclerMain.layoutManager = linearLayoutManager
-//        binding.recyclerMain.addOnScrollListener(infiniteScrollListener)
-//        searchNewsAdapter = NewsAdapter(articleClickListener, onManageItemsInViewModel, list)
-//        searchNewsAdapter?.stateRestorationPolicy =
-//            RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-//        binding.recyclerMain.adapter = searchNewsAdapter
-//        binding.recyclerMain.setHasFixedSize(true)
-//    }
 
 
     fun clearAdapterCheckboxes() {
