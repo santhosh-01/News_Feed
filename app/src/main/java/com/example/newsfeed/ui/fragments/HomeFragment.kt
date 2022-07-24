@@ -1,5 +1,6 @@
 package com.example.newsfeed.ui.fragments
 
+import android.app.ActionBar
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
@@ -29,6 +30,7 @@ import com.example.newsfeed.util.listener.InfiniteScrollListener
 import com.example.newsfeed.util.listener.OnArticleClickListener
 import com.example.newsfeed.util.listener.OnManageItemsInViewModel
 import com.example.newsfeed.viewmodel.NewsViewModel
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
@@ -100,9 +102,16 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
         binding.swipeRefreshLayout.setOnRefreshListener {
             binding.swipeRefreshLayout.isRefreshing = true
             binding.recyclerMain.visibility = View.GONE
-            if (requireActivity().findViewById<SearchView>(R.id.search_view).query.isEmpty()) {
-                newsAdapter.clearAdapterList()
-                viewModel.clearSearchQueryStack()
+            if (requireActivity().findViewById<SearchView>(R.id.search_view).query.isEmpty() || !viewModel.hasInternetConnection()) {
+                if (viewModel.hasInternetConnection()) {
+                    newsAdapter.clearAdapterList()
+                    viewModel.breakingNewsPage = 1
+                    viewModel.breakingNewsResponse = null
+                }
+                else {
+                    viewModel.clearSearchQueryStack()
+                    requireActivity().findViewById<SearchView>(R.id.search_view).setQuery("", false)
+                }
                 viewModel.initAccordingToCurrentConfig()
             } else {
                 newsAdapter.clearAdapterList()
@@ -160,42 +169,50 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                     }
                 }
                 is Resource.Error -> {
-                    binding.swipeRefreshLayout.isRefreshing = false
-                    response.message?.let { message ->
-                        if (message == "No internet connection") {
-                            Toast.makeText(
-                                requireContext(),
-                                message,
-                                Toast.LENGTH_LONG
-                            ).show()
-                            binding.progressBarMiddle.visibility = View.GONE
-                        } else {
-                            var isSuccess: Boolean = false
-                            Log.i("HomeFragment", Thread.currentThread().name.toString() + "1")
-                            lifecycleScope.launch(Dispatchers.Main) {
-                                Log.i("HomeFragment", Thread.currentThread().name.toString() + "2")
-                                withContext(Dispatchers.IO) {
-                                    Log.i(
-                                        "HomeFragment",
-                                        Thread.currentThread().name.toString() + "3"
-                                    )
-                                    isSuccess = viewModel.changeAPIKey()
+                    if (viewModel.isSearchQueryStackEmpty()) {
+                        binding.swipeRefreshLayout.isRefreshing = false
+                        response.message?.let { message ->
+                            binding.recyclerMain.visibility = View.VISIBLE
+                            if (response.message == "Request unsuccessful") {
+                                var isSuccess: Boolean = false
+                                Log.i("HomeFragment", Thread.currentThread().name.toString() + "1")
+                                lifecycleScope.launch(Dispatchers.Main) {
+                                    Log.i("HomeFragment", Thread.currentThread().name.toString() + "2")
+                                    withContext(Dispatchers.IO) {
+                                        Log.i(
+                                            "HomeFragment",
+                                            Thread.currentThread().name.toString() + "3"
+                                        )
+                                        isSuccess = viewModel.changeAPIKey()
+                                    }
+                                    if (!isSuccess) {
+                                        Toast.makeText(
+                                            requireContext(),
+                                            "ALL API Keys are used!! Try again after some time",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                        binding.progressBarMiddle.visibility = View.GONE
+                                    } else {
+                                        /*Toast.makeText(
+                                            requireContext(),
+                                            "API Request limit completed!!, So, Trying to fetch news from other API Key ${viewModel.apiKey}",
+                                            Toast.LENGTH_LONG
+                                        ).show()*/
+                                        binding.progressBarMiddle.visibility = View.GONE
+                                    }
                                 }
-                                if (!isSuccess) {
-                                    Toast.makeText(
-                                        requireContext(),
-                                        "ALL API Keys are used!! Try again after some time",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                    binding.progressBarMiddle.visibility = View.GONE
-                                } else {
-                                    /*Toast.makeText(
-                                        requireContext(),
-                                        "API Request limit completed!!, So, Trying to fetch news from other API Key ${viewModel.apiKey}",
-                                        Toast.LENGTH_LONG
-                                    ).show()*/
-                                    binding.progressBarMiddle.visibility = View.GONE
+                            }
+                            else {
+                                if (response.data != null) {
+                                    newsAdapter.loadList(response.data.articles)
                                 }
+                                Toast.makeText(
+                                    requireContext(),
+                                    message,
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                binding.progressBarMiddle.visibility = View.GONE
+                                newsAdapter.removeNull()
                             }
                         }
                     }
@@ -298,31 +315,39 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                     }
                 }
                 is Resource.Error -> {
-                    binding.swipeRefreshLayout.isRefreshing = false
-                    response.message?.let { message ->
-                        if (message == "No internet connection" || message == "No Result Found!!") {
-                            Toast.makeText(
-                                requireContext(),
-                                message,
-                                Toast.LENGTH_LONG
-                            ).show()
-                            binding.progressBarMiddle.visibility = View.GONE
-                        } else {
-                            val isSuccess = runBlocking { viewModel.changeAPIKeyForSearch() }
-                            if (!isSuccess) {
+                    if (!viewModel.isSearchQueryStackEmpty()) {
+                        binding.swipeRefreshLayout.isRefreshing = false
+                        response.message?.let { message ->
+                            binding.recyclerMain.visibility = View.VISIBLE
+                            if (message == "Response unsuccessful") {
+                                val isSuccess = runBlocking { viewModel.changeAPIKeyForSearch() }
+                                if (!isSuccess) {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "ALL API Keys are used!! Try again after some time",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    binding.progressBarMiddle.visibility = View.GONE
+                                } else {
+                                    /*Toast.makeText(
+                                        requireContext(),
+                                        "$message, So, Trying to fetch news from other API Key ${viewModel.apiKey}",
+                                        Toast.LENGTH_LONG
+                                    ).show()*/
+                                    binding.progressBarMiddle.visibility = View.GONE
+                                }
+                            }
+                            else {
+                                if (response.data != null) {
+                                    newsAdapter.loadList(response.data.articles)
+                                }
                                 Toast.makeText(
                                     requireContext(),
-                                    "ALL API Keys are used!! Try again after some time",
+                                    message,
                                     Toast.LENGTH_LONG
                                 ).show()
                                 binding.progressBarMiddle.visibility = View.GONE
-                            } else {
-                                /*Toast.makeText(
-                                    requireContext(),
-                                    "$message, So, Trying to fetch news from other API Key ${viewModel.apiKey}",
-                                    Toast.LENGTH_LONG
-                                ).show()*/
-                                binding.progressBarMiddle.visibility = View.GONE
+                                newsAdapter.removeNull()
                             }
                         }
                     }

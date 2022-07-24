@@ -22,6 +22,7 @@ import com.example.newsfeed.ui.fragments.BookmarksFragment
 import com.example.newsfeed.ui.fragments.HomeFragment
 import com.example.newsfeed.viewmodel.NewsViewModel
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -108,19 +109,20 @@ class MainActivity : AppCompatActivity() {
         NavController.OnDestinationChangedListener { controller, destination, arguments ->
             when (destination.id) {
                 R.id.articlePreviewFragment -> {
-                    (binding.customAppBar.myToolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP_MARGINS
-                    (binding.fragmentContainerView.layoutParams as CoordinatorLayout.LayoutParams).behavior = null
-                    (binding.fragmentContainerView.layoutParams as CoordinatorLayout.LayoutParams).topMargin = 220
+                    (binding.customAppBar.myToolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL
+//                    (binding.fragmentContainerView.layoutParams as CoordinatorLayout.LayoutParams).behavior = null
+//                    (binding.fragmentContainerView.layoutParams as CoordinatorLayout.LayoutParams).topMargin = binding.customAppBar.root.height
+
                     hideSearchView()
                     hideBottomNavBar()
                     hideNavigationIcon()
                 }
                 R.id.homeFragment -> {
-                    (binding.customAppBar.myToolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags =
-                        (AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
-                                or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS)
-                    (binding.fragmentContainerView.layoutParams as CoordinatorLayout.LayoutParams).behavior = AppBarLayout.ScrollingViewBehavior()
-                    (binding.fragmentContainerView.layoutParams as CoordinatorLayout.LayoutParams).topMargin = 0
+//                    (binding.customAppBar.myToolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags =
+//                        (AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
+//                                or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS)
+//                    (binding.fragmentContainerView.layoutParams as CoordinatorLayout.LayoutParams).behavior = AppBarLayout.ScrollingViewBehavior()
+//                    (binding.fragmentContainerView.layoutParams as CoordinatorLayout.LayoutParams).topMargin = 0
 
                     showSearchView()
                     showBottomNavBar()
@@ -133,11 +135,11 @@ class MainActivity : AppCompatActivity() {
                     viewModel.unSelectAllArticles()
                 }
                 R.id.bookmarksFragment -> {
-                    (binding.customAppBar.myToolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags =
-                        (AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
-                                or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS)
-                    (binding.fragmentContainerView.layoutParams as CoordinatorLayout.LayoutParams).behavior = AppBarLayout.ScrollingViewBehavior()
-                    (binding.fragmentContainerView.layoutParams as CoordinatorLayout.LayoutParams).topMargin = 0
+//                    (binding.customAppBar.myToolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags =
+//                        (AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
+//                                or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS)
+//                    (binding.fragmentContainerView.layoutParams as CoordinatorLayout.LayoutParams).behavior = AppBarLayout.ScrollingViewBehavior()
+//                    (binding.fragmentContainerView.layoutParams as CoordinatorLayout.LayoutParams).topMargin = 0
 
                     showSearchView()
                     showBottomNavBar()
@@ -145,6 +147,10 @@ class MainActivity : AppCompatActivity() {
                     viewModel.unSelectAllArticles()
                 }
                 R.id.categoryFragment -> {
+                    (binding.customAppBar.myToolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL
+//                    (binding.fragmentContainerView.layoutParams as CoordinatorLayout.LayoutParams).behavior = null
+//                    (binding.fragmentContainerView.layoutParams as CoordinatorLayout.LayoutParams).topMargin = binding.customAppBar.root.height
+
                     hideSearchView()
                     hideBottomNavBar()
                     hideNavigationIcon()
@@ -196,11 +202,21 @@ class MainActivity : AppCompatActivity() {
     private fun popSearchQuery() {
         viewModel.clearSearchQueryStack()
         if (binding.customAppBar.searchView.query.isNotEmpty()) {
+            //Expand App bar and bottom nav bar
+            binding.customAppBar.root.setExpanded(true)
+            val layoutParams = (binding.bottomNavBar.layoutParams as CoordinatorLayout.LayoutParams)
+            val bottomNavBarBehavior = layoutParams.behavior as HideBottomViewOnScrollBehavior
+            bottomNavBarBehavior.slideUp(binding.bottomNavBar)
+
             val homeFragment = navHostFragment.childFragmentManager.fragments[0] as HomeFragment
             binding.customAppBar.searchView.setQuery("", false)
             viewModel.clearSearchQueryStack()
             viewModel.searchQuery = null
-            homeFragment.clearAdapter()
+            if (viewModel.hasInternetConnection()) {
+                homeFragment.clearAdapter()
+                viewModel.breakingNewsPage = 1
+                viewModel.breakingNewsResponse = null
+            }
             viewModel.initAccordingToCurrentConfig()
 //                    viewModel.isSearchOn = false
         } else {
@@ -229,6 +245,12 @@ class MainActivity : AppCompatActivity() {
             } else if (viewModel.searchQueryStack.value!!.size <= 1) {
                 popSearchQuery()
             } else {
+                //Expand App bar and bottom nav bar
+                binding.customAppBar.root.setExpanded(true)
+                val layoutParams = (binding.bottomNavBar.layoutParams as CoordinatorLayout.LayoutParams)
+                val bottomNavBarBehavior = layoutParams.behavior as HideBottomViewOnScrollBehavior
+                bottomNavBarBehavior.slideUp(binding.bottomNavBar)
+
                 viewModel.popFromSearchQueryStack()
                 binding.customAppBar.searchView.setQuery(viewModel.popFromSearchQueryStack(), true)
             }

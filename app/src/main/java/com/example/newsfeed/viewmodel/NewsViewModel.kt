@@ -116,8 +116,6 @@ class NewsViewModel @Inject constructor(
     fun initAccordingToCurrentConfig() {
         val currentCategory = sharedPref.getString("category", "")
         val currentCountry = sharedPref.getString("country", "")
-        breakingNewsPage = 1
-        breakingNewsResponse = null
         selectedCategory = currentCategory!!
         selectedCountry = currentCountry!!
         initBreakingNews()
@@ -164,7 +162,7 @@ class NewsViewModel @Inject constructor(
                 return Resource.Success(breakingNewsResponse ?: resultResponse)
             }
         }
-        return Resource.Error(response.message())
+        return Resource.Error("Request unsuccessful")
     }
 
     fun getArticleFromViewModelByTitle(title: String): Article? {
@@ -206,7 +204,7 @@ class NewsViewModel @Inject constructor(
                 return Resource.Success(searchNewsResponse ?: resultResponse)
             }
         }
-        return Resource.Error("No Result")
+        return Resource.Error("Response unsuccessful")
     }
 
     suspend fun insertArticle(article: Article): Long {
@@ -305,7 +303,7 @@ class NewsViewModel @Inject constructor(
                     newsRepository.searchNews(searchNewsPage, searchQuery, sortBy, language, apiKey)
                 searchNews.postValue(handleSearchNewsResponse(response))
             } else {
-                searchNews.postValue(Resource.Error("No internet connection"))
+                searchNews.postValue(Resource.Error("No internet connection",searchNewsResponse))
             }
         } catch (t: Throwable) {
             when (t) {
@@ -326,7 +324,7 @@ class NewsViewModel @Inject constructor(
                     newsRepository.getBreakingNews(breakingNewsPage, category, countryAbbr, apiKey)
                 breakingNews.postValue(handleBreakingNewsResponse(response))
             } else {
-                breakingNews.postValue(Resource.Error("No internet connection"))
+                breakingNews.postValue(Resource.Error("No internet connection", breakingNewsResponse))
             }
         } catch (t: Throwable) {
             when (t) {
@@ -460,8 +458,10 @@ class NewsViewModel @Inject constructor(
     }
 
     fun clearAdapterAndGetBreakingNews() {
-        breakingNewsPage = 1
-        breakingNewsResponse = null
+        if (hasInternetConnection()) {
+            breakingNewsPage = 1
+            breakingNewsResponse = null
+        }
         initBreakingNews()
     }
 

@@ -19,8 +19,10 @@ import com.example.newsfeed.entity.Article
 import com.example.newsfeed.ui.MainActivity
 import com.example.newsfeed.viewmodel.NewsViewModel
 import com.google.android.material.snackbar.Snackbar
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 class ArticlePreviewFragment : Fragment() {
 
@@ -74,9 +76,19 @@ class ArticlePreviewFragment : Fragment() {
             textDetailContent.text = article.content
             textDetailDetail.text = article.description
             if (article.urlToImage.isNullOrBlank()) {
-                Picasso.get().load(R.drawable.news_logo_final).into(imgDetailNews)
+                binding.imgDetailNews.setImageResource(R.drawable.news_logo_final)
             }
-            else Picasso.get().load(article.urlToImage).into(imgDetailNews)
+            else Picasso.get().load(article.urlToImage).into(imgDetailNews, object : Callback {
+                override fun onSuccess() {
+                    binding.progressBarImg.visibility = View.GONE
+                }
+
+                override fun onError(e: Exception?) {
+                    binding.imgDetailNews.setImageResource(R.drawable.news_logo_final)
+                    binding.progressBarImg.visibility = View.GONE
+                }
+
+            })
         }
 
         if (article.isExistInDB) {
