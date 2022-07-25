@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:layout_width="wrap_content">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_container"
+        android:id="@+id/container"
         style="@style/NewsArticle.View"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardElevation="@dimen/card_elevation"
-        android:visibility="visible">
+        app:cardElevation="@dimen/card_elevation">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -24,19 +23,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="180sp">
 
-                <ImageView
-                    android:id="@+id/news_image"
-                    style="@style/NewsArticle.Image"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/image_size"
-                    tools:src="@drawable/news_logo_final" />
+                    android:layout_height="wrap_content">
 
-                <!--<ProgressBar
-                    android:id="@+id/progressBar"
-                    style="?android:attr/progressBarStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center" />-->
+                    <ImageView
+                        android:id="@+id/news_image"
+                        style="@style/NewsArticle.Image"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/image_size"
+                        android:background="@color/shimmer_color" />
+
+                    <!--<ProgressBar
+                        android:id="@+id/progressBar"
+                        style="?android:attr/progressBarStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center" />-->
+
+                </FrameLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     style="@style/NewsArticle.Author"
@@ -58,12 +63,12 @@
 
                     <LinearLayout
                         android:id="@+id/secondPart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
                         <ToggleButton
                             android:id="@+id/bookmark_toggle"
@@ -95,8 +100,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/newsImage"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_below="@+id/newsImage">
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -109,18 +114,18 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:buttonTint="#5C6BC0"
-                        android:clickable="false"
-                        android:focusable="false"
                         android:visibility="gone"
-                        tools:visibility="visible" />
+                        tools:visibility="visible"
+                        android:clickable="false"
+                        android:focusable="false"/>
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/blocked_checkbox"
+                        android:visibility="gone"
                         android:layout_width="19dp"
                         android:layout_height="19dp"
-                        android:layout_gravity="center"
                         android:backgroundTint="@color/color_desire_front"
-                        android:visibility="gone"
+                        android:layout_gravity="center"
                         app:cardCornerRadius="4dp"
                         tools:visibility="visible">
 
@@ -139,21 +144,20 @@
                         style="@style/NewsArticle.Title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:text="Elon Musk says Tesla can't yet launch in India" />
+                        android:background="@color/shimmer_color" />
 
                     <!-- Publish at -->
                     <TextView
                         android:id="@+id/text_time"
                         style="@style/NewsArticle.PublishedAt"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/normal_padding"
-                        tools:text="18/07/22, 11:30 UTC" />
+                        android:layout_marginHorizontal="10sp"
+                        android:background="@color/shimmer_color" />
 
                 </LinearLayout>
             </LinearLayout>
 
         </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>
-
 </LinearLayout>

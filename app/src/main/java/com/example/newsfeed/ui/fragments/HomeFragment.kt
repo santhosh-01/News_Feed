@@ -1,6 +1,5 @@
 package com.example.newsfeed.ui.fragments
 
-import android.app.ActionBar
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
@@ -9,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -30,7 +30,6 @@ import com.example.newsfeed.util.listener.InfiniteScrollListener
 import com.example.newsfeed.util.listener.OnArticleClickListener
 import com.example.newsfeed.util.listener.OnManageItemsInViewModel
 import com.example.newsfeed.viewmodel.NewsViewModel
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
@@ -82,6 +81,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
         if (viewModel.isCategoryOrCountryChanged()) {
             viewModel.clearSearchQueryStack()
             requireActivity().findViewById<SearchView>(R.id.search_view).setQuery("", false)
+            (requireActivity() as MainActivity).slideUpBottomNavBar()
         }
 
         // Setting up Recycler View
@@ -101,6 +101,9 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             binding.swipeRefreshLayout.isRefreshing = true
+            binding.shimmer.visibility = View.VISIBLE
+            binding.shimmer.startShimmer()
+            infiniteScrollListener.pauseScrollListener(false)
             binding.recyclerMain.visibility = View.GONE
             if (requireActivity().findViewById<SearchView>(R.id.search_view).query.isEmpty() || !viewModel.hasInternetConnection()) {
                 if (viewModel.hasInternetConnection()) {
@@ -115,6 +118,8 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                 viewModel.initAccordingToCurrentConfig()
             } else {
                 newsAdapter.clearAdapterList()
+                viewModel.breakingNewsPage = 1
+                viewModel.breakingNewsResponse = null
                 viewModel.initSearchAccordingToCurrentConfig()
             }
             clearAdapterCheckboxes()
@@ -127,8 +132,9 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                 is Resource.Loading -> {
                     if (viewModel.breakingNewsPage == 1 && !binding.swipeRefreshLayout.isRefreshing) {
                         clearAdapter()
+                        binding.shimmer.visibility = View.VISIBLE
+                        binding.shimmer.startShimmer()
                         binding.recyclerMain.visibility = View.GONE
-                        binding.progressBarMiddle.visibility = View.VISIBLE
                         infiniteScrollListener.pauseScrollListener(false)
                     }
                     else if (!binding.swipeRefreshLayout.isRefreshing)
@@ -148,22 +154,24 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                                     }
                                 }
                                 task.await()
-                                if (viewModel.breakingNewsPage == 1) {
-                                    binding.progressBarMiddle.visibility = View.INVISIBLE
-                                } else
+                                if (viewModel.breakingNewsPage != 2) {
                                     newsAdapter.removeNull()
+                                }
+                                binding.shimmer.stopShimmer()
+                                binding.shimmer.visibility = View.GONE
                                 binding.recyclerMain.visibility = View.VISIBLE
                                 newsAdapter.addData(articleList)
-                                infiniteScrollListener.setLoaded()
 
                                 val totalRecords = min(TOTAL_RECORD, response.data.totalResults)
                                 val totalPages = ceil(totalRecords.toFloat() / QUERY_PAGE_SIZE).toInt()
-                                val isLastPage = viewModel.breakingNewsPage == totalPages
+                                val isLastPage = (viewModel.breakingNewsPage - 1) == totalPages
                                 if (isLastPage) {
                                     infiniteScrollListener.pauseScrollListener(true)
                                     binding.recyclerMain.setPadding(0, 0, 0, 0)
                                 }
-                                viewModel.breakingNewsPage++
+                                else {
+                                    infiniteScrollListener.setLoaded()
+                                }
                             }
                         }
                     }
@@ -171,8 +179,10 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                 is Resource.Error -> {
                     if (viewModel.isSearchQueryStackEmpty()) {
                         binding.swipeRefreshLayout.isRefreshing = false
+                        binding.recyclerMain.visibility = View.VISIBLE
+                        binding.shimmer.stopShimmer()
+                        binding.shimmer.visibility = View.GONE
                         response.message?.let { message ->
-                            binding.recyclerMain.visibility = View.VISIBLE
                             if (response.message == "Request unsuccessful") {
                                 var isSuccess: Boolean = false
                                 Log.i("HomeFragment", Thread.currentThread().name.toString() + "1")
@@ -228,7 +238,8 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                newsAdapter.clearAdapterList()
+                clearAdapterCheckboxes()
+                (requireActivity() as MainActivity).slideUpBottomNavBar()
                 query?.let {
                     viewModel.sortBy = "relevancy"
                     viewModel.preferredLanguage = "en"
@@ -273,8 +284,9 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
 //                    Log.i("HomeFragment", viewModel.searchNewsPage.toString())
                     if (viewModel.searchNewsPage == 1 && !binding.swipeRefreshLayout.isRefreshing) {
                         clearAdapter()
+                        binding.shimmer.visibility = View.VISIBLE
+                        binding.shimmer.startShimmer()
                         binding.recyclerMain.visibility = View.GONE
-                        binding.progressBarMiddle.visibility = View.VISIBLE
                         infiniteScrollListener.pauseScrollListener(false)
                     }
                     else if (!binding.swipeRefreshLayout.isRefreshing)
@@ -292,24 +304,26 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                                     }
                                 }
                                 task.await()
-                                if (viewModel.searchNewsPage == 1)
-                                    binding.progressBarMiddle.visibility = View.INVISIBLE
-                                else
+                                if (viewModel.searchNewsPage != 2) {
                                     newsAdapter.removeNull()
+                                }
+                                binding.shimmer.stopShimmer()
+                                binding.shimmer.visibility = View.GONE
                                 binding.recyclerMain.visibility = View.VISIBLE
                                 newsAdapter.addData(response.data.articles)
-                                infiniteScrollListener.setLoaded()
 
                                 viewModel.unSelectAllArticles()
 
                                 val totalRecords = min(TOTAL_RECORD, response.data.totalResults)
                                 val totalPages = ceil(totalRecords.toFloat() / QUERY_PAGE_SIZE).toInt()
-                                val isLastPage = viewModel.searchNewsPage == totalPages
+
+                                val isLastPage = (viewModel.searchNewsPage - 1) == totalPages
                                 if (isLastPage) {
                                     infiniteScrollListener.pauseScrollListener(true)
                                     binding.recyclerMain.setPadding(0, 0, 0, 0)
                                 }
-                                viewModel.searchNewsPage++
+                                else
+                                    infiniteScrollListener.setLoaded()
                             }
                         }
                     }
@@ -317,8 +331,10 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                 is Resource.Error -> {
                     if (!viewModel.isSearchQueryStackEmpty()) {
                         binding.swipeRefreshLayout.isRefreshing = false
+                        binding.recyclerMain.visibility = View.VISIBLE
+                        binding.shimmer.stopShimmer()
+                        binding.shimmer.visibility = View.GONE
                         response.message?.let { message ->
-                            binding.recyclerMain.visibility = View.VISIBLE
                             if (message == "Response unsuccessful") {
                                 val isSuccess = runBlocking { viewModel.changeAPIKeyForSearch() }
                                 if (!isSuccess) {

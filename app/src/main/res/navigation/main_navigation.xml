@@ -11,7 +11,11 @@
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_homeFragment_to_articlePreviewFragment"
-            app:destination="@id/articlePreviewFragment" />
+            app:destination="@id/articlePreviewFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
         <action
             android:id="@+id/action_homeFragment_to_categoryFragment"
             app:destination="@id/categoryFragment"
@@ -62,7 +66,11 @@
         tools:layout="@layout/fragment_bookmarks">
         <action
             android:id="@+id/action_bookmarksFragment_to_articlePreviewFragment"
-            app:destination="@id/articlePreviewFragment" />
+            app:destination="@id/articlePreviewFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/aboutFragment"
@@ -84,7 +92,11 @@
             app:argType="string" />
         <action
             android:id="@+id/action_articlePreviewFragment_to_articleFragment"
-            app:destination="@id/articleFragment" />
+            app:destination="@id/articleFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
         <argument
             android:name="isHomePageNews"
             app:argType="boolean" />
@@ -115,6 +127,10 @@
         android:id="@+id/changeCountryFragment"
         android:name="com.example.newsfeed.ui.fragments.ChangeCountryFragment"
         android:label="Choose Your Country"
-        tools:layout="@layout/fragment_change_country"/>
+        tools:layout="@layout/fragment_change_country">
+        <action
+            android:id="@+id/action_changeCountryFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
 
 </navigation>

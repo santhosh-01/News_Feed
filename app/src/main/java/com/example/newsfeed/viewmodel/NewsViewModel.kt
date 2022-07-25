@@ -159,6 +159,7 @@ class NewsViewModel @Inject constructor(
 
                     oldArticles?.addAll(newArticles)
                 }
+                breakingNewsPage++
                 return Resource.Success(breakingNewsResponse ?: resultResponse)
             }
         }
@@ -201,6 +202,7 @@ class NewsViewModel @Inject constructor(
 
                     oldArticles?.addAll(newArticles)
                 }
+                searchNewsPage++
                 return Resource.Success(searchNewsResponse ?: resultResponse)
             }
         }

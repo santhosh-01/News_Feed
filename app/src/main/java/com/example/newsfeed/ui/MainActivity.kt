@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -199,14 +198,17 @@ class MainActivity : AppCompatActivity() {
                 super.onSupportNavigateUp()
     }
 
+    fun slideUpBottomNavBar() {
+        val layoutParams = (binding.bottomNavBar.layoutParams as CoordinatorLayout.LayoutParams)
+        val bottomNavBarBehavior = layoutParams.behavior as HideBottomViewOnScrollBehavior
+        bottomNavBarBehavior.slideUp(binding.bottomNavBar)
+    }
+
     private fun popSearchQuery() {
         viewModel.clearSearchQueryStack()
         if (binding.customAppBar.searchView.query.isNotEmpty()) {
-            //Expand App bar and bottom nav bar
-            binding.customAppBar.root.setExpanded(true)
-            val layoutParams = (binding.bottomNavBar.layoutParams as CoordinatorLayout.LayoutParams)
-            val bottomNavBarBehavior = layoutParams.behavior as HideBottomViewOnScrollBehavior
-            bottomNavBarBehavior.slideUp(binding.bottomNavBar)
+            //Expand bottom nav bar
+            slideUpBottomNavBar()
 
             val homeFragment = navHostFragment.childFragmentManager.fragments[0] as HomeFragment
             binding.customAppBar.searchView.setQuery("", false)
@@ -245,11 +247,8 @@ class MainActivity : AppCompatActivity() {
             } else if (viewModel.searchQueryStack.value!!.size <= 1) {
                 popSearchQuery()
             } else {
-                //Expand App bar and bottom nav bar
-                binding.customAppBar.root.setExpanded(true)
-                val layoutParams = (binding.bottomNavBar.layoutParams as CoordinatorLayout.LayoutParams)
-                val bottomNavBarBehavior = layoutParams.behavior as HideBottomViewOnScrollBehavior
-                bottomNavBarBehavior.slideUp(binding.bottomNavBar)
+                //Expand bottom nav bar
+                slideUpBottomNavBar()
 
                 viewModel.popFromSearchQueryStack()
                 binding.customAppBar.searchView.setQuery(viewModel.popFromSearchQueryStack(), true)

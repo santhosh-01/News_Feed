@@ -32,7 +32,7 @@
 
     <style name="NewsArticle.Title">
         <item name="android:maxLines">2</item>
-        <item name="android:padding">@dimen/normal_padding</item>
+        <item name="android:layout_margin">10sp</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">@dimen/textview_size_normal</item>
     </style>

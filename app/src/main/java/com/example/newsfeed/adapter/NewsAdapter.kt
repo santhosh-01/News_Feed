@@ -1,17 +1,23 @@
 package com.example.newsfeed.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.newsfeed.R
 import com.example.newsfeed.entity.Article
 import com.example.newsfeed.util.listener.OnArticleClickListener
 import com.example.newsfeed.util.listener.OnManageItemsInViewModel
+import com.facebook.shimmer.Shimmer
+import com.facebook.shimmer.ShimmerDrawable
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.card.MaterialCardView
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+import java.lang.Exception
 
 class NewsAdapter(
     private val onArticleClickListener: OnArticleClickListener,
@@ -27,6 +33,9 @@ class NewsAdapter(
     var isCheckboxEnabled = false
     var isHomePage = true
     var canSelectBookmark = false
+
+    private lateinit var shimmerDrawable: ShimmerDrawable
+
 //    private val selectedNewsArticlesPosition: MutableList<Int> = mutableListOf()
 
 //    val selectedItemPositions: MutableLiveData<List<Int>> = MutableLiveData(listOf())
@@ -37,7 +46,7 @@ class NewsAdapter(
         private val textTitle: TextView
         private val textSource: TextView
         private val textTime: TextView
-        val progressBar: ProgressBar
+//        val progressBar: ProgressBar
         val newsImage: ImageView
         private val cardView: MaterialCardView
         private val shareButton: ImageButton
@@ -50,9 +59,9 @@ class NewsAdapter(
             textTitle = itemView.findViewById(R.id.text_title)
             textSource = itemView.findViewById(R.id.text_source)
             textTime = itemView.findViewById(R.id.text_time)
-            progressBar = itemView.findViewById(R.id.progressBar)
+//            progressBar = itemView.findViewById(R.id.progressBar)
             newsImage = itemView.findViewById(R.id.news_image)
-            cardView = itemView.findViewById(R.id.container)
+            cardView = itemView.findViewById(R.id.card_container)
             bookmarkButton = itemView.findViewById(R.id.bookmark_toggle)
             shareButton = itemView.findViewById(R.id.share_button)
             checkBox = itemView.findViewById(R.id.article_check_box)
@@ -60,7 +69,6 @@ class NewsAdapter(
         }
 
         private fun initUIElements(currentArticle: Article, position: Int) {
-            initTextElements(currentArticle)
             initImageElement(currentArticle)
             initClickListeners(currentArticle, position)
             bookmarkButton.isChecked = currentArticle.isExistInDB
@@ -68,50 +76,23 @@ class NewsAdapter(
         }
 
         private fun initClickListeners(currentArticle: Article, position: Int) {
-            cardView.setOnClickListener {
-                onArticleClickListener.onClick(currentArticle)
-            }
-            bookmarkButton.setOnClickListener {
-                onArticleClickListener.onBookmarkButtonClick(currentArticle)
-                notifyItemChanged(position)
-            }
-            shareButton.setOnClickListener {
-                onArticleClickListener.onShareButtonClick(currentArticle)
-            }
-            if ((isHomePage && !isCheckboxEnabled && !currentArticle.isExistInDB) || (!isHomePage && !isCheckboxEnabled && currentArticle.isExistInDB)) {
-                cardView.setOnLongClickListener {
-                    onArticleClickListener.onLongClick(currentArticle, cardView)
-                    isCheckboxEnabled = true
-//                    checkBox.isChecked = true
-                    currentArticle.isChecked = true
-                    onManageItemsInViewModel.addSelectedItemPositionToList(position)
-                    onManageItemsInViewModel.addSelectedItemToList(currentArticle)
-                    notifyDataSetChanged()
-                    true
-                }
-            } else {
-                cardView.setOnLongClickListener {
-                    onArticleClickListener.onLongClick(currentArticle, cardView)
-                    true
-                }
-            }
             if (!isCheckboxEnabled) {
                 secondPart.visibility = View.VISIBLE
                 checkBox.visibility = View.GONE
                 blockedCheckBox.visibility = View.GONE
             }
-            if (isCheckboxEnabled) {
+            else {
                 checkBox.visibility = View.VISIBLE
                 secondPart.visibility = View.GONE
-                if ((isHomePage && currentArticle.isExistInDB) || (!isHomePage && !currentArticle.isExistInDB)) {
-                    checkBox.isChecked = false
-                    cardView.isEnabled = false
-                    cardView.isClickable = false
-                    blockedCheckBox.visibility = View.VISIBLE
-                    cardView.setOnClickListener(null)
-                } else {
-                    blockedCheckBox.visibility = View.GONE
-                    cardView.setOnClickListener {
+                blockedCheckBox.isVisible = !currentArticle.isCheckable
+            }
+
+            cardView.setOnClickListener {
+                if (!isCheckboxEnabled) {
+                    onArticleClickListener.onClick(currentArticle)
+                }
+                else {
+                    if (currentArticle.isCheckable) {
                         if (!checkBox.isChecked) {
                             onManageItemsInViewModel.addSelectedItemPositionToList(position)
                             onManageItemsInViewModel.addSelectedItemToList(currentArticle)
@@ -125,32 +106,56 @@ class NewsAdapter(
                         }
                     }
                 }
-                cardView.setOnLongClickListener(null)
+            }
+            bookmarkButton.setOnClickListener {
+                onArticleClickListener.onBookmarkButtonClick(currentArticle)
+                notifyItemChanged(position)
+            }
+            shareButton.setOnClickListener {
+                onArticleClickListener.onShareButtonClick(currentArticle)
+            }
+            cardView.setOnLongClickListener {
+                if (currentArticle.isCheckable) {
+                    onArticleClickListener.onLongClick(currentArticle, cardView)
+//                    checkBox.isChecked = true
+                    currentArticle.isChecked = true
+                    onManageItemsInViewModel.addSelectedItemPositionToList(position)
+                    onManageItemsInViewModel.addSelectedItemToList(currentArticle)
+                    isCheckboxEnabled = true
+                    notifyDataSetChanged()
+                    true
+                }
+                else {
+                    onArticleClickListener.onLongClick(currentArticle, cardView)
+                    true
+                }
             }
         }
 
         private fun initImageElement(currentArticle: Article) {
             if (!currentArticle.urlToImage.isNullOrBlank()) {
-                Picasso.get().load(currentArticle.urlToImage).into(newsImage, object : Callback {
+                Picasso.get().load(currentArticle.urlToImage).placeholder(shimmerDrawable).into(newsImage, object : Callback {
                     override fun onSuccess() {
-                        progressBar.visibility = View.GONE
                     }
 
                     override fun onError(e: Exception?) {
                         newsImage.setImageResource(R.drawable.news_logo_final)
-                        progressBar.visibility = View.GONE
                     }
+
                 })
             } else {
                 newsImage.setImageResource(R.drawable.news_logo_final)
-                progressBar.visibility = View.GONE
             }
+
+            initTextElements(currentArticle)
         }
 
         private fun initTextElements(currentArticle: Article) {
             textTitle.text = currentArticle.title
             textSource.text = currentArticle.source?.name ?: "Not Found"
             textTime.text = parseTime(currentArticle.publishedAt)
+
+            currentArticle.isCheckable = (isHomePage && !currentArticle.isExistInDB) || (!isHomePage && currentArticle.isExistInDB)
         }
 
         private fun parseTime(publishedTime: String?): String {
@@ -242,6 +247,17 @@ class NewsAdapter(
     }
 
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
+        val shimmer = Shimmer.ColorHighlightBuilder()
+            .setBaseColor(Color.parseColor("#F3F3F3"))
+            .setBaseAlpha(1.0F)
+            .setHighlightColor(Color.parseColor("#BFBDBD"))
+            .setHighlightAlpha(1.0F)
+            .setDropoff(50.0F)
+            .build()
+
+        shimmerDrawable = ShimmerDrawable()
+        shimmerDrawable.setShimmer(shimmer)
+
         if (holder is ArticleViewHolder)
             holder.bind(position)
     }

@@ -22,8 +22,9 @@
     <color name="background">#eaeef7</color>
     <color name="ltgray">#CFCCCB</color>
     <color name="ltblue">#ff37474f</color>
+    <color name="shimmer_color">#BFBDBD</color>
 
     <!-- Other colors -->
-    <color name="color_transparent">#33000000</color>
+    <color name="color_transparent">#59000000</color>
 
 </resources>

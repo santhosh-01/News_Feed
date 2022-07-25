@@ -9,18 +9,6 @@
     <string name="advanced_search">Advanced Search</string>
     <string name="add_to_bookmarks">Add to Bookmarks</string>
     <string name="delete_bookmark">Delete Bookmark</string>
-
-    <!--    About News Feed App-->
-    <string name="about_app_text">\u2022 News Feed App is to get the Breaking News and to get the News in Customizable way
-        \n\n\u2022 User can do search, filter based on the categories, countries, etc..
-        \n\n\u2022 User can bookmark any news article and can see the bookmarked news articles</string>
-
-    <!--    Help Page Content-->
-    <string name="app_help">\u2022 On opening the open, the user will be landing on Home Page will bottom Nav Bar and Overflow menu at top right
-        \n\n\u2022 The Bottom Nav Bar contains Home Tab, Settings Tab, Bookmarks Tab
-        \n\n\u2022 The overflow menu contains the navigation for About App Page and Help Page
-        \n\n\u2022 On Clicking Settings Tab on the bottom Nav Bar, user will land on Settings Page and can customise their app
-        \n\n\u2022 On Clicking Bookmarks Tab, user will land on Bookmarks Page and can see all bookmarked articles</string>
     <string name="sort_by">SORT BY</string>
     <string name="apply">Apply</string>
     <string name="relevance">Relevance</string>
@@ -49,6 +37,18 @@
     <string name="about_app">About App</string>
     <string name="help">Help</string>
 
+    <!--    About News Feed App-->
+    <string name="about_app_text">\u2022 News Feed App is to get the Breaking News and to get the News in Customizable way
+        \n\n\u2022 User can do search, filter based on the categories, countries, etc..
+        \n\n\u2022 User can bookmark any news article and can see the bookmarked news articles</string>
+
+    <!--    Help Page Content-->
+    <string name="app_help">\u2022 On opening the open, the user will be landing on Home Page will bottom Nav Bar and Overflow menu at top right
+        \n\n\u2022 The Bottom Nav Bar contains Home Tab, Settings Tab, Bookmarks Tab
+        \n\n\u2022 The overflow menu contains the navigation for About App Page and Help Page
+        \n\n\u2022 On Clicking Settings Tab on the bottom Nav Bar, user will land on Settings Page and can customise their app
+        \n\n\u2022 On Clicking Bookmarks Tab, user will land on Bookmarks Page and can see all bookmarked articles</string>
+
     <!--    String Array of Country Names-->
     <string-array name="country_code_array">
         <item>United Arab Emirates - AE</item>
@@ -65,7 +65,6 @@
         <item>Cuba - CU</item>
         <item>Czech Republic - CZ</item>
         <item>Germany - DE</item>
-        <item>General - global</item>
         <item>Egypt - EG</item>
         <item>France - FR</item>
         <item>United Kingdom - GB</item>
