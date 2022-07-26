@@ -18,10 +18,11 @@
         android:theme="@style/Theme.NewsFeed"
         tools:targetApi="31">
         <activity
-            android:windowSoftInputMode="adjustPan"
-
             android:name=".ui.MainActivity"
-            android:exported="true">
+
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,7 +33,7 @@
 
 </manifest>
 
-<!--
-<activity
-android:name=".ui.DetailedNewsActivity"
-android:exported="false" />-->
+    <!--
+    <activity
+    android:name=".ui.DetailedNewsActivity"
+    android:exported="false" />-->
