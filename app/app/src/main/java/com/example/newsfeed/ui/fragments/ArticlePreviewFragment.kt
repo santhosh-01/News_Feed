@@ -268,35 +268,10 @@ class ArticlePreviewFragment : Fragment() {
         }
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        Log.i("ArticlePreviewFragment", "onAttach")
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.i("ArticlePreviewFragment", "onCreate")
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.i("ArticlePreviewFragment", "onStart")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.i("ArticlePreviewFragment", "onResume")
-    }
-
     override fun onPause() {
         super.onPause()
         clicked = false
         Log.i("ArticlePreviewFragment", "onPause")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.i("ArticlePreviewFragment", "onStop")
     }
 
     override fun onDestroyView() {
@@ -304,11 +279,6 @@ class ArticlePreviewFragment : Fragment() {
         super.onDestroyView()
         fromBottom.cancel()
         toBottom.cancel()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.i("ArticlePreviewFragment", "onDestroy")
     }
 
     override fun onDetach() {

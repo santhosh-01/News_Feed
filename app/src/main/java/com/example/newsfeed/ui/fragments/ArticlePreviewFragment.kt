@@ -2,6 +2,7 @@ package com.example.newsfeed.ui.fragments
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,6 +19,8 @@ import com.example.newsfeed.databinding.FragmentArticlePreviewBinding
 import com.example.newsfeed.entity.Article
 import com.example.newsfeed.ui.MainActivity
 import com.example.newsfeed.viewmodel.NewsViewModel
+import com.facebook.shimmer.Shimmer
+import com.facebook.shimmer.ShimmerDrawable
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
@@ -75,10 +78,22 @@ class ArticlePreviewFragment : Fragment() {
             else textDetailTime.text = parseTime(article.publishedAt)
             textDetailContent.text = article.content
             textDetailDetail.text = article.description
+
+            val shimmer = Shimmer.ColorHighlightBuilder()
+                .setBaseColor(Color.parseColor("#F3F3F3"))
+                .setBaseAlpha(1.0F)
+                .setHighlightColor(Color.parseColor("#BFBDBD"))
+                .setHighlightAlpha(1.0F)
+                .setDropoff(50.0F)
+                .build()
+
+            val shimmerDrawable = ShimmerDrawable()
+            shimmerDrawable.setShimmer(shimmer)
+
             if (article.urlToImage.isNullOrBlank()) {
                 binding.imgDetailNews.setImageResource(R.drawable.news_logo_final)
             }
-            else Picasso.get().load(article.urlToImage).into(imgDetailNews, object : Callback {
+            else Picasso.get().load(article.urlToImage).placeholder(shimmerDrawable).into(imgDetailNews, object : Callback {
                 override fun onSuccess() {
                     binding.progressBarImg.visibility = View.GONE
                 }
@@ -270,51 +285,18 @@ class ArticlePreviewFragment : Fragment() {
         binding.shareButton.isClickable = clicked
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        Log.i("ArticlePreviewFragment", "onAttach")
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.i("ArticlePreviewFragment", "onCreate")
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.i("ArticlePreviewFragment", "onStart")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.i("ArticlePreviewFragment", "onResume")
-    }
-
     override fun onPause() {
         super.onPause()
         clicked = false
-        Log.i("ArticlePreviewFragment", "onPause")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.i("ArticlePreviewFragment", "onStop")
     }
 
     override fun onDestroyView() {
-        Log.i("ArticlePreviewFragment", "onDestroyView")
         super.onDestroyView()
         fromBottom.cancel()
         toBottom.cancel()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.i("ArticlePreviewFragment", "onDestroy")
-    }
-
     override fun onDetach() {
-        Log.i("ArticlePreviewFragment", "onDetach")
         super.onDetach()
         fromBottom.cancel()
         toBottom.cancel()

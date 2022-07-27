@@ -96,49 +96,4 @@ class ChangeCountryFragment : Fragment() {
         binding.autoCompleteTextView.setTextColor(Color.RED)
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        Log.i("ArticlePreviewFragment", "onAttach")
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.i("ArticlePreviewFragment", "onCreate")
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.i("ArticlePreviewFragment", "onStart")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.i("ArticlePreviewFragment", "onResume")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.i("ArticlePreviewFragment", "onPause")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.i("ArticlePreviewFragment", "onStop")
-    }
-
-    override fun onDestroyView() {
-        Log.i("ArticlePreviewFragment", "onDestroyView")
-        super.onDestroyView()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.i("ArticlePreviewFragment", "onDestroy")
-    }
-
-    override fun onDetach() {
-        Log.i("ArticlePreviewFragment", "onDetach")
-        super.onDetach()
-    }
-
 }
