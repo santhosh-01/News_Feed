@@ -8,6 +8,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -106,6 +107,7 @@ class MainActivity : AppCompatActivity() {
 
     private val onDestinationChangedListener =
         NavController.OnDestinationChangedListener { controller, destination, arguments ->
+            binding.bottomNavBar.isVisible = appBarConfiguration.topLevelDestinations.contains(destination.id)
             when (destination.id) {
                 R.id.articlePreviewFragment -> {
                     (binding.customAppBar.myToolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL
@@ -113,7 +115,6 @@ class MainActivity : AppCompatActivity() {
 //                    (binding.fragmentContainerView.layoutParams as CoordinatorLayout.LayoutParams).topMargin = binding.customAppBar.root.height
 
                     hideSearchView()
-                    hideBottomNavBar()
                     hideNavigationIcon()
                 }
                 R.id.homeFragment -> {
@@ -129,7 +130,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.settingsFragment -> {
                     hideSearchView()
-                    showBottomNavBar()
                     hideNavigationIcon()
                     viewModel.unSelectAllArticles()
                 }
@@ -151,17 +151,14 @@ class MainActivity : AppCompatActivity() {
 //                    (binding.fragmentContainerView.layoutParams as CoordinatorLayout.LayoutParams).topMargin = binding.customAppBar.root.height
 
                     hideSearchView()
-                    hideBottomNavBar()
                     hideNavigationIcon()
                     viewModel.unSelectAllArticles()
                 }
                 R.id.aboutFragment -> {
                     hideNavigationIcon()
-                    hideBottomNavBar()
                 }
                 R.id.helpFragment -> {
                     hideNavigationIcon()
-                    hideBottomNavBar()
                 }
                 R.id.change_country -> hideBottomNavBar()
             }
@@ -211,6 +208,8 @@ class MainActivity : AppCompatActivity() {
             slideUpBottomNavBar()
 
             val homeFragment = navHostFragment.childFragmentManager.fragments[0] as HomeFragment
+            homeFragment.hideNoInternetImage()
+            homeFragment.hideNoResultImage()
             binding.customAppBar.searchView.setQuery("", false)
             viewModel.clearSearchQueryStack()
             viewModel.searchQuery = null
@@ -250,6 +249,8 @@ class MainActivity : AppCompatActivity() {
                 //Expand bottom nav bar
                 slideUpBottomNavBar()
 
+                homeFragment.hideNoInternetImage()
+                homeFragment.hideNoResultImage()
                 viewModel.popFromSearchQueryStack()
                 binding.customAppBar.searchView.setQuery(viewModel.popFromSearchQueryStack(), true)
             }

@@ -113,11 +113,11 @@ class BookmarksFragment : Fragment() {
                     article.isExistInDB = true
                 }
                 newsAdapter.loadList(articles.reversed())
-                binding.noBookmarkText.visibility = View.GONE
+                binding.noBookmarkImage.visibility = View.GONE
             } else {
                 binding.recyclerSaved.visibility = View.GONE
                 overflowMenu.findItem(R.id.delete_bookmark).isVisible = false
-                binding.noBookmarkText.visibility = View.VISIBLE
+                binding.noBookmarkImage.visibility = View.VISIBLE
             }
         }
     }
@@ -142,6 +142,7 @@ class BookmarksFragment : Fragment() {
 
         override fun onBookmarkButtonClick(article: Article) {
             unbookmarkArticle(article)
+            (requireActivity() as MainActivity).slideUpBottomNavBar()
             val snackbar = Snackbar.make(
                 requireView(),
                 "Article removed from bookmarks successfully",
@@ -207,6 +208,7 @@ class BookmarksFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.delete_bookmark) {
+            (requireActivity() as MainActivity).slideUpBottomNavBar()
             if (viewModel.selectedNewsListInBookmarks.isNotEmpty()) {
                 // When deleting the list, it will affect the reference
                 // So, we store the copy instead of saving the same reference.
@@ -221,6 +223,7 @@ class BookmarksFragment : Fragment() {
                     }
                     task.await()
 
+                    viewModel.unSelectBookmarkArticles()
                     newsAdapter.notifyDataSetChanged()
                     newsAdapter.isCheckboxEnabled = false
                     val snackbar = Snackbar.make(
@@ -235,7 +238,6 @@ class BookmarksFragment : Fragment() {
 
                             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                                 super.onDismissed(transientBottomBar, event)
-                                viewModel.unSelectBookmarkArticles()
                             }
                         })
                     snackbar.setAction("Undo") {

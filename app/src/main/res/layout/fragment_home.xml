@@ -136,12 +136,35 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:visibility="visible"/>
 
-    <!--<ImageView
+    <ImageView
         android:id="@+id/no_internet_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/no_internet_connection_img"
-        android:visibility="gone"/>-->
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:id="@+id/no_result_found"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/no_result"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:text="No Result Found!!"
+            android:textColor="@color/black"
+            android:textSize="22sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
 
     <!--<com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text_input_layout"

@@ -101,6 +101,8 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             binding.swipeRefreshLayout.isRefreshing = true
+            binding.noInternetImg.visibility = View.GONE
+            binding.noResultFound.visibility = View.GONE
             binding.shimmer.visibility = View.VISIBLE
             binding.shimmer.startShimmer()
             infiniteScrollListener.pauseScrollListener(false)
@@ -110,8 +112,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                     newsAdapter.clearAdapterList()
                     viewModel.breakingNewsPage = 1
                     viewModel.breakingNewsResponse = null
-                }
-                else {
+                } else {
                     viewModel.clearSearchQueryStack()
                     requireActivity().findViewById<SearchView>(R.id.search_view).setQuery("", false)
                 }
@@ -132,12 +133,13 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                 is Resource.Loading -> {
                     if (viewModel.breakingNewsPage == 1 && !binding.swipeRefreshLayout.isRefreshing) {
                         clearAdapter()
+                        binding.noInternetImg.visibility = View.GONE
+                        binding.noResultFound.visibility = View.GONE
                         binding.shimmer.visibility = View.VISIBLE
                         binding.shimmer.startShimmer()
                         binding.recyclerMain.visibility = View.GONE
                         infiniteScrollListener.pauseScrollListener(false)
-                    }
-                    else if (!binding.swipeRefreshLayout.isRefreshing)
+                    } else if (!binding.swipeRefreshLayout.isRefreshing)
                         newsAdapter.addNullData()
                 }
                 is Resource.Success -> {
@@ -150,7 +152,8 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                                     articleList.forEach { article ->
                                         article.isExistInDB = viewModel.isRecordExist(article.title)
                                         if (article.isExistInDB)
-                                            article.id = viewModel.getArticleByTitle(article.title).id
+                                            article.id =
+                                                viewModel.getArticleByTitle(article.title).id
                                     }
                                 }
                                 task.await()
@@ -159,17 +162,18 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                                 }
                                 binding.shimmer.stopShimmer()
                                 binding.shimmer.visibility = View.GONE
+                                binding.noInternetImg.visibility = View.GONE
                                 binding.recyclerMain.visibility = View.VISIBLE
                                 newsAdapter.addData(articleList)
 
                                 val totalRecords = min(TOTAL_RECORD, response.data.totalResults)
-                                val totalPages = ceil(totalRecords.toFloat() / QUERY_PAGE_SIZE).toInt()
+                                val totalPages =
+                                    ceil(totalRecords.toFloat() / QUERY_PAGE_SIZE).toInt()
                                 val isLastPage = (viewModel.breakingNewsPage - 1) == totalPages
                                 if (isLastPage) {
                                     infiniteScrollListener.pauseScrollListener(true)
                                     binding.recyclerMain.setPadding(0, 0, 0, 0)
-                                }
-                                else {
+                                } else {
                                     infiniteScrollListener.setLoaded()
                                 }
                             }
@@ -187,7 +191,10 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                                 var isSuccess: Boolean = false
                                 Log.i("HomeFragment", Thread.currentThread().name.toString() + "1")
                                 lifecycleScope.launch(Dispatchers.Main) {
-                                    Log.i("HomeFragment", Thread.currentThread().name.toString() + "2")
+                                    Log.i(
+                                        "HomeFragment",
+                                        Thread.currentThread().name.toString() + "2"
+                                    )
                                     withContext(Dispatchers.IO) {
                                         Log.i(
                                             "HomeFragment",
@@ -211,8 +218,10 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                                         binding.progressBarMiddle.visibility = View.GONE
                                     }
                                 }
-                            }
-                            else {
+                            } else if (response.message == "No internet connection" && (viewModel.breakingNewsResponse == null || viewModel.breakingNewsResponse!!.articles.isEmpty())) {
+                                binding.noInternetImg.visibility = View.VISIBLE
+                                binding.noResultFound.visibility = View.GONE
+                            } else {
                                 if (response.data != null) {
                                     newsAdapter.loadList(response.data.articles)
                                 }
@@ -284,12 +293,13 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
 //                    Log.i("HomeFragment", viewModel.searchNewsPage.toString())
                     if (viewModel.searchNewsPage == 1 && !binding.swipeRefreshLayout.isRefreshing) {
                         clearAdapter()
+                        binding.noInternetImg.visibility = View.GONE
+                        binding.noResultFound.visibility = View.GONE
                         binding.shimmer.visibility = View.VISIBLE
                         binding.shimmer.startShimmer()
                         binding.recyclerMain.visibility = View.GONE
                         infiniteScrollListener.pauseScrollListener(false)
-                    }
-                    else if (!binding.swipeRefreshLayout.isRefreshing)
+                    } else if (!binding.swipeRefreshLayout.isRefreshing)
                         newsAdapter.addNullData()
                 }
                 is Resource.Success -> {
@@ -315,14 +325,14 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                                 viewModel.unSelectAllArticles()
 
                                 val totalRecords = min(TOTAL_RECORD, response.data.totalResults)
-                                val totalPages = ceil(totalRecords.toFloat() / QUERY_PAGE_SIZE).toInt()
+                                val totalPages =
+                                    ceil(totalRecords.toFloat() / QUERY_PAGE_SIZE).toInt()
 
                                 val isLastPage = (viewModel.searchNewsPage - 1) == totalPages
                                 if (isLastPage) {
                                     infiniteScrollListener.pauseScrollListener(true)
                                     binding.recyclerMain.setPadding(0, 0, 0, 0)
-                                }
-                                else
+                                } else
                                     infiniteScrollListener.setLoaded()
                             }
                         }
@@ -352,6 +362,10 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                                     ).show()*/
                                     binding.progressBarMiddle.visibility = View.GONE
                                 }
+                            }
+                            else if (response.message == "No Result Found!!" && (viewModel.searchNewsResponse == null || viewModel.searchNewsResponse!!.articles.isEmpty())) {
+                                binding.noResultFound.visibility = View.VISIBLE
+                                binding.noInternetImg.visibility = View.GONE
                             }
                             else {
                                 if (response.data != null) {
@@ -403,6 +417,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
         if (item.itemId == R.id.add_bookmark) {
             if (viewModel.selectedNewsListInHome.isNotEmpty()) {
                 lifecycleScope.launch(Dispatchers.Main) {
+                    val temp = viewModel.selectedNewsListInHome.map { it }
                     val task = async(Dispatchers.IO) {
                         for (article in viewModel.selectedNewsListInHome) {
                             article.isChecked = false
@@ -411,9 +426,9 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                         }
                     }
                     task.await()
+                    viewModel.unSelectAllArticles()
                     newsAdapter.isCheckboxEnabled = false
                     newsAdapter.notifyDataSetChanged()
-                    val temp = viewModel.selectedNewsListInHome
                     val snackbar = Snackbar.make(
                         requireView(),
                         "Selected Article(s) added to bookmarks successfully",
@@ -426,7 +441,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
 
                             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                                 super.onDismissed(transientBottomBar, event)
-                                viewModel.unSelectAllArticles()
+                                viewModel.selectedNewsListInHome.addAll(temp)
                             }
                         })
                     snackbar.setAction("Undo") {
@@ -692,5 +707,19 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
     fun clearAdapter() {
         newsAdapter.clearAdapterList()
     }
+
+    fun hideNoInternetImage() {
+        binding.noInternetImg.visibility = View.GONE
+    }
+
+    fun hideNoResultImage() {
+        binding.noResultFound.visibility = View.GONE
+    }
+
+    /*override fun onDetach() {
+        super.onDetach()
+        binding.noResultFound.visibility = View.GONE
+        binding.noInternetImg.visibility = View.GONE
+    }*/
 
 }

@@ -153,7 +153,8 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                                 Toast.LENGTH_LONG
                             ).show()
                             binding.progressBarMiddle.visibility = View.GONE
-                        } else {
+                        }
+                        else {
                             val isSuccess = runBlocking { viewModel.changeAPIKey() }
                             if (!isSuccess) {
                                 Toast.makeText(

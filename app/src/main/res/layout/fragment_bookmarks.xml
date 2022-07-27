@@ -27,19 +27,28 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <TextView
-        android:id="@+id/no_bookmark_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-condensed"
-        android:text="@string/no_bookmarks_available"
-        android:textColor="@color/black"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:id="@+id/no_bookmark_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="visible">
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/oops"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:text="@string/no_bookmarks_available"
+            android:textColor="@color/black"
+            android:textSize="22sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
 
     <View
         android:id="@+id/snackbar_area"

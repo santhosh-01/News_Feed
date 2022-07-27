@@ -106,6 +106,7 @@ class ArticleFragment : Fragment() {
                     article.isExistInDB = false
                     viewModel.deleteArticle(article)
                     val snackbar = Snackbar.make(requireView(),"Article was removed from bookmark Successfully", Snackbar.LENGTH_SHORT)
+                    (requireActivity() as MainActivity).customizeSnackBar(snackbar)
                     snackbar.show()
                     snackbar.view.setOnClickListener { snackbar.dismiss() }
                     findNavController().navigate(
@@ -157,6 +158,7 @@ class ArticleFragment : Fragment() {
         }
         binding.bookmarkToggle.setImageResource(R.drawable.ic_baseline_bookmark_remove_24)
         val snackbar = Snackbar.make(requireView(),"Article saved Successfully", Snackbar.LENGTH_SHORT)
+        (requireActivity() as MainActivity).customizeSnackBar(snackbar)
         snackbar.show()
         snackbar.view.setOnClickListener { snackbar.dismiss() }
     }
@@ -166,6 +168,7 @@ class ArticleFragment : Fragment() {
         viewModel.deleteArticle(article)
         binding.bookmarkToggle.setImageResource(R.drawable.ic_baseline_bookmark_add_24)
         val snackbar = Snackbar.make(requireView(),"Article was removed from bookmark Successfully", Snackbar.LENGTH_SHORT)
+        (requireActivity() as MainActivity).customizeSnackBar(snackbar)
         snackbar.show()
         snackbar.view.setOnClickListener { snackbar.dismiss() }
     }
