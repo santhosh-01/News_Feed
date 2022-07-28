@@ -28,11 +28,11 @@
                     style="@style/NewsArticle.View">
 
                     <TextView
+                        android:textColor="@color/black"
                         android:padding="12dp"
                         android:id="@+id/text_detail_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/black"
                         android:textSize="26sp"
                         android:textStyle="bold"
                         tools:text="Title" />
@@ -106,6 +106,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <TextView
+                    style="@style/NewsArticle.Text"
                     android:id="@+id/text_detail_detail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -114,11 +115,11 @@
                     android:fontFamily="sans-serif-condensed"
                     android:paddingHorizontal="12dp"
                     android:paddingVertical="6dp"
-                    android:textColor="@color/black"
                     android:textSize="18sp"
                     tools:text="Details" />
 
                 <TextView
+                    style="@style/NewsArticle.Text"
                     android:id="@+id/text_detail_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -126,7 +127,6 @@
                     android:fontFamily="sans-serif-condensed"
                     android:paddingHorizontal="12dp"
                     android:paddingVertical="6dp"
-                    android:textColor="@color/black"
                     android:textSize="18sp"
                     tools:text="Mumbai News Live Updates: Maharashtra reported 1,045 new Covid-19 cases today. Of the new cases, Mumbai reported 704 infections. Meanwhile, Chief Minister Uddhav Thackeray today called a Covid-19 task force meeting amid a surge in Covid cases in the state. For the first time since February, Maharashtra had recorded over 1,000 daily Covid-19 cases on Wednesday.
 

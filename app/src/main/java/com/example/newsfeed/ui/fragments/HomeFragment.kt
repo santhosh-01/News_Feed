@@ -112,8 +112,8 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                     newsAdapter.clearAdapterList()
                     viewModel.breakingNewsPage = 1
                     viewModel.breakingNewsResponse = null
-                } else {
                     viewModel.clearSearchQueryStack()
+                } else {
                     requireActivity().findViewById<SearchView>(R.id.search_view).setQuery("", false)
                 }
                 viewModel.initAccordingToCurrentConfig()

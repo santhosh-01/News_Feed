@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.NewsFeed" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.NewsFeed" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
@@ -11,7 +11,10 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">@android:color/transparent</item>
+        <item name="windowNoTitle">true</item>
         <!-- Customize your theme here. -->
+
+<!--        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>-->
 
     </style>
 
@@ -57,6 +60,31 @@
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textSize">@dimen/textview_size_small</item>
     </style>
+
+    <style name="NewsArticle.Text">
+        <item name="android:textColor">@color/black</item>
+    </style>
+    <!--endregion-->
+
+    <style name="Theme.MyTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar">
+        <item name="android:actionBarWidgetTheme">@style/SearchViewStyle</item>
+        <!-- your other custom styles -->
+    </style>
+
+    <!--region appbar-->
+    <style name="AppBarStyle">
+        <item name="android:background">@color/ltblue</item>
+    </style>
+    <!--endregion-->
+
+    <!--region appbar-->
+    <style name="ToolBarStyle">
+        <item name="titleTextColor">@color/black</item>
+    </style>
+    <!--endregion-->
+
+    <!--region searchview-->
+    <style name="SearchViewStyle" />
     <!--endregion-->
 
 </resources>

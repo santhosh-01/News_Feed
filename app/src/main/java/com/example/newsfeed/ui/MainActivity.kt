@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.isVisible
@@ -72,6 +73,9 @@ class MainActivity : AppCompatActivity() {
 
         // Here, we are setting taskbar
         window.statusBarColor = Color.rgb(55,71,79)
+
+        // Forcing Dark mode not allowed
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
     }
 
     private fun setupCustomToolbar() {

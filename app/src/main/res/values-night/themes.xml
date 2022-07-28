@@ -11,6 +11,71 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="windowNoTitle">true</item>
         <!-- Customize your theme here. -->
     </style>
+
+
+    <!--region News Article -->
+    <style name="NewsArticle" parent="Theme.AppCompat.DayNight" />
+
+    <style name="NewsArticle.View">
+        <item name="android:layout_marginTop">@dimen/normal_padding</item>
+        <item name="android:layout_marginStart">@dimen/card_margin</item>
+        <item name="android:layout_marginEnd">@dimen/card_margin</item>
+        <item name="android:layout_marginBottom">@dimen/card_elevation</item>
+    </style>
+
+    <style name="NewsArticle.Title">
+        <item name="android:maxLines">2</item>
+        <item name="android:layout_margin">10sp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">@dimen/textview_size_normal</item>
+    </style>
+
+    <style name="NewsArticle.Image">
+        <item name="android:scaleType">centerCrop</item>
+    </style>
+
+    <style name="NewsArticle.Author">
+        <item name="android:background">@color/color_transparent</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:padding">@dimen/normal_padding</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="NewsArticle.PublishedAt">
+        <item name="android:layout_marginBottom">@dimen/normal_padding</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/textview_size_small</item>
+    </style>
+
+    <style name="NewsArticle.Text">
+        <item name="android:textColor">@color/white</item>
+    </style>
+    <!--endregion-->
+
+
+    <!--region toolbar-->
+    <style name="AppBarStyle" parent="Theme.AppCompat.DayNight">
+        <item name="titleTextColor">@color/black</item>
+    </style>
+    <!--endregion-->
+
+    <!--region appbar-->
+    <style name="ToolBarStyle" parent="Theme.AppCompat.DayNight">
+        <item name="titleTextColor">@color/black</item>
+    </style>
+    <!--endregion-->
+
+    <!--region searchview-->
+    <style name="SearchViewStyle" parent="Theme.AppCompat.DayNight">
+        <item name="android:textColorHint">@color/black</item>
+    </style>
+    <!--endregion-->
+
 </resources>
