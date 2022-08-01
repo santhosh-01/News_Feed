@@ -29,6 +29,8 @@ class ArticleFragment : Fragment() {
     private lateinit var fromBottom: Animation
     private lateinit var toBottom: Animation
 
+    private lateinit var arguments: ArticleFragmentArgs
+
     var clicked: Boolean = false
 
     override fun onCreateView(
@@ -43,7 +45,7 @@ class ArticleFragment : Fragment() {
 
         viewModel = (activity as MainActivity).viewModel
 
-        val arguments = ArticleFragmentArgs.fromBundle(requireArguments())
+        arguments = ArticleFragmentArgs.fromBundle(requireArguments())
         
         val article = if (arguments.isHomePageNews)
             viewModel.getArticleFromViewModelByTitle(arguments.articleTitle)!!
@@ -158,7 +160,6 @@ class ArticleFragment : Fragment() {
         }
         binding.bookmarkToggle.setImageResource(R.drawable.ic_baseline_bookmark_remove_24)
         val snackbar = Snackbar.make(requireView(),"Article saved Successfully", Snackbar.LENGTH_SHORT)
-        (requireActivity() as MainActivity).customizeSnackBar(snackbar)
         snackbar.show()
         snackbar.view.setOnClickListener { snackbar.dismiss() }
     }
@@ -168,7 +169,8 @@ class ArticleFragment : Fragment() {
         viewModel.deleteArticle(article)
         binding.bookmarkToggle.setImageResource(R.drawable.ic_baseline_bookmark_add_24)
         val snackbar = Snackbar.make(requireView(),"Article was removed from bookmark Successfully", Snackbar.LENGTH_SHORT)
-        (requireActivity() as MainActivity).customizeSnackBar(snackbar)
+        if(!arguments.isHomePageNews)
+                (requireActivity() as MainActivity).customizeSnackBar(snackbar)
         snackbar.show()
         snackbar.view.setOnClickListener { snackbar.dismiss() }
     }

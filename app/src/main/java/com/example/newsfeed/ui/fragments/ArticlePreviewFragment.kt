@@ -205,7 +205,7 @@ class ArticlePreviewFragment : Fragment() {
         }
         binding.bookmarkToggle.setImageResource(R.drawable.ic_baseline_bookmark_remove_24)
         val snackbar = Snackbar.make(requireView(),"Article saved Successfully", Snackbar.LENGTH_SHORT)
-        (requireActivity() as MainActivity).customizeSnackBar(snackbar)
+//        (requireActivity() as MainActivity).customizeSnackBar(snackbar)
         snackbar.show()
         snackbar.view.setOnClickListener { snackbar.dismiss() }
     }
@@ -215,7 +215,8 @@ class ArticlePreviewFragment : Fragment() {
         viewModel.deleteArticle(article)
         binding.bookmarkToggle.setImageResource(R.drawable.ic_baseline_bookmark_add_24)
         val snackbar = Snackbar.make(requireView(),"Article was removed from bookmark Successfully", Snackbar.LENGTH_SHORT)
-        (requireActivity() as MainActivity).customizeSnackBar(snackbar)
+        if (!arguments.isHomePageNews)
+            (requireActivity() as MainActivity).customizeSnackBar(snackbar)
         snackbar.show()
         snackbar.view.setOnClickListener { snackbar.dismiss() }
     }
@@ -285,15 +286,11 @@ class ArticlePreviewFragment : Fragment() {
         binding.shareButton.isClickable = clicked
     }
 
-    override fun onPause() {
-        super.onPause()
-        clicked = false
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         fromBottom.cancel()
         toBottom.cancel()
+        clicked = false
     }
 
     override fun onDetach() {

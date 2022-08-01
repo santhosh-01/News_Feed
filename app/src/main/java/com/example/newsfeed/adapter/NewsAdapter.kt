@@ -13,7 +13,6 @@ import com.example.newsfeed.util.listener.OnArticleClickListener
 import com.example.newsfeed.util.listener.OnManageItemsInViewModel
 import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerDrawable
-import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.card.MaterialCardView
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
@@ -69,13 +68,14 @@ class NewsAdapter(
         }
 
         private fun initUIElements(currentArticle: Article, position: Int) {
-            initImageElement(currentArticle)
+            initUIElements(currentArticle)
             initClickListeners(currentArticle, position)
             bookmarkButton.isChecked = currentArticle.isExistInDB
             checkBox.isChecked = currentArticle.isChecked
         }
 
         private fun initClickListeners(currentArticle: Article, position: Int) {
+            secondPart.setOnClickListener(null)
             if (!isCheckboxEnabled) {
                 secondPart.visibility = View.VISIBLE
                 checkBox.visibility = View.GONE
@@ -132,7 +132,7 @@ class NewsAdapter(
             }
         }
 
-        private fun initImageElement(currentArticle: Article) {
+        private fun initUIElements(currentArticle: Article) {
             if (!currentArticle.urlToImage.isNullOrBlank()) {
                 Picasso.get().load(currentArticle.urlToImage).placeholder(shimmerDrawable).into(newsImage, object : Callback {
                     override fun onSuccess() {

@@ -167,7 +167,7 @@ class NewsViewModel @Inject constructor(
     }
 
     fun getArticleFromViewModelByTitle(title: String): Article? {
-        if (searchQuery != null) {
+        if (!isSearchQueryStackEmpty()) {
             searchNewsResponse!!.articles.forEach {
                 if (it.title == title) return it
             }
@@ -414,7 +414,7 @@ class NewsViewModel @Inject constructor(
         bookmarkSearchQuery = query
         val filteredList: MutableList<Article> = mutableListOf()
         for (article in articleList) {
-            if (article.title.lowercase().contains(query.lowercase())) {
+            if (article.title!!.lowercase().contains(query.lowercase())) {
                 filteredList.add(article)
             }
         }

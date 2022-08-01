@@ -149,11 +149,17 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                             val articleList = response.data.articles
                             lifecycleScope.launch(Dispatchers.Main) {
                                 val task = async(Dispatchers.IO) {
-                                    articleList.forEach { article ->
-                                        article.isExistInDB = viewModel.isRecordExist(article.title)
-                                        if (article.isExistInDB)
-                                            article.id =
-                                                viewModel.getArticleByTitle(article.title).id
+                                    for(ind in articleList.indices.reversed()) {
+                                        val article = articleList[ind]
+                                        if (article.title != null) {
+                                            article.isExistInDB = viewModel.isRecordExist(article.title)
+                                            if (article.isExistInDB)
+                                                article.id =
+                                                    viewModel.getArticleByTitle(article.title).id
+                                        }
+                                        else {
+                                            articleList.removeAt(ind)
+                                        }
                                     }
                                 }
                                 task.await()
@@ -172,7 +178,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                                 val isLastPage = (viewModel.breakingNewsPage - 1) == totalPages
                                 if (isLastPage) {
                                     infiniteScrollListener.pauseScrollListener(true)
-                                    binding.recyclerMain.setPadding(0, 0, 0, 0)
+//                                    binding.recyclerMain.setPadding(0, 0, 0, 0)
                                 } else {
                                     infiniteScrollListener.setLoaded()
                                 }
@@ -184,8 +190,6 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                     if (viewModel.isSearchQueryStackEmpty()) {
                         binding.swipeRefreshLayout.isRefreshing = false
                         binding.recyclerMain.visibility = View.VISIBLE
-                        binding.shimmer.stopShimmer()
-                        binding.shimmer.visibility = View.GONE
                         response.message?.let { message ->
                             if (response.message == "Request unsuccessful") {
                                 var isSuccess: Boolean = false
@@ -202,6 +206,8 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                                         )
                                         isSuccess = viewModel.changeAPIKey()
                                     }
+                                    binding.shimmer.stopShimmer()
+                                    binding.shimmer.visibility = View.GONE
                                     if (!isSuccess) {
                                         Toast.makeText(
                                             requireContext(),
@@ -219,9 +225,13 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                                     }
                                 }
                             } else if (response.message == "No internet connection" && (viewModel.breakingNewsResponse == null || viewModel.breakingNewsResponse!!.articles.isEmpty())) {
+                                binding.shimmer.stopShimmer()
+                                binding.shimmer.visibility = View.GONE
                                 binding.noInternetImg.visibility = View.VISIBLE
                                 binding.noResultFound.visibility = View.GONE
                             } else {
+                                binding.shimmer.stopShimmer()
+                                binding.shimmer.visibility = View.GONE
                                 if (response.data != null) {
                                     newsAdapter.loadList(response.data.articles)
                                 }
@@ -309,8 +319,17 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
                             val articleList = response.data.articles
                             lifecycleScope.launch(Dispatchers.Main) {
                                 val task = async(Dispatchers.IO) {
-                                    articleList.forEach { article ->
-                                        article.isExistInDB = viewModel.isRecordExist(article.title)
+                                    for(ind in articleList.indices.reversed()) {
+                                        val article = articleList[ind]
+                                        if (article.title != null) {
+                                            article.isExistInDB = viewModel.isRecordExist(article.title)
+                                            if (article.isExistInDB)
+                                                article.id =
+                                                    viewModel.getArticleByTitle(article.title).id
+                                        }
+                                        else {
+                                            articleList.removeAt(ind)
+                                        }
                                     }
                                 }
                                 task.await()
@@ -577,7 +596,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
 
     private fun unbookmarkArticle(article: Article) {
         lifecycleScope.launch(Dispatchers.IO) {
-            viewModel.getArticleByTitle(article.title).isExistInDB = false
+            viewModel.getArticleByTitle(article.title!!).isExistInDB = false
             viewModel.deleteArticle(viewModel.getArticleByTitle(article.title))
         }
     }
@@ -586,7 +605,7 @@ class HomeFragment : Fragment(), InfiniteScrollListener.OnLoadMoreListener {
         override fun onClick(article: Article) {
             val action =
                 HomeFragmentDirections.actionHomeFragmentToArticlePreviewFragment(
-                    article.title,
+                    article.title!!,
                     true
                 )
             requireView().findNavController().navigate(action)

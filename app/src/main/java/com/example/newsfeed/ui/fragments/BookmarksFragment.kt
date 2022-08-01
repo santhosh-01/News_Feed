@@ -124,7 +124,7 @@ class BookmarksFragment : Fragment() {
 
     private fun unbookmarkArticle(article: Article) {
         lifecycleScope.launch(Dispatchers.IO) {
-            viewModel.getArticleByTitle(article.title).isExistInDB = false
+            viewModel.getArticleByTitle(article.title!!).isExistInDB = false
             viewModel.deleteArticle(viewModel.getArticleByTitle(article.title))
         }
         article.isExistInDB = false
@@ -134,7 +134,7 @@ class BookmarksFragment : Fragment() {
         override fun onClick(article: Article) {
             val action =
                 BookmarksFragmentDirections.actionBookmarksFragmentToArticlePreviewFragment(
-                    article.title,
+                    article.title!!,
                     false
                 )
             requireView().findNavController().navigate(action)
@@ -148,6 +148,15 @@ class BookmarksFragment : Fragment() {
                 "Article removed from bookmarks successfully",
                 Snackbar.LENGTH_SHORT
             )
+            snackbar.setAction("Undo") {
+                lifecycleScope.launch {
+                    viewModel.clearSelectedItemsInBookmark()
+                    article.id = viewModel.insertArticle(article).toInt()
+                    article.isExistInDB = true
+                }
+                (requireActivity() as MainActivity).customizeSnackBar(snackbar)
+                snackbar.dismiss()
+            }
             (requireActivity() as MainActivity).customizeSnackBar(snackbar)
             snackbar.show()
             snackbar.view.setOnClickListener { snackbar.dismiss() }
