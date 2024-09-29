@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             viewModel.saveNewsCategory("general")
-            viewModel.saveNewsCountry("in")
+            viewModel.saveNewsCountry("us")
         }
     }
 
