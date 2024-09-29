@@ -16,6 +16,9 @@
 
 <!--        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>-->
 
+<!--        To use the status bar-->
+<!--        <item name="android:windowTranslucentStatus">true</item>-->
+
     </style>
 
     <style name="DialogAnimation">
